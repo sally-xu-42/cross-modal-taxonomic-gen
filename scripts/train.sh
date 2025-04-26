@@ -20,14 +20,8 @@ SEED=42
 STAGE="align"  # Training stage: align (projector-only)
 DATASET_ID="clevr"
 MODEL_ID="prism-dinosiglip+7b"  # Vision-Language Model ID
-VISION_BACKBONE="resnet50"  # Example vision backbone
-LLM_BACKBONE="llama-2-7b"  # Example language model backbone
-
-# Checkpoint parameters
-SAVE_CHECKPOINT=true
-CHECKPOINT_DIR="${RUN_ROOT_DIR}/${RUN_ID}/checkpoints"
-CHECKPOINT_EVERY=500  # Save checkpoint every 500 steps
-SAVE_LATEST=true      # Always save the latest checkpoint
+# VISION_BACKBONE="resnet50"  # Example vision backbone
+# LLM_BACKBONE="llama-2-7b"  # Example language model backbone
 
 cd /share/data/speech/txu/vlm_semantics
 # Activate the virtual environment
@@ -36,7 +30,7 @@ source /share/data/speech/txu/vlm_semantics/venv/bin/activate
 # Run training with torchrun
 torchrun --standalone --nnodes 1 --nproc-per-node 4 prismatic-vlms/scripts/pretrain.py \
     --run_id $RUN_ID \
-    --run_root_dir $CHECKPOINT_DIR \
+    --run_root_dir $RUN_ROOT_DIR \
     --seed $SEED \
     --stage $STAGE \
     --dataset.type $DATASET_ID \
