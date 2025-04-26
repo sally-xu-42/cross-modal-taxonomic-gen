@@ -43,4 +43,5 @@ torchrun --standalone --nnodes 1 --nproc-per-node 4 prismatic-vlms/scripts/pretr
     --model.type $MODEL_ID \
     --model.align_epochs 10 \
     --model.align_learning_rate 1e-5 \
-    --model.align_global_batch_size 16
+    --model.align_global_batch_size 16 \
+    --model.align_per_device_batch_size 4
