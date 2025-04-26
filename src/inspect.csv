@@ -1,0 +1,21 @@
+0,1,2
+../data/CLEVR_v1.0/images/val/CLEVR_val_000187.png,The thing in front of the cube has what shape?,cylinder
+../data/CLEVR_v1.0/images/val/CLEVR_val_000242.png,Is the size of the red thing the same as the green rubber thing that is in front of the big cyan thing?,yes
+../data/CLEVR_v1.0/images/val/CLEVR_val_000290.png,There is a shiny thing in front of the tiny rubber object right of the sphere that is in front of the large brown shiny sphere; what is its shape?,sphere
+../data/CLEVR_v1.0/images/val/CLEVR_val_000317.png,There is a tiny metal object on the left side of the small sphere in front of the small rubber sphere; is there a yellow matte ball that is on the right side of it?,yes
+../data/CLEVR_v1.0/images/val/CLEVR_val_000371.png,What number of objects are either things to the right of the red rubber cylinder or gray metal cubes?,2
+../data/CLEVR_v1.0/images/val/CLEVR_val_000068.png,The small red thing that is the same material as the tiny ball is what shape?,cylinder
+../data/CLEVR_v1.0/images/val/CLEVR_val_000006.png,What is the big thing that is in front of the block that is behind the block that is in front of the large shiny block made of?,rubber
+../data/CLEVR_v1.0/images/val/CLEVR_val_000076.png,How many other objects are there of the same material as the large blue thing?,4
+../data/CLEVR_v1.0/images/val/CLEVR_val_000310.png,What number of other objects are there of the same material as the tiny purple cylinder?,4
+../data/CLEVR_v1.0/images/val/CLEVR_val_000085.png,How many things are either tiny green matte things that are in front of the large brown rubber block or small matte things that are in front of the tiny purple ball?,1
+../data/CLEVR_v1.0/images/val/CLEVR_val_000437.png,Is the number of yellow rubber cylinders in front of the large yellow metal cube greater than the number of large matte blocks that are to the left of the small yellow thing?,no
+../data/CLEVR_v1.0/images/val/CLEVR_val_000352.png,Are there any large brown things made of the same material as the gray cylinder?,yes
+../data/CLEVR_v1.0/images/val/CLEVR_val_000278.png,Is there any other thing that is made of the same material as the big ball?,no
+../data/CLEVR_v1.0/images/val/CLEVR_val_000073.png,Does the big purple sphere have the same material as the blue ball that is in front of the purple rubber object?,yes
+../data/CLEVR_v1.0/images/val/CLEVR_val_000277.png,There is a large ball that is the same material as the small purple object; what color is it?,gray
+../data/CLEVR_v1.0/images/val/CLEVR_val_000087.png,There is a metal cylinder that is both on the right side of the big green thing and in front of the large brown cylinder; what is its size?,large
+../data/CLEVR_v1.0/images/val/CLEVR_val_000413.png,What is the shape of the small shiny object that is the same color as the large metallic cylinder?,cube
+../data/CLEVR_v1.0/images/val/CLEVR_val_000145.png,How big is the shiny object that is on the left side of the shiny object that is in front of the tiny metal cube?,small
+../data/CLEVR_v1.0/images/val/CLEVR_val_000491.png,Is there any other thing that is the same material as the big brown object?,no
+../data/CLEVR_v1.0/images/val/CLEVR_val_000396.png,There is a thing that is left of the matte cylinder; are there any large shiny objects behind it?,yes

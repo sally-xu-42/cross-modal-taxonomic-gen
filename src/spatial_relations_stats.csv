@@ -1,0 +1,5 @@
+Relation,Train Count,Train %,Val Count,Val %
+right,134454,19.21%,28949,19.30%
+left,135077,19.30%,28783,19.19%
+behind,134723,19.25%,29144,19.43%
+in front of,135110,19.30%,29137,19.43%
