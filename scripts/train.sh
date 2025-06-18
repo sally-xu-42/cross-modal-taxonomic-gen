@@ -1,11 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=prismatic
 #SBATCH --partition=speech-gpu
+#SBATCH --cpus-per-task=2
 #SBATCH --gpus=nvidia_rtx_a6000:4
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
-#SBATCH --time=03:55:00
+#SBATCH --time=07:55:00
+#SBATCH --signal=SIGHUP@600
 #SBATCH -o /share/data/speech/txu/vlm_semantics/logs/training_%j.out
 
 # Set environment variables
@@ -20,8 +22,6 @@ SEED=42
 STAGE="align"  # Training stage: align (projector-only)
 DATASET_ID="clevr"
 MODEL_ID="prism-dinosiglip+7b"  # Vision-Language Model ID
-# VISION_BACKBONE="resnet50"  # Example vision backbone
-# LLM_BACKBONE="llama-2-7b"  # Example language model backbone
 
 cd /share/data/speech/txu/vlm_semantics
 # Activate the virtual environment
@@ -35,7 +35,7 @@ torchrun --standalone --nnodes 1 --nproc-per-node 4 prismatic-vlms/scripts/pretr
     --stage $STAGE \
     --dataset.type $DATASET_ID \
     --model.type $MODEL_ID \
-    --model.align_epochs 10 \
+    --model.align_epochs 1 \
     --model.align_learning_rate 1e-5 \
-    --model.align_global_batch_size 16 \
-    --model.align_per_device_batch_size 4
+    --model.align_global_batch_size 64 \
+    --model.align_per_device_batch_size 16

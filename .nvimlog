@@ -1,0 +1,2 @@
+WARN  2025-05-20T15:03:47.852 3546469 log_path_init:95: Failed to create directory /home-nfs/txu/.cache/nvim for writing logs: Unknown system error 1
+WARN  2025-05-20T15:04:22.729 3546529 log_path_init:95: Failed to create directory /home-nfs/txu/.cache/nvim for writing logs: Unknown system error 1
