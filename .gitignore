@@ -149,7 +149,7 @@ cache/
 data/
 
 # Framework
-prismatic-vlms/
+# prismatic-vlms/
 # Model Checkpoints
 runs/
 # Logs
