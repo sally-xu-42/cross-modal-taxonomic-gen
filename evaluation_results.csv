@@ -1,25 +1,21 @@
 question,answer,predicted_answer,relation,correct
-"<image>
-What color is the tiny matte block left of the blue block?</s>",gray,are there any large brown things to the left of,left,False
-"<image>
-There is a small matte block that is on the left side of the large rubber thing that is left of the gray ball; what is its color?</s>",brown,are there any small red objects on the right side,left,False
-"<image>
-There is a small metallic thing in front of the gray metallic thing; does it have the same color as the big rubber sphere?</s>",no,yes,in front of,False
-"<image>
-There is a small object; is it the same color as the object in front of the gray shiny thing?</s>",no,reason no,in front of,True
-"<image>
-There is a small gray metal ball; how many gray balls are on the right side of it?</s>",0,reason 0,right,True
-"<image>
-What number of things are large yellow metallic balls or metallic things that are in front of the gray metallic sphere?</s>",1,reason 1,in front of,True
-"<image>
-There is a metal object in front of the gray metal object; are there any big blue rubber blocks in front of it?</s>",no,no,in front of,True
-"<image>
-What color is the metallic thing behind the big metal object?</s>",gray,"what is its shape
-yes
-yes",behind,False
-"<image>
-Are there the same number of blue rubber cubes on the left side of the large blue thing and tiny green matte cylinders?</s>",yes,"no yes
-yes
-yes",left,True
-"<image>
-What material is the tiny cube that is to the right of the blue thing?</s>",rubber,what is the shape of the tiny blue object,right,False
+"Question: <image>
+There is a small gray block; are there any spheres to the left of it?Answer:</s>",yes,0 no,left,False
+"Question: <image>
+How many objects are either metal things behind the small green rubber cylinder or small green rubber objects?Answer:</s>",2,yes,behind,False
+"Question: <image>
+What is the thing in front of the small metallic object made of?Answer:</s>",rubber,b3 metal,in front of,False
+"Question: <image>
+Does the green rubber object have the same shape as the gray thing that is on the right side of the big purple object?Answer:</s>",no,0 no,right,True
+"Question: <image>
+Are there more shiny things that are to the left of the yellow rubber thing than small red spheres?Answer:</s>",yes,0 no,left,False
+"Question: <image>
+Is the color of the metal block that is right of the yellow rubber object the same as the large metal cylinder?Answer:</s>",yes,yes,right,True
+"Question: <image>
+Does the large yellow sphere have the same material as the sphere in front of the tiny blue object?Answer:</s>",yes,yes,in front of,True
+"Question: <image>
+There is a big metallic thing left of the tiny green object; what is its shape?Answer:</s>",sphere,cylinder,left,False
+"Question: <image>
+Is the number of brown cylinders in front of the brown matte cylinder less than the number of brown rubber cylinders?Answer:</s>",no,yes,in front of,False
+"Question: <image>
+What number of objects are either big objects that are behind the big gray block or tiny brown rubber balls?Answer:</s>",3,2,behind,False

@@ -66,7 +66,7 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         """
         image_path, conversation = Path(self.examples[idx]["image"]), self.examples[idx]["conversations"]
         assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
-        caption = self.prompt_template.format(caption=(conversation[0]["value"]).strip())
+        caption = self.prompt_template.format(caption=("Question: " + conversation[0]["value"] + "Answer: ").strip())
         answer = self.prompt_template.format(caption=(conversation[-1]["value"]).strip())
         answer = answer.replace("</s>", "").strip()
         input_ids = self.tokenizer(caption, truncation=True, return_tensors="pt").input_ids[0]
@@ -196,13 +196,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--dataset_path", 
         type=str, 
-        default="./data/simple_clevr_val_preprocessed.json",
+        default="data/simple_clevr_val_preprocessed.json",
         help="Path to the filtered CLEVR question dataset"
     )
     parser.add_argument(
         "--image_dir", 
         type=str, 
-        default="./data/CLEVR_v1.0/images/val",
+        default="./data/CLEVR_v1.0/images",
         help="Directory containing CLEVR images"
     )
     parser.add_argument(
@@ -258,6 +258,7 @@ if __name__ == "__main__":
     
     print(f"Loading dataset: {args.dataset_path}")
     dataset_cfg = decode(DatasetConfig, config["dataset"])
+    dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
     val_dataset, collator = get_dataset_and_collator(
         dataset_cfg=dataset_cfg,
         image_transform=image_transform,
@@ -284,19 +285,23 @@ if __name__ == "__main__":
     for batch in tqdm(dataloader, desc="Processing batches"):
         images = batch["image"]
         prompts = batch['input_text']
+        input_ids = batch['input_ids']
+        labels = batch['labels']
         answers = batch['answer']
         # process one by one
         for i in range(len(prompts)):
             output = vlm.generate(
                 images[i],
                 prompts[i],
-                max_new_tokens=10,
+                max_new_tokens=20,
                 temperature=None
             )
             predicted = output.strip().lower()
-            print(answers[i])
+            # print(f"\nQuestion {i+1} input IDs:{input_ids[i]}")
+            # print(f"\nQuestion {i+1} labels:{labels[i]}")
+            print(f"\nQuestion {i+1} answer:{answers[i]}")
+            print(f"\nModel's answer:{predicted}")
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
-            print(predicted)
             results.append({
                 "question": prompts[i],
                 "answer": answers[i],
