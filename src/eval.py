@@ -17,7 +17,8 @@ from torch.utils.data import Dataset, Subset
 from transformers import PreTrainedTokenizerBase
 
 from draccus import decode
-from prismatic.conf import ModelConfig, DatasetConfig
+from prismatic import load, available_model_ids
+from prismatic.conf import ModelConfig, DatasetConfig, DatasetRegistry
 from prismatic.models import get_llm_backbone_and_tokenizer, get_vision_backbone_and_transform, get_vlm
 # from prismatic.preprocessing import get_dataset_and_collator
 from prismatic.models.backbones.vision import ImageTransform
@@ -55,7 +56,6 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         self.chat_json, self.image_dir = chat_json, image_dir
         self.image_transform, self.tokenizer = image_transform, tokenizer
         self.dataset_type = "eval"
-        self.prompt_template = "{caption}" + self.tokenizer.eos_token
         with open(self.chat_json, "r") as f:
             self.examples = json.load(f)
     
@@ -66,15 +66,14 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         """
         image_path, conversation = Path(self.examples[idx]["image"]), self.examples[idx]["conversations"]
         assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
-        caption = self.prompt_template.format(caption=("Question: " + conversation[0]["value"] + "Answer: ").strip())
-        answer = self.prompt_template.format(caption=(conversation[-1]["value"]).strip())
-        answer = answer.replace("</s>", "").strip()
-        input_ids = self.tokenizer(caption, truncation=True, return_tensors="pt").input_ids[0]
+        question = "Question: " + conversation[0]["value"] + "Answer:"
+        answer = conversation[-1]["value"]
+        input_ids = self.tokenizer(question, truncation=True, return_tensors="pt").input_ids[0]
         labels = copy.deepcopy(input_ids)
         labels[0] = IGNORE_INDEX
         image = Image.open(self.image_dir / image_path).convert("RGB")
         pixel_values = self.image_transform(Image.open(self.image_dir / image_path).convert("RGB"))
-        return dict(pixel_values=pixel_values, input_text=caption, answer=answer, input_ids=input_ids, labels=labels, image=image)
+        return dict(pixel_values=pixel_values, input_text=question, answer=answer, input_ids=input_ids, labels=labels, image=image)
 
     def __len__(self) -> int:
         return len(self.examples)
@@ -190,7 +189,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_path", 
         type=str, 
-        default="./runs/train-clevr-align-42",
+        default="./runs/dino+siglip-llama-42",
         help="Path to pretrained model or model ID"
     )
     parser.add_argument(
@@ -219,36 +218,58 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    config_path = os.path.join(args.model_path, "config.json") if os.path.isdir(args.model_path) else None
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    with open(config_path, 'r') as f:
-        config = json.load(f)
-        cfg = decode(ModelConfig, config["model"])
+    if args.model_path in available_model_ids():
+        # Load a pretrained VLM by ID to auto-download from the HF Hub)
+        hf_token = "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"
+        model_id = "prism-dinosiglip+7b"
+        vlm = load(model_id, hf_token=hf_token)
+        # Evaluate on CLEVR
+        for dataset_variant in DatasetRegistry:
+            if dataset_variant.dataset_id == "clevr":
+                dataset_cfg = dataset_variant.value()
+        if args.dataset_path:
+            dataset_cfg.align_stage_components = (
+                Path(args.dataset_path), 
+                Path("data/CLEVR_v1.0/images")
+            )
+        vision_backbone = vlm.vision_backbone
+        llm_backbone = vlm.llm_backbone
+        image_transform = vision_backbone.get_image_transform()
+        tokenizer = llm_backbone.tokenizer
+    else:
+        config_path = os.path.join(args.model_path, "config.json") if os.path.isdir(args.model_path) else None
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+            cfg = decode(ModelConfig, config["model"])
 
-    vision_backbone, image_transform = get_vision_backbone_and_transform(
-        cfg.vision_backbone_id,
-        image_resize_strategy=cfg.image_resize_strategy,
-    )
-    llm_backbone, tokenizer = get_llm_backbone_and_tokenizer(
-        cfg.llm_backbone_id, 
-        llm_max_length=cfg.llm_max_length,
-        hf_token=config["hf_token"]
-    )
+        vision_backbone, image_transform = get_vision_backbone_and_transform(
+            cfg.vision_backbone_id,
+            image_resize_strategy=cfg.image_resize_strategy,
+        )
+        llm_backbone, tokenizer = get_llm_backbone_and_tokenizer(
+            cfg.llm_backbone_id, 
+            llm_max_length=cfg.llm_max_length,
+            hf_token=config["hf_token"]
+        )
 
-    vlm = get_vlm(
-        cfg.model_id,
-        cfg.arch_specifier,
-        vision_backbone,
-        llm_backbone,
-        enable_mixed_precision_training=cfg.enable_mixed_precision_training,
-    )
-    
-    checkpoint_path = os.path.join(args.model_path, "checkpoints", "latest-checkpoint.pt")
-    print(f"Loading checkpoint from {checkpoint_path}")    
-    checkpoint = torch.load(checkpoint_path, map_location="cuda")
-    print("Loading projector weights from model.projector")
-    vlm.projector.load_state_dict(checkpoint["model"]["projector"])
+        vlm = get_vlm(
+            cfg.model_id,
+            cfg.arch_specifier,
+            vision_backbone,
+            llm_backbone,
+            enable_mixed_precision_training=cfg.enable_mixed_precision_training,
+        )
+        
+        checkpoint_path = os.path.join(args.model_path, "checkpoints", "latest-checkpoint.pt")
+        print(f"Loading checkpoint from {checkpoint_path}")    
+        checkpoint = torch.load(checkpoint_path, map_location="cuda")
+        print("Loading projector weights from model.projector")
+        vlm.projector.load_state_dict(checkpoint["model"]["projector"])
+
+        dataset_cfg = decode(DatasetConfig, config["dataset"])
+        dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
     
     vlm.to(torch.cuda.current_device())
     vlm.projector.to(torch.cuda.current_device())
@@ -257,8 +278,6 @@ if __name__ == "__main__":
     print("Model loaded successfully.")
     
     print(f"Loading dataset: {args.dataset_path}")
-    dataset_cfg = decode(DatasetConfig, config["dataset"])
-    dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
     val_dataset, collator = get_dataset_and_collator(
         dataset_cfg=dataset_cfg,
         image_transform=image_transform,
@@ -285,6 +304,14 @@ if __name__ == "__main__":
     for batch in tqdm(dataloader, desc="Processing batches"):
         images = batch["image"]
         prompts = batch['input_text']
+        if args.model_path in available_model_ids():
+            prompts_text = []
+            for prompt in prompts:
+                prompt_builder = vlm.get_prompt_builder()
+                prompt_builder.add_turn(role="human", message=prompt)
+                prompt_text = prompt_builder.get_prompt()  
+                prompts_text.append(prompt_text)   
+            prompts = prompts_text
         input_ids = batch['input_ids']
         labels = batch['labels']
         answers = batch['answer']
@@ -293,15 +320,15 @@ if __name__ == "__main__":
             output = vlm.generate(
                 images[i],
                 prompts[i],
-                max_new_tokens=20,
+                max_new_tokens=10,
                 temperature=None
             )
             predicted = output.strip().lower()
             # print(f"\nQuestion {i+1} input IDs:{input_ids[i]}")
             # print(f"\nQuestion {i+1} labels:{labels[i]}")
             print(f"\nQuestion {i+1} answer:{answers[i]}")
-            print(f"\nModel's answer:{predicted}")
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
+            print(f"\nModel's answer:{predicted}")
             results.append({
                 "question": prompts[i],
                 "answer": answers[i],

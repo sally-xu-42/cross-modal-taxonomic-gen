@@ -17,9 +17,10 @@ export WANDB__SERVICE_WAIT=300
 
 # Define experiment parameters
 TIMESTAMP=$(date +%s)
-MODEL_PATH="./runs/train-clevr-align-42"  # Default model ID
+MODEL_PATH="prism-dinosiglip+7b"
+# MODEL_PATH="./runs/dino+siglip-llama-42"  # Default model ID
 DATASET_PATH="./data/simple_clevr_val_preprocessed.json"
-IMAGE_DIR="./data/CLEVR_v1.0/images/val"
+IMAGE_DIR="./data/CLEVR_v1.0/images"
 OUTPUT_PATH="./results/evaluation_${TIMESTAMP}.csv"
 
 cd /share/data/speech/txu/vlm_semantics
@@ -31,3 +32,4 @@ python src/eval.py \
     --dataset_path ${DATASET_PATH} \
     --image_dir ${IMAGE_DIR} \
     --output_path ${OUTPUT_PATH}
+    # --max_samples 10000
