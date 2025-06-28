@@ -1,6 +1,7 @@
 import json
 import re
 import random
+import argparse
 
 from collections import defaultdict, Counter
 from dataclasses import dataclass
@@ -157,7 +158,7 @@ def report_total_pairs(metadata):
     print(f"OVERALL TOTALS:")
     print(f"Grand total pairs: {total_positive + total_negative}")
 
-def generate_dataset(metadata, sample_rate=0.1, balance_pos_neg=True, random_seed=42):
+def generate_dataset(metadata, split="train", sample_rate=0.1, balance_pos_neg=False, random_seed=42):
     """ Generate a sampled dataset of relationship questions from all validation scenes. """
     random.seed(random_seed)
     all_questions = []
@@ -177,7 +178,7 @@ def generate_dataset(metadata, sample_rate=0.1, balance_pos_neg=True, random_see
         
         for question in scene_questions:
             question['scene_idx'] = scene_idx
-            question['image_filename'] = f"CLEVR_train_{scene_idx:06d}.png"
+            question['image_filename'] = f"CLEVR_{split}_{scene_idx:06d}.png"
         
         all_questions.extend(scene_questions)
         
@@ -193,12 +194,19 @@ def generate_dataset(metadata, sample_rate=0.1, balance_pos_neg=True, random_see
     return all_questions
 
 if __name__ == "__main__":
-    metadata_path = "../data/CLEVR_v1.0/scenes/CLEVR_train_scenes.json"
+    parser = argparse.ArgumentParser(description="Generate relationship questions for CLEVR dataset.")
+    parser.add_argument("--split", type=str, choices=['train', 'val', 'test'], default='train', help="Dataset split to generate questions for.")
+    parser.add_argument("--sample_rate", type=float, default=0.1, help="Rate of sampling questions from each scene.")
+    parser.add_argument("--balance_pos_neg", action='store_true', help="Balance positive and negative samples.")
+    args = parser.parse_args()
+
+    # IMPORTANT: Run from root directory of the project
+    metadata_path = f"./data/CLEVR_v1.0/scenes/CLEVR_{args.split}_scenes.json"
     metadata = read_json(metadata_path)
     report_total_pairs(metadata)
 
-    questions = generate_dataset(metadata, sample_rate=0.1, balance_pos_neg=False)
-    output_path = "../data/CLEVR_v1.0/scenes/CLEVR_train_qa.json"
+    questions = generate_dataset(metadata, split=args.split, sample_rate=args.sample_rate, balance_pos_neg=args.balance_pos_neg)
+    output_path = f"./data/CLEVR_{args.split}_qa.json"
     write_json(output_path, questions)
     
     print(f"Generated questions saved to {output_path}")
