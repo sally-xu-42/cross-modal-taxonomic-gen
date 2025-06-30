@@ -19,8 +19,10 @@ export WANDB__SERVICE_WAIT=300
 RUN_ID="train-clevr-align-$(date +%s)"  # Unique run ID with timestamp
 RUN_ROOT_DIR="/share/data/speech/txu/vlm_semantics/runs"
 STAGE="align"  # Training stage: align (projector-only)
-DATASET_ID="clevr"
 MODEL_ID="prism-dinosiglip+7b"  # Vision-Language Model ID
+if [[ -z "${DATASET_ID}" ]]; then
+    DATASET_ID="clevr"
+fi  # Dataset ID, default to "clevr"
 
 # Activate the virtual environment
 cd /share/data/speech/txu/vlm_semantics

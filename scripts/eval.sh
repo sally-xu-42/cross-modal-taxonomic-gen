@@ -17,9 +17,9 @@ export WANDB__SERVICE_WAIT=300
 
 # Define experiment parameters
 TIMESTAMP=$(date +%s)
-MODEL_PATH="prism-dinosiglip+7b"
-# MODEL_PATH="./runs/dino+siglip-llama-42"  # Default model ID
-DATASET_PATH="./data/simple_clevr_val_preprocessed.json"
+# MODEL_PATH="prism-dinosiglip+7b"
+MODEL_PATH="./runs/dino+siglip-llama-42"  # Default model ID
+DATASET_PATH="./data/clevr_val_qa_preprocessed.json"
 IMAGE_DIR="./data/CLEVR_v1.0/images"
 OUTPUT_PATH="./results/evaluation_${TIMESTAMP}.csv"
 

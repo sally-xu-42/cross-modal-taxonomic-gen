@@ -195,8 +195,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--dataset_path", 
         type=str, 
-        default="data/simple_clevr_val_preprocessed.json",
-        help="Path to the filtered CLEVR question dataset"
+        default="data/clevr_val_qa_preprocessed.json",
+        help="Path to the preprocessed CLEVR question dataset"
     )
     parser.add_argument(
         "--image_dir", 

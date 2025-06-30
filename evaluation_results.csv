@@ -1,16 +1,41 @@
 question,answer,predicted_answer,relation,correct
-"In: Question: 
-There is a small gray block; are there any spheres to the left of it?Answer:
-Out:",yes,yes,left,True
-"In: Question: 
-How many objects are either metal things behind the small green rubber cylinder or small green rubber objects?Answer:
-Out:",2,there are 3 objects that are either metal things,behind,False
-"In: Question: 
-What is the thing in front of the small metallic object made of?Answer:
-Out:",rubber,the thing in front of the small metallic,in front of,False
-"In: Question: 
-Does the green rubber object have the same shape as the gray thing that is on the right side of the big purple object?Answer:
-Out:",no,no,right,True
-"In: Question: 
-Are there more shiny things that are to the left of the yellow rubber thing than small red spheres?Answer:
-Out:",yes,yes,left,True
+"Question: <image>
+Is the sphere to the right of the large rubber cube?Answer:",Yes,no,right,False
+"Question: <image>
+Is the large brown cylinder to the left of the sphere?Answer:",Yes,no,left,False
+"Question: <image>
+Is the small metal cube behind the large rubber cube?Answer:",Yes,no,behind,False
+"Question: <image>
+Is the sphere behind the large brown cylinder?Answer:",Yes,no,behind,False
+"Question: <image>
+Is the small metal cube in front of the sphere?Answer:",Yes,no,in front of,False
+"Question: <image>
+Is the sphere to the right of the small green cylinder?Answer:",Yes,no,right,False
+"Question: <image>
+Is the small metal cube to the right of the large brown cylinder?Answer:",Yes,no,right,False
+"Question: <image>
+Is the small metal cube in front of the large rubber cube?Answer:",No,no,in front of,True
+"Question: <image>
+Is the small green metal cylinder to the left of the small yellow rubber cylinder?Answer:",Yes,no,left,False
+"Question: <image>
+Is the small cyan cube in front of the large gray metal cylinder?Answer:",No,no,in front of,True
+"Question: <image>
+Is the large blue cube to the left of the small blue metal cylinder?Answer:",No,no,left,True
+"Question: <image>
+Is the small cyan cube to the left of the sphere?Answer:",Yes,no,left,False
+"Question: <image>
+Is the large gray metal cylinder to the left of the sphere?Answer:",Yes,no,left,False
+"Question: <image>
+Is the small yellow cube to the right of the small blue metal cylinder?Answer:",Yes,no,right,False
+"Question: <image>
+Is the small yellow rubber cylinder in front of the small yellow cube?Answer:",Yes,no,in front of,False
+"Question: <image>
+Is the large blue rubber cylinder in front of the small cyan cube?Answer:",Yes,no,in front of,False
+"Question: <image>
+Is the small green metal cylinder to the right of the small yellow cube?Answer:",No,no,right,True
+"Question: <image>
+Is the large blue cube in front of the small cyan rubber cylinder?Answer:",No,no,in front of,True
+"Question: <image>
+Is the small blue metal cylinder to the left of the sphere?Answer:",Yes,no,left,False
+"Question: <image>
+Is the small yellow cube in front of the large gray metal cylinder?Answer:",No,no,in front of,True
