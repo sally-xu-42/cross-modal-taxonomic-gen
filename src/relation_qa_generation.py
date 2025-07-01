@@ -36,7 +36,7 @@ class CLEVRObject:
             return self.shape
         else:
             modifiers = ' '.join(self.modifiers)
-            noun_phrase = f"{modifiers} {self.shape}"
+            noun_phrase = f"{modifiers} {self.shape}".strip() # Ensure no leading/trailing spaces if there's no size modifier
             noun_phrase = re.sub(r'\s\s+', ' ', noun_phrase)
             return noun_phrase
 
@@ -135,7 +135,7 @@ def generate_questions_for_scene(scene_objects, scene_relationships, sample_rate
     # 4. Generation
     for subject_idx, object_idx, relation, is_positive in sampled_pairs:
         question_text = f"Is the {object_strings[subject_idx]} {RELATION_PHRASES[relation]} the {object_strings[object_idx]}?"
-        answer = "Yes" if is_positive else "No"
+        answer = "yes" if is_positive else "no"
         questions.append({
             'question': question_text,
             'answer': answer,
@@ -193,10 +193,35 @@ def generate_dataset(metadata, split="train", sample_rate=0.1, balance_pos_neg=F
     
     return all_questions
 
+def mix_generated_and_normal(metadata, split="train", sample_rate=0.1, mix_rate=0.5, balance_pos_neg=False, random_seed=42):
+    """ Mix normal and generated samples in the dataset. """
+    generated_questions = generate_dataset(metadata, split=split, sample_rate=mix_rate*sample_rate, balance_pos_neg=balance_pos_neg, random_seed=random_seed)
+    num_samples = ((1-mix_rate)/mix_rate)*len(generated_questions)
+    normal_qa_file = f"./data/CLEVR_v1.0/questions/CLEVR_{split}_questions.json"
+    normal_questions = []
+    with open(normal_qa_file, "r") as f:
+        original_questions = json.load(f)
+    original_questions = random.sample(original_questions['questions'], int(num_samples))
+    print(f"Original questions sampled: {len(original_questions)}")
+    for q in original_questions:
+        # format the question to match the generated questions
+        question = {
+            "question": q['question'],
+            "answer": q['answer'],
+            "relation_type": "ORIGINAL", # Mark as original
+            "scene_idx": int(q['image_filename'].split('_')[-1].split('.')[0]),  # Extract scene index from filename and strip leading zeros
+            "image_filename": q['image_filename'],
+        }
+        normal_questions.append(question)
+    mix_questions = normal_questions + generated_questions
+    random.shuffle(mix_questions)
+    return mix_questions
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate relationship questions for CLEVR dataset.")
     parser.add_argument("--split", type=str, choices=['train', 'val', 'test'], default='train', help="Dataset split to generate questions for.")
     parser.add_argument("--sample_rate", type=float, default=0.1, help="Rate of sampling questions from each scene.")
+    parser.add_argument("--mix_normal", type=float, default=0.5, help="Mix normal and generated samples in the dataset.")
     parser.add_argument("--balance_pos_neg", action='store_true', help="Balance positive and negative samples.")
     args = parser.parse_args()
 
@@ -205,8 +230,14 @@ if __name__ == "__main__":
     metadata = read_json(metadata_path)
     report_total_pairs(metadata)
 
-    questions = generate_dataset(metadata, split=args.split, sample_rate=args.sample_rate, balance_pos_neg=args.balance_pos_neg)
-    output_path = f"./data/CLEVR_{args.split}_qa.json"
-    write_json(output_path, questions)
-    
-    print(f"Generated questions saved to {output_path}")
+    if args.mix_normal > 0:
+        print(f"Mixing normal and generated samples with mix rate {args.mix_normal}...")
+        questions = mix_generated_and_normal(metadata, split=args.split, sample_rate=args.sample_rate, mix_rate=args.mix_normal, balance_pos_neg=args.balance_pos_neg)
+        output_path = f"./data/generated_CLEVR/CLEVR_{args.split}_qa_mixed.json"
+        write_json(output_path, questions)
+        print(f"{len(questions)} mixed questions saved to {output_path}")
+    else:
+        questions = generate_dataset(metadata, split=args.split, sample_rate=args.sample_rate, balance_pos_neg=args.balance_pos_neg)
+        output_path = f"./data/generated_CLEVR/CLEVR_{args.split}_qa.json"
+        write_json(output_path, questions)
+        print(f"Generated questions saved to {output_path}")
