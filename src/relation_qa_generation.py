@@ -193,9 +193,17 @@ def generate_dataset(metadata, split="train", sample_rate=0.1, balance_pos_neg=F
     
     return all_questions
 
-def mix_generated_and_normal(metadata, split="train", sample_rate=0.1, mix_rate=0.5, balance_pos_neg=False, random_seed=42):
+def mix_generated_and_normal(metadata, split="train", sample_rate=0.1, mix_rate=0.5, balance_pos_neg=False, 
+                             generated_questions=None):
     """ Mix normal and generated samples in the dataset. """
-    generated_questions = generate_dataset(metadata, split=split, sample_rate=mix_rate*sample_rate, balance_pos_neg=balance_pos_neg, random_seed=random_seed)
+    if generated_questions is None:
+        print("No generated questions provided, generating new questions...")
+        generated_questions = generate_dataset(metadata, split=split, sample_rate=mix_rate*sample_rate, 
+                                               balance_pos_neg=balance_pos_neg, random_seed=42)
+    else:
+        print(f"Using provided generated questions with {len(generated_questions)} entries.")
+        generated_questions = random.sample(generated_questions, int(len(generated_questions) * mix_rate))
+    
     num_samples = ((1-mix_rate)/mix_rate)*len(generated_questions)
     normal_qa_file = f"./data/CLEVR_v1.0/questions/CLEVR_{split}_questions.json"
     normal_questions = []
@@ -221,22 +229,34 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate relationship questions for CLEVR dataset.")
     parser.add_argument("--split", type=str, choices=['train', 'val', 'test'], default='train', help="Dataset split to generate questions for.")
     parser.add_argument("--sample_rate", type=float, default=0.1, help="Rate of sampling questions from each scene.")
-    parser.add_argument("--mix_normal", type=float, default=0.5, help="Mix normal and generated samples in the dataset.")
+    parser.add_argument("--mix_normal", type=float, default=0, help="Mix normal and generated samples in the dataset.")
     parser.add_argument("--balance_pos_neg", action='store_true', help="Balance positive and negative samples.")
+    parser.add_argument("--generated_questions_file", type=str, help="Path to generated questions.")
     args = parser.parse_args()
 
     # IMPORTANT: Run from root directory of the project
     metadata_path = f"./data/CLEVR_v1.0/scenes/CLEVR_{args.split}_scenes.json"
     metadata = read_json(metadata_path)
-    report_total_pairs(metadata)
 
     if args.mix_normal > 0:
         print(f"Mixing normal and generated samples with mix rate {args.mix_normal}...")
-        questions = mix_generated_and_normal(metadata, split=args.split, sample_rate=args.sample_rate, mix_rate=args.mix_normal, balance_pos_neg=args.balance_pos_neg)
+        if args.generated_questions_file:
+            with open(args.generated_questions_file, "r") as f:
+                generated_dataset = json.load(f)
+        else:
+            generated_dataset = None
+            report_total_pairs(metadata) # only report if no generated questions file is provided
+        questions = mix_generated_and_normal(metadata, 
+                                             split=args.split, 
+                                             sample_rate=args.sample_rate, 
+                                             mix_rate=args.mix_normal, 
+                                             balance_pos_neg=args.balance_pos_neg,
+                                             generated_questions=generated_dataset)
         output_path = f"./data/generated_CLEVR/CLEVR_{args.split}_qa_mixed.json"
         write_json(output_path, questions)
         print(f"{len(questions)} mixed questions saved to {output_path}")
     else:
+        report_total_pairs(metadata)
         questions = generate_dataset(metadata, split=args.split, sample_rate=args.sample_rate, balance_pos_neg=args.balance_pos_neg)
         output_path = f"./data/generated_CLEVR/CLEVR_{args.split}_qa.json"
         write_json(output_path, questions)
