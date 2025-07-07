@@ -8,16 +8,17 @@ Help()
    # Display Help
    echo "Script to run model training."
    echo
-   echo "Syntax: train.sh [-s|c|d]"
+   echo "Syntax: train.sh [-s|c|d|m]"
    echo "options:"
    echo "s     Random seed number. Default: 42"
    echo "c     Checkpoint path to resume training. Default: None"
    echo "d     Dataset id to train on. Default: clevr"
+   echo "m     Model architecture id. Default: prism-clip+7b"
 
    echo
 }
 
-while getopts "s:c:d:h" option; do
+while getopts "s:c:d:m:h" option; do
   case $option in
     s)
       seed="$OPTARG"
@@ -28,12 +29,15 @@ while getopts "s:c:d:h" option; do
     d)
       dataset_id="$OPTARG"
       ;;
+    m)
+      model_id="$OPTARG"
+      ;;
     h)
       Help
       exit
       ;;
     *)
-      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id]"
+      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id] [-m model_id]"
       exit 1
       ;;
   esac
@@ -43,9 +47,10 @@ echo
 echo "Seed: $seed"
 echo "Checkpoint: $checkpoint"
 echo "Dataset ID: ${dataset_id:-clevr}"
+echo "Model ID: $model_id"
 
 echo 'Doing resumable training'
-SEED=${seed} CHECKPOINT=${checkpoint} DATASET_ID=${dataset_id} \
+SEED=${seed} CHECKPOINT=${checkpoint} DATASET_ID=${dataset_id} MODEL_ID=${model_id} \
 sbatch scripts/train.beehive
 
 echo

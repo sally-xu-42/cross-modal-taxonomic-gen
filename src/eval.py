@@ -218,10 +218,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if args.model_path in available_model_ids():
-        # Load a pretrained VLM by ID to auto-download from the HF Hub)
-        hf_token = "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"
-        model_id = "prism-dinosiglip+7b"
+    if args.model_path in available_model_ids(): # Load a pretrained VLM by ID to auto-download from the HF Hub)
+        hf_token = os.environ.get(".hf_token", None)
+        model_id = args.model_path
         vlm = load(model_id, hf_token=hf_token)
         # Evaluate on CLEVR
         for dataset_variant in DatasetRegistry:
@@ -229,7 +228,7 @@ if __name__ == "__main__":
                 dataset_cfg = dataset_variant.value()
         if args.dataset_path:
             dataset_cfg.align_stage_components = (
-                Path(args.dataset_path), 
+                Path(args.dataset_path),  # By default, this is the preprocessed CLEVR dataset validation split
                 Path("data/CLEVR_v1.0/images")
             )
         vision_backbone = vlm.vision_backbone
