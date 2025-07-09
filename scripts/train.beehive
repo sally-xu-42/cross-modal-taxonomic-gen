@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=prismatic
 #SBATCH --partition=speech-gpu
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=4
 #SBATCH --gpus=nvidia_rtx_a6000:4
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
@@ -18,14 +18,15 @@ export WANDB__SERVICE_WAIT=300
 # Define experiment parameters
 # RUN_ID="train-clevr-align-$(date +%s)"  # Unique run ID with timestamp
 RUN_ROOT_DIR="/share/data/speech/txu/vlm_semantics/runs"
-STAGE="align"  # Training stage: align (projector-only)
-# MODEL_ID="prism-dinosiglip+7b"  # Vision-Language Model ID
+if [[ -z "${STAGE}" ]]; then
+    STAGE="align"
+fi
 if [[ -z "${MODEL_ID}" ]]; then
     MODEL_ID="prism-dinosiglip+7b"
 fi
 if [[ -z "${DATASET_ID}" ]]; then
     DATASET_ID="clevr"
-fi  # Dataset ID, default to "clevr"
+fi
 RUN_ID="${MODEL_ID}-${DATASET_ID}-${SEED}"
 
 # Activate the virtual environment
@@ -37,6 +38,7 @@ ARGS=(
     --seed "${SEED}"
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
+    --val_dataset.type "clevr-validation"  # Fixed validation dataset ID
     --model.type "$MODEL_ID"
     --model.align_epochs 1
     --model.align_learning_rate 1e-5
@@ -52,7 +54,7 @@ if [[ -n "${CHECKPOINT}" ]]; then
     echo "Resuming from checkpoint: ${CHECKPOINT}/checkpoints/latest-checkpoint.pt"
     echo "Using existing run directory: ${RUN_ID}"
 else
-    ARGS+=(--run_id "train-clevr-align-$(date +%s)")
+    ARGS+=(--run_id "${RUN_ID}")
     echo "Starting fresh training (no checkpoint specified)"
 fi
 

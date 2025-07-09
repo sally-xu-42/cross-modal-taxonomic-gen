@@ -14,11 +14,12 @@ Help()
    echo "c     Checkpoint path to resume training. Default: None"
    echo "d     Dataset id to train on. Default: clevr"
    echo "m     Model architecture id. Default: prism-clip+7b"
+   echo "t     Stage of training. Default: align"
 
    echo
 }
 
-while getopts "s:c:d:m:h" option; do
+while getopts "s:c:d:m:t:h" option; do
   case $option in
     s)
       seed="$OPTARG"
@@ -32,12 +33,15 @@ while getopts "s:c:d:m:h" option; do
     m)
       model_id="$OPTARG"
       ;;
+    t)
+      stage="$OPTARG"
+      ;;
     h)
       Help
       exit
       ;;
     *)
-      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id] [-m model_id]"
+      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id] [-m model_id] [-t stage] [-h]"
       exit 1
       ;;
   esac
@@ -47,10 +51,11 @@ echo
 echo "Seed: $seed"
 echo "Checkpoint: $checkpoint"
 echo "Dataset ID: ${dataset_id:-clevr}"
+echo "Stage: ${stage:-align}"
 echo "Model ID: $model_id"
 
 echo 'Doing resumable training'
-SEED=${seed} CHECKPOINT=${checkpoint} DATASET_ID=${dataset_id} MODEL_ID=${model_id} \
+SEED=${seed} CHECKPOINT=${checkpoint} DATASET_ID=${dataset_id} MODEL_ID=${model_id} STAGE=${stage} \
 sbatch scripts/train.beehive
 
 echo
