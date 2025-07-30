@@ -270,7 +270,7 @@ if __name__ == "__main__":
             parent = os.path.dirname(os.path.normpath(checkpoint_path)) 
             model_dir = os.path.basename(os.path.dirname(parent)) # e.g., model name
             base = os.path.basename(checkpoint_path) # e.g., "step-1000.pt"
-            name, _ = os.path.splitext(base) 
+            name = base.split(".")[0] # e.g., "step-1000"
             os.makedirs(f"./results/{model_dir}", exist_ok=True)
             output_path = f"./results/{model_dir}/evaluation_{name}.csv"
         else: # eval on the full model
