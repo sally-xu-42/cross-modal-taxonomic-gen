@@ -1,6 +1,9 @@
 #!/bin/bash
 
 seed=42
+stage="align"
+model_id="prism-dinosiglip+7b"
+dataset_id="clevr"
 timestamp=$(date +%s)
 
 Help()
@@ -50,8 +53,8 @@ done
 echo
 echo "Seed: $seed"
 echo "Checkpoint: $checkpoint"
-echo "Dataset ID: ${dataset_id:-clevr}"
-echo "Stage: ${stage:-align}"
+echo "Dataset ID: $dataset_id"
+echo "Stage: $stage"
 echo "Model ID: $model_id"
 
 echo 'Doing resumable training'

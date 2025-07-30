@@ -236,7 +236,11 @@ if __name__ == "__main__":
         image_transform = vision_backbone.get_image_transform()
         tokenizer = llm_backbone.tokenizer
     else:
-        config_path = os.path.join(args.model_path, "config.json") if os.path.isdir(args.model_path) else None
+        if os.path.isdir(args.model_path):
+            config_path = os.path.join(args.model_path, "config.json")
+        else:
+            model_path = os.path.dirname(os.path.dirname(args.model_path))
+            config_path = os.path.join(model_path, "config.json")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         with open(config_path, 'r') as f:
@@ -261,7 +265,16 @@ if __name__ == "__main__":
             enable_mixed_precision_training=cfg.enable_mixed_precision_training,
         )
         
-        checkpoint_path = os.path.join(args.model_path, "checkpoints", "latest-checkpoint.pt")
+        if args.model_path.endswith(".pt"): # eval on checkpoints
+            checkpoint_path = args.model_path
+            parent = os.path.dirname(os.path.normpath(checkpoint_path)) 
+            model_dir = os.path.basename(os.path.dirname(parent)) # e.g., model name
+            base = os.path.basename(checkpoint_path) # e.g., "step-1000.pt"
+            name, _ = os.path.splitext(base) 
+            os.makedirs(f"./results/{model_dir}", exist_ok=True)
+            output_path = f"./results/{model_dir}/evaluation_{name}.csv"
+        else: # eval on the full model
+            checkpoint_path = os.path.join(args.model_path, "checkpoints", "latest-checkpoint.pt")
         print(f"Loading checkpoint from {checkpoint_path}")    
         checkpoint = torch.load(checkpoint_path, map_location="cuda")
         print("Loading projector weights from model.projector")

@@ -15,21 +15,41 @@ export HF_HOME="/share/data/speech/txu/cache"
 export TOKENIZERS_PARALLELISM=false  # Disable tokenizer parallelism for PyTorch DataLoaders
 export WANDB__SERVICE_WAIT=300
 
-# Define experiment parameters
-TIMESTAMP=$(date +%s)
-# MODEL_PATH="prism-clip+7b"
-MODEL_PATH="./runs/dino+siglip-llama-42"  # Default model ID
-DATASET_PATH="./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json" # Only eval on the questions we care about
-IMAGE_DIR="./data/CLEVR_v1.0/images"
-OUTPUT_PATH="./results/evaluation_${MODEL_PATH##*/}.csv"
+workdir="/share/data/speech/txu/vlm_semantics"
+cd $workdir
+source $workdir/venv/bin/activate
 
-cd /share/data/speech/txu/vlm_semantics
-source /share/data/speech/txu/vlm_semantics/venv/bin/activate
+case $TASK in
 
-# Run evaluation script
-python src/eval.py \
-    --model_path ${MODEL_PATH} \
-    --dataset_path ${DATASET_PATH} \
-    --image_dir ${IMAGE_DIR} \
-    --output_path ${OUTPUT_PATH} \
-    --max_samples 1000
+    ppl)
+        prefix="python3"
+        application="src/eval.py"
+        options="--model_path ${MODEL_PATH} \
+                --dataset_path ${DATASET_PATH} \
+                --image_dir ${IMAGE_DIR} \
+                --output_path ${OUTPUT_PATH} \
+                --max_samples 1000"
+        ;;
+
+    ppl_checkpoints)
+        for checkpoint in ${MODEL_PATH}/checkpoints/*; do
+            CMD="$workdir/scripts/eval.sh -t ppl -m $checkpoint"
+            echo $CMD
+            eval $CMD
+            sleep 200
+        done
+        echo -e "\nStarted evaluation for each checkpoint of ${MODEL_PATH}"
+        exit 0
+        ;;
+    *)
+        echo -n "unknown task name"
+        ;;
+esac
+
+echo -e "JobID: $SLURM_JOB_ID\n======"
+echo "Time: `date`"
+echo "Running on master node: `hostname`"
+
+CMD="$prefix $workdir/$application $options"
+echo -e "\nExecuting command:\n==================\n$CMD\n"
+eval $CMD
