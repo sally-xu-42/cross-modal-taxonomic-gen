@@ -1,7 +1,9 @@
 #!/bin/bash
+# example usage:
+# ./scripts/train-sh -s 42 -d clevr -m instruct-dinosiglip+7b -t align -c ./runs/model_path
 
 seed=42
-stage="align"
+stage="finetune"
 model_id="prism-dinosiglip+7b"
 dataset_id="clevr"
 timestamp=$(date +%s)

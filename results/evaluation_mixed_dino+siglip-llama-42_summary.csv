@@ -1,5 +1,5 @@
 Relation,Count,Correct,Accuracy
-right,7469,3703,49.58%
-left,7112,3541,49.79%
-behind,7171,3646,50.84%
-in front of,7422,3709,49.97%
+right,239,115,48.12%
+left,244,128,52.46%
+behind,243,133,54.73%
+in front of,274,138,50.36%

@@ -2,7 +2,7 @@
 
 task="ppl"
 model_path="./runs/instruct-dinosiglip+7b-clevr-42"
-dataset_path="./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json"
+dataset_path="./data/preprocessed_CLEVR/clevr_val_qa_preprocessed.json"
 image_dir="./data/CLEVR_v1.0/images"
 
 Help()
@@ -44,7 +44,7 @@ echo "Task: $task"
 echo "Model PATH: $model_path"
 echo "Output PATH: $output_path"
 
-echo 'Running evaluation on CLEVR auto-generated train split'
+echo 'Running evaluation on CLEVR auto-generated val split'
 TASK=${task} MODEL_PATH=${model_path} DATASET_PATH=${dataset_path} \
 IMAGE_DIR=${image_dir} OUTPUT_PATH=${output_path} \
 sbatch scripts/eval.beehive
