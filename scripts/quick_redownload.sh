@@ -2,7 +2,7 @@
 #SBATCH --job-name=quick_redownload
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=20
-#SBATCH --gpus=nvidia_rtx_a6000:1
+#SBATCH --gpus=nvidia_rtx_a4000:1
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
@@ -28,42 +28,39 @@ echo "📂 Download dir: $DOWNLOAD_DIR"
 
 # Step 1: Safely remove existing data
 echo ""
-echo "🗑️  Step 1: Removing existing data..."
+# echo "🗑️  Step 1: Removing existing data..."
 
-if [ -d "$DOWNLOAD_DIR" ]; then
-    echo "   Found existing directory, removing safely..."
+# if [ -d "$DOWNLOAD_DIR" ]; then
+#    echo "   Found existing directory, removing safely..."
     
-    # Use find to delete files (safer than rm -r)
-    echo "   Deleting files..."
-    find "$DOWNLOAD_DIR" -type f -delete 2>/dev/null || true
+#    # Use find to delete files (safer than rm -r)
+#    echo "   Deleting files..."
+#    find "$DOWNLOAD_DIR" -type f -delete 2>/dev/null || true
     
-    echo "   Deleting directories..."
-    find "$DOWNLOAD_DIR" -type d -empty -delete 2>/dev/null || true
+#    echo "   Deleting directories..."
+#    find "$DOWNLOAD_DIR" -type d -empty -delete 2>/dev/null || true
     
-    # Final cleanup
-    rmdir "$DOWNLOAD_DIR" 2>/dev/null || {
-        echo "   Using alternative cleanup method..."
-        mkdir -p /tmp/empty_dir
-        rsync -a --delete /tmp/empty_dir/ "$DOWNLOAD_DIR/" 2>/dev/null || true
-        rmdir /tmp/empty_dir 2>/dev/null || true
-        rmdir "$DOWNLOAD_DIR" 2>/dev/null || true
-    }
+#    # Final cleanup
+#    rmdir "$DOWNLOAD_DIR" 2>/dev/null || {
+#        echo "   Using alternative cleanup method..."
+#        mkdir -p /tmp/empty_dir
+#        rsync -a --delete /tmp/empty_dir/ "$DOWNLOAD_DIR/" 2>/dev/null || true
+#        rmdir /tmp/empty_dir 2>/dev/null || true
+#        rmdir "$DOWNLOAD_DIR" 2>/dev/null || true
+#    }
     
-    echo "   ✅ Directory removed successfully"
-else
-    echo "   ℹ️  Directory does not exist, skipping removal"
-fi
+#    echo "   ✅ Directory removed successfully"
+#else
+#    echo "   ℹ️  Directory does not exist, skipping removal"
+#fi
 
 # Step 2: Download dataset
 echo ""
 echo "⬇️  Step 2: Downloading dataset..."
 
-# Change to prismatic-vlms directory
-cd "/Users/txu/Code/vision-word-semantics/prismatic-vlms"
-
 # Create data root if it doesn't exist
-mkdir -p "$DATA_ROOT"
-
+source /share/data/speech/txu/vlm_semantics/venv/bin/activate
+cd /share/data/speech/txu/vlm_semantics/prismatic-vlms
 # Run preprocessing script
 echo "   Running preprocessing script..."
 python scripts/preprocess.py \
