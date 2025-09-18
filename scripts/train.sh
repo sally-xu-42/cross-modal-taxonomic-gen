@@ -3,10 +3,13 @@
 # ./scripts/train-sh -s 42 -d clevr -m instruct-dinosiglip+7b -t align -c ./runs/model_path
 
 seed=42
-stage="finetune"
-model_id="prism-dinosiglip+7b"
-dataset_id="clevr"
+stage="align"
+# model_id="prism-dinosiglip+7b"
+# dataset_id="clevr"
 timestamp=$(date +%s)
+
+dataset_id="llava-v15"
+model_id="reproduction-llava-v15+7b"
 
 Help()
 {

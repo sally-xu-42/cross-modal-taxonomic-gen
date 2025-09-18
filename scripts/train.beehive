@@ -8,6 +8,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --time=07:55:00
 #SBATCH --signal=SIGHUP@600
+#SBATCH --dependency=singleton
 #SBATCH -o /share/data/speech/txu/vlm_semantics/logs/training_%j.out
 
 # Set environment variables
@@ -29,12 +30,13 @@ ARGS=(
     --seed "${SEED}"
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
-    # --val_dataset.type "clevr-validation"  # Fixed validation dataset ID
     --model.type "$MODEL_ID"
-    --model.align_epochs 1
-    --model.align_learning_rate 1e-5
-    --model.align_global_batch_size 64
-    --model.align_per_device_batch_size 16
+    # --reset_for_new_stage True
+    # --model.align_epochs 1
+    # --model.align_learning_rate 1e-5
+    # --model.align_global_batch_size 64
+    # --model.align_per_device_batch_size 16
+    # --val_dataset.type "clevr-validation"  # Fixed validation dataset ID
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then

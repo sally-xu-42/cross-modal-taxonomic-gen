@@ -146,7 +146,7 @@ if __name__ == "__main__":
             cfg.llm_backbone_id, 
             llm_max_length=cfg.llm_max_length,
             hf_token=hf_token,
-            inference_mode=False # >>>>>>>> Set this to False during inference because we don't need base weights
+            inference_mode=False # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
         )
 
         vlm = get_vlm(
@@ -183,6 +183,9 @@ if __name__ == "__main__":
 
         dataset_cfg = decode(DatasetConfig, config["dataset"])
         dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
+        # changed to avoid the error caused from different root directory
+        dataset_cfg.dataset_root_dir = Path("/share/data/speech/txu/vlm_semantics")
+        print(dataset_cfg)
     
     vlm.to(torch.cuda.current_device())
     vlm.projector.to(torch.cuda.current_device())
@@ -237,20 +240,20 @@ if __name__ == "__main__":
         # process one by one
         print(prompts[0])
         for i in range(len(prompts)):
-            # output = vlm.generate(
-            #     images[i],
-            #     prompts[i],
-            #     max_new_tokens=1,
-            #     temperature=None,
-            #     use_cache=False   # ================ transformers library version mismatch ==============
-            # )
-            output, _ = vlm.candidate_scoring(
+            output = vlm.generate(
                 images[i],
                 prompts[i],
-                candidates,
                 max_new_tokens=1,
-                temperature=None
+                temperature=None,
+                use_cache=False   # ================ transformers library version mismatch ==============
             )
+            # output, _ = vlm.candidate_scoring(
+            #     images[i],
+            #     prompts[i],
+            #     candidates,
+            #     max_new_tokens=1,
+            #     temperature=None
+            # )
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
             print(f"\nModel's answer:{predicted}")
