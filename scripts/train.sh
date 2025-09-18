@@ -9,7 +9,7 @@ stage="finetune"
 timestamp=$(date +%s)
 
 dataset_id="llava-v15"
-model_id="model_id="reproduction-llava-v15+7b-lora"
+model_id="reproduction-llava-v15+7b-lora"
 
 Help()
 {
