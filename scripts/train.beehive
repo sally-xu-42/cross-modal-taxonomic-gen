@@ -31,12 +31,7 @@ ARGS=(
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
-    # --reset_for_new_stage True
-    # --model.align_epochs 1
-    # --model.align_learning_rate 1e-5
-    # --model.align_global_batch_size 64
-    # --model.align_per_device_batch_size 16
-    # --val_dataset.type "clevr-validation"  # Fixed validation dataset ID
+    --reset_for_new_stage True
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
