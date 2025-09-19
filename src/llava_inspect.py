@@ -25,41 +25,9 @@ SPATIAL_RELATIONS = [
     "under"
 ]
 
-def load_llava_data(data_dir):
-    """
-    Load LLaVA dataset from the data directory
-    Assumes JSON format with conversations containing text
-    """
-    conversations = []
-    data_path = Path(data_dir)
-    
-    # Look for common LLaVA file patterns
-    json_files = list(data_path.glob("*.json"))
-    
-    for json_file in json_files:
-        try:
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                
-                # Handle different LLaVA data structures
-                if isinstance(data, list):
-                    for item in data:
-                        conversations.extend(extract_conversations(item))
-                elif isinstance(data, dict):
-                    conversations.extend(extract_conversations(data))
-                    
-        except Exception as e:
-            print(f"Error loading {json_file}: {e}")
-            continue
-    
-    return conversations
-
 def extract_conversations(item):
-    """
-    Extract conversation text from LLaVA data item
-    """
+
     texts = []
-    
     if 'conversations' in item:
         for conv in item['conversations']:
             if 'value' in conv:
@@ -72,9 +40,7 @@ def extract_conversations(item):
     return texts
 
 def count_relations(text, relations):
-    """
-    Count occurrences of spatial relations in text
-    """
+
     counts = defaultdict(int)
     text_lower = text.lower()
     
@@ -89,45 +55,72 @@ def count_relations(text, relations):
     
     return counts
 
-def analyze_llava_relations(data_dir):
 
-    print(f"Loading LLaVA data from: {data_dir}")
-    conversations = load_llava_data(data_dir)
-    print(f"Found {len(conversations)} text samples")
+def load_llava_file(file_path):
+
+    conversations = []
+    
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        # Handle different LLaVA data structures
+        if isinstance(data, list):
+            for item in data:
+                conversations.extend(extract_conversations(item))
+        elif isinstance(data, dict):
+            conversations.extend(extract_conversations(data))
+    
+    return conversations
+
+
+def analyze_llava_relations(file_path):
+
+    print(f"Loading LLaVA data from: {file_path}")
+    data = load_llava_file(file_path)
+    print(f"Found {len(data)} text samples")
     
     # Count relations across all conversations
-    total_counts = defaultdict(int)
+    total_counts = {relation: 0 for relation in SPATIAL_RELATIONS}
+    items_with_relations = {relation: 0 for relation in SPATIAL_RELATIONS}
     
-    for text in conversations:
-        if text:
-            relation_counts = count_relations(text, SPATIAL_RELATIONS)
-            for relation, count in relation_counts.items():
-                total_counts[relation] += count
+    # Analyze each item
+    for item in data:
+        # Get text from human and gpt fields (standard LLaVA format)
+        human_text = item.get('human', '')
+        gpt_text = item.get('gpt', '')
+        combined_text = f"{human_text} {gpt_text}".strip()
+        
+        # Count relations in combined text
+        relation_counts = count_relations(combined_text, SPATIAL_RELATIONS)
+        for relation, count in relation_counts.items():
+            total_counts[relation] += count
+            if count > 0:
+                items_with_relations[relation] += 1
     
-    return total_counts
+    return {
+        'total_items': len(data),
+        'total_counts': total_counts,
+        'items_with_relations': items_with_relations
+    }
 
-def print_results(relation_counts):
-    """
-    Print results in a formatted table
-    """
-    print("\n" + "="*50)
-    print("SPATIAL RELATIONS COUNT IN LLAVA DATASET")
-    print("="*50)
+
+def print_results(results, dataset_name):
+
+    print(f"\n{'='*50}")
+    print(f"DATA ROWS CONTAINING SPATIAL RELATIONS: {dataset_name}")
+    print(f"{'='*50}")
+    print(f"Total items: {results['total_items']:,}")
+    print()
     
-    sorted_relations = sorted(relation_counts.items(), 
-                            key=lambda x: (-x[1], x[0]))
+    print(f"{'Relation':<15} {'Occurrences':<12} {'Rows':<8} {'% Rows':<8}")
+    print("-" * 50)
     
-    total_relations = sum(relation_counts.values())
-    
-    print(f"{'Relation':<15} {'Count':<10} {'Percentage':<10}")
-    print("-" * 35)
-    
-    for relation, count in sorted_relations:
-        percentage = (count / total_relations * 100) if total_relations > 0 else 0
-        print(f"{relation:<15} {count:<10} {percentage:<10.2f}%")
-    
-    print("-" * 35)
-    print(f"{'Total':<15} {total_relations:<10} {'100.00%':<10}")
+    for relation in SPATIAL_RELATIONS:
+        total_count = results['total_counts'][relation]
+        rows_with_rel = results['items_with_relations'][relation]
+        percentage = (rows_with_rel / results['total_items']) * 100
+        
+        print(f"{relation:<15} {total_count:<12,} {rows_with_rel:<8,} {percentage:<7.2f}%")
+
 
 def save_results(relation_counts, output_file="llava_relations_count.json"):
 
@@ -135,21 +128,23 @@ def save_results(relation_counts, output_file="llava_relations_count.json"):
         json.dump(dict(relation_counts), f, indent=2)
     print(f"\nResults saved to: {output_file}")
 
+
 if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Count spatial relations in LLaVA dataset")
-    parser.add_argument("--data_dir", default="./prismatic-vlms/data/download/llava-v1.5-instruct", 
-                       help="Directory containing LLaVA dataset")
+    parser.add_argument("--file", default="./prismatic-vlms/data/download/llava-v1.5-instruct/llava_v1_5_mix665k.json", 
+                       help="Specific JSON file to analyze")
     parser.add_argument("--output", default="./llava_instruct_relations_count.json",
                        help="Output file for results")
     
     args = parser.parse_args()
     
-    if not os.path.exists(args.data_dir):
-        print(f"Error: Data directory '{args.data_dir}' not found!")
+    if not os.path.exists(args.file):
+        print(f"Error: File '{args.file}' not found!")
         exit(1)
     
-    relation_counts = analyze_llava_relations(args.data_dir)
+    relation_counts = analyze_llava_relations(args.file)
     print_results(relation_counts)
     save_results(relation_counts, args.output)
+        
