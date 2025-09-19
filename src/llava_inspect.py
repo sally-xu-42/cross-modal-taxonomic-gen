@@ -85,12 +85,12 @@ def analyze_llava_relations(file_path):
     # Analyze each item
     for item in data:
         # Get text from human and gpt fields (standard LLaVA format)
-        human_text = item.get('human', '')
-        gpt_text = item.get('gpt', '')
-        combined_text = f"{human_text} {gpt_text}".strip()
+        # human_text = item.get('human', '')
+        # gpt_text = item.get('gpt', '')
+        # combined_text = f"{human_text} {gpt_text}".strip()
         
         # Count relations in combined text
-        relation_counts = count_relations(combined_text, SPATIAL_RELATIONS)
+        relation_counts = count_relations(item, SPATIAL_RELATIONS)
         for relation, count in relation_counts.items():
             total_counts[relation] += count
             if count > 0:
