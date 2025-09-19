@@ -1,9 +1,0 @@
-
-Seed: 42
-Checkpoint: 
-Dataset ID: llava-v15
-Stage: finetune
-Model ID: reproduction-llava-v15+7b-lora
-Doing resumable training
-Submitted batch job 953278
-
