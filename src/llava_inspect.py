@@ -103,10 +103,10 @@ def analyze_llava_relations(file_path):
     }
 
 
-def print_results(results, dataset_name):
+def print_results(results):
 
     print(f"\n{'='*50}")
-    print(f"DATA ROWS CONTAINING SPATIAL RELATIONS: {dataset_name}")
+    print(f"DATA ROWS CONTAINING SPATIAL RELATIONS:")
     print(f"{'='*50}")
     print(f"Total items: {results['total_items']:,}")
     print()
