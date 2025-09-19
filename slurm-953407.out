@@ -1,0 +1,9 @@
+
+Seed: 42
+Checkpoint: 
+Dataset ID: llava-lvis4v-lrv
+Stage: finetune
+Model ID: prism-dinosiglip+7b
+Doing resumable training
+Submitted batch job 953408
+

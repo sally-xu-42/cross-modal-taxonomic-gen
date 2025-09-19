@@ -1,15 +1,33 @@
 {
-  "to the right of": 98445,
-  "to the left of": 99447,
-  "in front of": 51560,
-  "on top of": 25395,
-  "beneath": 1971,
-  "behind": 46368,
-  "inside": 17688,
-  "above": 21635,
-  "below": 8543,
-  "under": 23465,
-  "at": 129349,
-  "in": 1401536,
-  "on": 982319
+  "total_items": 6888492,
+  "total_counts": {
+    "above": 21635,
+    "at": 129349,
+    "behind": 46368,
+    "below": 8543,
+    "beneath": 1971,
+    "in": 1401536,
+    "in front of": 51560,
+    "inside": 17688,
+    "on": 982319,
+    "on top of": 25395,
+    "to the left of": 99447,
+    "to the right of": 98445,
+    "under": 23465
+  },
+  "items_with_relations": {
+    "above": 20939,
+    "at": 105505,
+    "behind": 45394,
+    "below": 8276,
+    "beneath": 1929,
+    "in": 926828,
+    "in front of": 50897,
+    "inside": 16518,
+    "on": 821605,
+    "on top of": 24898,
+    "to the left of": 96061,
+    "to the right of": 95115,
+    "under": 22183
+  }
 }
