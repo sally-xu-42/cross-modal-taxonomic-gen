@@ -16,7 +16,7 @@ export HF_HOME="/share/data/speech/txu/cache"  # Optional: Set Hugging Face cach
 export TOKENIZERS_PARALLELISM=false  # Disable tokenizer parallelism for PyTorch DataLoaders
 export WANDB__SERVICE_WAIT=300
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
-export CUDA_LAUNCH_BLOCKING=1  # For debugging
+# export CUDA_LAUNCH_BLOCKING=1  # For debugging
 
 # Define experiment parameters
 # RUN_ID="train-clevr-align-$(date +%s)"  # Unique run ID with timestamp
