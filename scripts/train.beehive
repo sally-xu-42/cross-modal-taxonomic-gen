@@ -22,6 +22,7 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
 # RUN_ID="train-clevr-align-$(date +%s)"  # Unique run ID with timestamp
 RUN_ROOT_DIR="/share/data/speech/txu/vlm_semantics/runs"
 RUN_ID="${STAGE}-${MODEL_ID}-${DATASET_ID}-${SEED}"
+RESET_FOR_NEW_STAGE="${RESET_FOR_NEW_STAGE:-False}"
 
 # Activate the virtual environment
 cd /share/data/speech/txu/vlm_semantics
@@ -33,7 +34,6 @@ ARGS=(
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
-    --reset_for_new_stage True
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
@@ -41,8 +41,10 @@ if [[ -n "${CHECKPOINT}" ]]; then
     CHECKPOINT="${RUN_ROOT_DIR}/${CHECKPOINT}"
     ARGS+=(--resume_from_checkpoint "${CHECKPOINT}/checkpoints/latest-checkpoint.pt")
     ARGS+=(--run_id "$RUN_ID")  # Force same run ID
+    ARGS+=(--reset_for_new_stage "${RESET_FOR_NEW_STAGE}") # Used in multistage training (align -> finetune)
     echo "Resuming from checkpoint: ${CHECKPOINT}/checkpoints/latest-checkpoint.pt"
     echo "Using existing run directory: ${RUN_ID}"
+    echo "Reset for new stage: ${RESET_FOR_NEW_STAGE}"
 else
     ARGS+=(--run_id "${RUN_ID}")
     echo "Starting fresh training (no checkpoint specified)"
