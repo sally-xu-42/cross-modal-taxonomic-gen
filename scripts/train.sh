@@ -1,6 +1,6 @@
 #!/bin/bash
 # example usage:
-# ./scripts/train-sh -s 42 -d clevr -m instruct-dinosiglip+7b -t align -c ./runs/model_path
+# ./scripts/train-sh -s 42 -d clevr -m instruct-dinosiglip+7b -t align -c model_path
 
 seed=42
 stage="finetune"
