@@ -7,6 +7,7 @@ stage="finetune"
 # model_id="prism-dinosiglip+7b"
 # dataset_id="clevr"
 timestamp=$(date +%s)
+reset_for_new_stage="False"
 
 dataset_id="llava-v15"
 model_id="reproduction-llava-v15+7b-lora"
@@ -16,7 +17,7 @@ Help()
    # Display Help
    echo "Script to run model training."
    echo
-   echo "Syntax: train.sh [-s|c|d|m]"
+   echo "Syntax: train.sh [-s|c|d|m|t|r|h]"
    echo "options:"
    echo "s     Random seed number. Default: 42"
    echo "c     Checkpoint path to resume training. Default: None"
@@ -24,11 +25,12 @@ Help()
    echo "m     Model architecture id. Default: prism-clip+7b"
    echo "t     Stage of training. Default: align"
    echo "r     Whether to reset epoch/step counters when starting a new stage. Default: False"
+   echo "h     Print this help message"
 
    echo
 }
 
-while getopts "s:c:d:m:t:r:h" option; do
+while getopts "s:c:d:m:t:rh" option; do
   case $option in
     s)
       seed="$OPTARG"
@@ -46,14 +48,14 @@ while getopts "s:c:d:m:t:r:h" option; do
       stage="$OPTARG"
       ;;
     r)
-      reset_for_new_stage="$OPTARG"
+      reset_for_new_stage="True"
       ;;
     h)
       Help
       exit
       ;;
     *)
-      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id] [-m model_id] [-t stage] [-r reset_for_new_stage] [-h]"
+      echo "Usage: $0 [-s seed] [-c checkpoint] [-d dataset_id] [-m model_id] [-t stage] [-r] [-h]"
       exit 1
       ;;
   esac
