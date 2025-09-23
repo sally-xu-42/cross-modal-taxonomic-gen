@@ -2,7 +2,7 @@
 #SBATCH --job-name=prismatic-${STAGE:-unknown}-${MODEL_ID:-model}-${DATASET_ID:-data}
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=8
-#SBATCH --gpus=nvidia_rtx_a6000:8
+#SBATCH --gpus=nvidia_rtx_a6000:4
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
@@ -35,7 +35,7 @@ ARGS=(
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
     --model.finetune_per_device_batch_size 16
-    --model.finetune_global_batch_size 128
+    --model.finetune_global_batch_size 64
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
