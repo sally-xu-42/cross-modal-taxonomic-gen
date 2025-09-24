@@ -15,7 +15,7 @@
 export HF_HOME="/share/data/speech/txu/cache"  # Optional: Set Hugging Face cache directory
 export TOKENIZERS_PARALLELISM=false  # Disable tokenizer parallelism for PyTorch DataLoaders
 export WANDB__SERVICE_WAIT=300
-# export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
 # export CUDA_LAUNCH_BLOCKING=1  # For debugging
 
 # Define experiment parameters
@@ -34,8 +34,8 @@ ARGS=(
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
-    # --model.finetune_per_device_batch_size 16
-    # --model.finetune_global_batch_size 64
+    --model.finetune_per_device_batch_size 16
+    --model.finetune_global_batch_size 64
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
