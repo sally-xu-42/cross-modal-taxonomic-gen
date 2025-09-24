@@ -34,8 +34,8 @@ ARGS=(
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
-    --model.finetune_per_device_batch_size 16
-    --model.finetune_global_batch_size 64
+    # --model.finetune_per_device_batch_size 16
+    # --model.finetune_global_batch_size 64
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
