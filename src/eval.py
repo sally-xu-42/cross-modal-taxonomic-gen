@@ -225,12 +225,13 @@ if __name__ == "__main__":
         # pure_prompts = [prompt.replace("<image>", "").strip() for prompt in prompts]
         prompts_text = []
         for prompt in prompts:
-            prompt_builder = vlm.get_prompt_builder()
-            # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
-            # print(prompt_builder.system_prompt)
-            prompt_builder.add_turn(role="human", message=prompt)
-            prompt_text = prompt_builder.get_prompt()  
-            prompts_text.append(prompt_text) 
+            # prompt_builder = vlm.get_prompt_builder()
+            # # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
+            # # print(prompt_builder.system_prompt)
+            # prompt_builder.add_turn(role="human", message=prompt)
+            # prompt_text = prompt_builder.get_prompt()  
+            # prompts_text.append(prompt_text) 
+            prompts_text.append(prompt)
         prompts = prompts_text
         # input_ids = batch['input_ids']
         # labels = batch['labels']
