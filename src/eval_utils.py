@@ -110,7 +110,8 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         input_ids, labels = torch.tensor(input_ids), torch.tensor(labels)
     
         # Handle Truncation (if necessary)
-        input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[:, : self.tokenizer.model_max_length]
+        # input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[:, : self.tokenizer.model_max_length]
+        input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[: self.tokenizer.model_max_length]
         
         # Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches right after)
         labels[0] = IGNORE_INDEX
