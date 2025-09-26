@@ -235,7 +235,7 @@ if __name__ == "__main__":
         # input_ids = batch['input_ids']
         # labels = batch['labels']
         answers = batch['answer']
-        candidates = ["yes", "no"] # ======= added for candidate scoring
+        candidates = ["Yes", "No"] # ======= added for candidate scoring
 
         # process one by one
         print(prompts[0])
