@@ -146,7 +146,7 @@ if __name__ == "__main__":
             cfg.llm_backbone_id, 
             llm_max_length=cfg.llm_max_length,
             hf_token=hf_token,
-            inference_mode=False # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
+            inference_mode=True # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
         )
 
         vlm = get_vlm(
