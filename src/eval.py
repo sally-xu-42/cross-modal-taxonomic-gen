@@ -252,7 +252,8 @@ if __name__ == "__main__":
                 prompts[i],
                 candidates,
                 max_new_tokens=1,
-                temperature=None
+                temperature=0.0,
+                top_p=1.0
             )
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
