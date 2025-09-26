@@ -251,7 +251,6 @@ if __name__ == "__main__":
                 images[i],
                 prompts[i],
                 candidates,
-                max_new_tokens=1,
                 temperature=None
             )
             predicted = output.strip().lower()
