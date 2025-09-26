@@ -256,7 +256,7 @@ if __name__ == "__main__":
             )
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
-            print(f"\nModel's answer:{predicted}")
+            print(f"Model's answer:{predicted}\n")
             results.append({
                 "question": prompts[i],
                 "answer": answers[i],
