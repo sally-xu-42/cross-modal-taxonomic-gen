@@ -169,7 +169,7 @@ if __name__ == "__main__":
             checkpoint_path = os.path.join(args.model_path, "checkpoints", "latest-checkpoint.pt")
 
         print(f"Loading checkpoint from {checkpoint_path}")    
-        checkpoint = torch.load(checkpoint_path, map_location="cuda")
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
         print("Available keys in checkpoint['model']:", list(checkpoint["model"].keys()))
         print("Loading projector weights from model.projector")
 
