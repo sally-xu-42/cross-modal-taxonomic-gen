@@ -240,19 +240,19 @@ if __name__ == "__main__":
         # process one by one
         print(prompts[0])
         for i in range(len(prompts)):
-            # output = vlm.generate(
-            #     images[i],
-            #     prompts[i],
-            #     max_new_tokens=1,
-            #     temperature=None,
-            #     use_cache=False   # ================ transformers library version mismatch ==============
-            # )
-            output, _ = vlm.candidate_scoring(
+            output = vlm.generate(
                 images[i],
                 prompts[i],
-                candidates,
-                temperature=None
+                max_new_tokens=1,
+                temperature=None,
+                use_cache=False   # ================ transformers library version mismatch ==============
             )
+            # output, _ = vlm.candidate_scoring(
+            #     images[i],
+            #     prompts[i],
+            #     candidates,
+            #     temperature=None
+            # )
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
             print(f"Model's answer:{predicted}\n")
