@@ -36,7 +36,7 @@ ARGS=(
     --model.type "$MODEL_ID"
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
-    --model.align_epochs 1500
+    --model.align_epochs 4500
     --model.finetune_per_device_batch_size 4 # 16
     --model.finetune_global_batch_size 16 # 64
     --model.finetune_epochs 500

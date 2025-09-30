@@ -114,10 +114,10 @@ if __name__ == "__main__":
         vlm = load(model_id, hf_token=hf_token)
         # Evaluate on CLEVR
         for dataset_variant in DatasetRegistry:
-            if dataset_variant.dataset_id == "clevr":
+            if dataset_variant.dataset_id == "clevr-mini":
                 dataset_cfg = dataset_variant.value()
         if args.dataset_path:
-            dataset_cfg.align_stage_components = (
+            dataset_cfg.finetune_stage_components = (
                 Path(args.dataset_path),  # By default, this is the preprocessed CLEVR dataset validation split
                 Path("data/CLEVR_v1.0/images")
             )
@@ -146,7 +146,7 @@ if __name__ == "__main__":
             cfg.llm_backbone_id, 
             llm_max_length=cfg.llm_max_length,
             hf_token=hf_token,
-            inference_mode=False # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
+            inference_mode=True # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
         )
 
         vlm = get_vlm(
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             print("Warning: No LLM backbone weights found in checkpoint")
 
         dataset_cfg = decode(DatasetConfig, config["dataset"])
-        dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
+        dataset_cfg.finetune_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
         # changed to avoid the error caused from different root directory
         dataset_cfg.dataset_root_dir = Path("/share/data/speech/txu/vlm_semantics")
         print(dataset_cfg)
@@ -228,9 +228,11 @@ if __name__ == "__main__":
             prompt_builder = vlm.get_prompt_builder()
             # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
             # print(prompt_builder.system_prompt)
+            # example message: "<image>\nIs the green cylinder to the right of the sphere?"
             prompt_builder.add_turn(role="human", message=prompt)
-            prompt_text = prompt_builder.get_prompt()  
-            prompts_text.append(prompt_text) 
+            prompt_text = prompt_builder.get_prompt() 
+            print(f"[Debug] Full prompt:\n{prompt_text}\n") 
+            prompts_text.append(prompt_text)
             # prompts_text.append(prompt)
         prompts = prompts_text
         # input_ids = batch['input_ids']
@@ -258,7 +260,7 @@ if __name__ == "__main__":
             )
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
-            print(f"Model's answer:{predicted}\n")
+            print(f"Ground truth answer: {answers[i]}, Model's answer: {predicted}\n")
             results.append({
                 "question": prompts[i],
                 "answer": answers[i],

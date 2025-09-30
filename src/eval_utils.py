@@ -54,14 +54,14 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
         # question = "Question: " + conversation[0]["value"] + "Answer:"
         q = conversation[0]["value"]
-        if True: 
+        if False: # |=>> this is special prompt processing.
             if identify_relation(q) in ["behind", "in front of"]:
                 # special prompts for front and behind
                 question = self.prompts[identify_relation(q)] + "Question: " + q + "Answer:"
             else:
                 question = "Question: " + q + "Answer:"
         else:
-            question = "Question: " + q + "Answer:"
+            question = q
         answer = conversation[-1]["value"]
         input_ids = self.tokenizer(question, truncation=True, return_tensors="pt").input_ids[0]
         labels = copy.deepcopy(input_ids)
