@@ -1,8 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=prismatic-${STAGE:-unknown}-${MODEL_ID:-model}-${DATASET_ID:-data}
 #SBATCH --partition=speech-gpu
-#SBATCH --cpus-per-task=8
-#SBATCH --gpus=nvidia_rtx_a6000:4
+#SBATCH --cpus-per-task=20
+#SBATCH --exclude=g6
+##SBATCH --nodelist=g15
+#SBATCH --gpus=nvidia_rtx_a6000:8
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
@@ -37,9 +39,9 @@ ARGS=(
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
     --model.align_epochs 4500
-    --model.finetune_per_device_batch_size 4 # 16
-    --model.finetune_global_batch_size 16 # 64
-    --model.finetune_epochs 500
+    --model.finetune_per_device_batch_size 16 # 16
+    --model.finetune_global_batch_size 128 # 64
+    --model.finetune_epochs 3
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
@@ -47,7 +49,7 @@ if [[ -n "${CHECKPOINT}" ]]; then
     CHECKPOINT="${RUN_ROOT_DIR}/${CHECKPOINT}"
     ARGS+=(--resume_from_checkpoint "${CHECKPOINT}/checkpoints/latest-checkpoint.pt")
     ARGS+=(--run_id "$RUN_ID")  # Force same run ID
-    ARGS+=(--reset_for_new_stage) # Used in multistage training (align -> finetune)
+    # ARGS+=(--reset_for_new_stage) # Used in multistage training (align -> finetune)
     echo "Resuming from checkpoint: ${CHECKPOINT}/checkpoints/latest-checkpoint.pt"
     echo "Using existing run directory: ${RUN_ID}"
     echo "Reset for new stage: ${RESET_FOR_NEW_STAGE}"
@@ -57,4 +59,4 @@ else
 fi
 
 # Run training with torchrun
-torchrun --standalone --nnodes 1 --nproc-per-node 4 prismatic-vlms/scripts/resumable_pretrain.py "${ARGS[@]}"
+torchrun --standalone --nnodes 1 --nproc-per-node 8 prismatic-vlms/scripts/resumable_pretrain.py "${ARGS[@]}"

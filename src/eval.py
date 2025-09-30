@@ -131,6 +131,17 @@ if __name__ == "__main__":
         else:
             model_path = os.path.dirname(os.path.dirname(args.model_path))
             config_path = os.path.join(model_path, "config.json")
+        
+        if "align" in args.model_path:
+            print("Evaluation in the ALIGN stage (no fine-tuned LLM weights)")
+            inference_mode = False
+        elif "finetune" in args.model_path:
+            print("Evaluation in the FINETUNE stage (with fine-tuned LLM weights)")
+            inference_mode = True
+        else:
+            print("Warning: Could not determine stage from model_path. Assuming FINETUNE stage.")
+            inference_mode = True
+
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         hf_token = os.environ.get(".hf_token", None)
         
@@ -146,9 +157,8 @@ if __name__ == "__main__":
             cfg.llm_backbone_id, 
             llm_max_length=cfg.llm_max_length,
             hf_token=hf_token,
-            inference_mode=True # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
+            inference_mode=inference_mode # >>>>>>>> Set this to True only during finetuning inference because we don't need base weights
         )
-
         vlm = get_vlm(
             cfg.model_id,
             cfg.arch_specifier,
@@ -174,18 +184,15 @@ if __name__ == "__main__":
         print("Loading projector weights from model.projector")
 
         vlm.projector.load_state_dict(checkpoint["model"]["projector"])
-        # Load fine-tuned LLM weights
-        if "llm_backbone" in checkpoint["model"]:
-            print("Loading fine-tuned LLM weights from model.llm_backbone")
-            vlm.llm_backbone.load_state_dict(checkpoint["model"]["llm_backbone"], strict=False)
-        else:
-            print("Warning: No LLM backbone weights found in checkpoint")
-
         dataset_cfg = decode(DatasetConfig, config["dataset"])
-        dataset_cfg.finetune_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
-        # changed to avoid the error caused from different root directory
         dataset_cfg.dataset_root_dir = Path("/share/data/speech/txu/vlm_semantics")
-        print(dataset_cfg)
+        if inference_mode: # Finetune stage
+            print("Loading fine-tuned LLM weights from model.llm_backbone") # Load fine-tuned LLM weights
+            vlm.llm_backbone.load_state_dict(checkpoint["model"]["llm_backbone"], strict=False)
+            dataset_cfg.finetune_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
+        else: # Align stage
+            print("Warning: No LLM backbone weights found in checkpoint")
+            dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
     
     vlm.to(torch.cuda.current_device())
     vlm.projector.to(torch.cuda.current_device())
@@ -195,6 +202,7 @@ if __name__ == "__main__":
     
     print(f"Loading dataset: {args.dataset_path}")
     val_dataset, collator = get_dataset_and_collator(
+        stage="finetune" if inference_mode else "align",
         dataset_cfg=dataset_cfg,
         image_transform=image_transform,
         tokenizer=tokenizer,

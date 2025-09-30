@@ -31,12 +31,14 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
 
     def __init__(
         self,
+        stage: str,
         chat_json: Path,
         image_dir: Path,
         image_transform: ImageTransform,
         tokenizer: PreTrainedTokenizerBase,
     ) -> None:
         super().__init__()
+        self.stage = stage  # "finetune" or "align"
         self.chat_json, self.image_dir = chat_json, image_dir
         self.image_transform, self.tokenizer = image_transform, tokenizer
         self.dataset_type = "eval"
@@ -50,6 +52,11 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         During the "eval" phase, we return plain text prompts, and the model is expected to generate
         the answer based on the image and the prompt.
         """
+        if self.stage == "align": return self.__get_align_item__(idx)
+        elif self.stage == "finetune": return self.__get_finetune_item__(idx)
+        else: raise ValueError(f"Unknown stage = {self.stage}")
+
+    def __get_align_item__(self, idx: int) -> Dict[str, torch.Tensor]:
         image_path, conversation = Path(self.examples[idx]["image"]), self.examples[idx]["conversations"]
         assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
         # question = "Question: " + conversation[0]["value"] + "Answer:"
@@ -77,59 +84,59 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
                     labels=labels, 
                     image=image)
 
-    # def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-    #     """
-    #     Match FinetuneDataset format exactly for consistent evaluation.
-    #     """
-    #     image_path, conversation = Path(self.examples[idx]["image"]), self.examples[idx]["conversations"]
-    #     assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
+    def __get_finetune_item__(self, idx: int) -> Dict[str, torch.Tensor]:
+        """
+        Match FinetuneDataset format exactly for consistent evaluation.
+        """
+        image_path, conversation = Path(self.examples[idx]["image"]), self.examples[idx]["conversations"]
+        assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
         
-    #     # Use the same prompt builder as training
-    #     from prismatic.models.backbones.llm.prompting.llama2_chat_prompter import LLaMa2ChatPromptBuilder
+        # Use the same prompt builder as training
+        from prismatic.models.backbones.llm.prompting.llama2_chat_prompter import LLaMa2ChatPromptBuilder
     
-    #     # Create Prompt Builder --> add each message sequentially (same as FinetuneDataset)
-    #     prompt_builder, input_ids, labels = LLaMa2ChatPromptBuilder(model_family="prismatic"), [], []
+        # Create Prompt Builder --> add each message sequentially (same as FinetuneDataset)
+        prompt_builder, input_ids, labels = LLaMa2ChatPromptBuilder(model_family="prismatic"), [], []
         
-    #     for turn_idx, turn in enumerate(conversation):
-    #         # Get "effective" string added to prompt --> handle whitespace for tokenizer type!
-    #         msg = prompt_builder.add_turn(turn["from"], turn["value"])
-    #         msg = msg.rstrip()
+        for turn_idx, turn in enumerate(conversation):
+            # Get "effective" string added to prompt --> handle whitespace for tokenizer type!
+            msg = prompt_builder.add_turn(turn["from"], turn["value"])
+            msg = msg.rstrip()
             
-    #         # Tokenize Input IDs
-    #         turn_input_ids = self.tokenizer(msg, add_special_tokens=turn_idx == 0).input_ids
+            # Tokenize Input IDs
+            turn_input_ids = self.tokenizer(msg, add_special_tokens=turn_idx == 0).input_ids
             
-    #         # [CRITICAL] We do not want to take the loss for the "USER: <msg>" prompts =>> just the responses!
-    #         turn_labels = (
-    #             [IGNORE_INDEX for _ in range(len(turn_input_ids))] if (turn_idx % 2) == 0 else list(turn_input_ids)
-    #         )
-    #         # Add to Trackers
-    #         input_ids.extend(turn_input_ids)
-    #         labels.extend(turn_labels)
+            # [CRITICAL] We do not want to take the loss for the "USER: <msg>" prompts =>> just the responses!
+            turn_labels = (
+                [IGNORE_INDEX for _ in range(len(turn_input_ids))] if (turn_idx % 2) == 0 else list(turn_input_ids)
+            )
+            # Add to Trackers
+            input_ids.extend(turn_input_ids)
+            labels.extend(turn_labels)
         
-    #     # Tensorize =>> Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches after)
-    #     input_ids, labels = torch.tensor(input_ids), torch.tensor(labels)
+        # Tensorize =>> Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches after)
+        input_ids, labels = torch.tensor(input_ids), torch.tensor(labels)
     
-    #     # Handle Truncation (if necessary)
-    #     # input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[:, : self.tokenizer.model_max_length]
-    #     input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[: self.tokenizer.model_max_length]
+        # Handle Truncation (if necessary)
+        # input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[:, : self.tokenizer.model_max_length]
+        input_ids, labels = input_ids[: self.tokenizer.model_max_length], labels[: self.tokenizer.model_max_length]
         
-    #     # Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches right after)
-    #     labels[0] = IGNORE_INDEX
+        # Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches right after)
+        labels[0] = IGNORE_INDEX
         
-    #     # Process Image
-    #     image = Image.open(self.image_dir / image_path).convert("RGB")
-    #     pixel_values = self.image_transform(image)
+        # Process Image
+        image = Image.open(self.image_dir / image_path).convert("RGB")
+        pixel_values = self.image_transform(image)
         
-    #     return dict(
-    #         pixel_values=pixel_values, 
-    #         input_ids=input_ids, 
-    #         labels=labels,
-    #         # Keep evaluation-specific fields for compatibility
-    #         input_text=prompt_builder.get_prompt(),  # Get the full formatted prompt
-    #         pure_question=conversation[0]["value"], 
-    #         answer=conversation[-1]["value"], 
-    #         image=image
-    #     )
+        return dict(
+            pixel_values=pixel_values, 
+            input_ids=input_ids, 
+            labels=labels,
+            # Keep evaluation-specific fields for compatibility
+            input_text=prompt_builder.get_prompt(),  # Get the full formatted prompt
+            pure_question=conversation[0]["value"], 
+            answer=conversation[-1]["value"], 
+            image=image
+        )
 
     def __len__(self) -> int:
         return len(self.examples)
@@ -193,6 +200,7 @@ class PaddedCollatorForEval:
 
 
 def get_dataset_and_collator(
+    stage: str,
     dataset_cfg: DatasetConfig,
     image_transform: ImageTransform,
     tokenizer: PreTrainedTokenizerBase,
@@ -204,10 +212,13 @@ def get_dataset_and_collator(
     collator = PaddedCollatorForEval(
         tokenizer.model_max_length, tokenizer.pad_token_id, default_image_resolution, padding_side=padding_side
     )
+    if stage == "align":
+        annotation_json, image_dir = dataset_cfg.align_stage_components
+    elif stage == "finetune":
+        annotation_json, image_dir = dataset_cfg.finetune_stage_components
 
-    annotation_json, image_dir = dataset_cfg.align_stage_components
     dataset = dataset_cls(
-        dataset_root_dir / annotation_json, dataset_root_dir / image_dir, image_transform, tokenizer
+        stage, dataset_root_dir / annotation_json, dataset_root_dir / image_dir, image_transform, tokenizer
     )
     return dataset, collator
 
