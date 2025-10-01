@@ -71,6 +71,6 @@ echo "Reset for new stage: $reset_for_new_stage"
 
 echo 'Doing resumable training'
 SEED=${seed} CHECKPOINT=${checkpoint} DATASET_ID=${dataset_id} MODEL_ID=${model_id} STAGE=${stage} RESET_FOR_NEW_STAGE=${reset_for_new_stage}  \
-sbatch scripts/train.beehive
+sbatch --job-name=prismatic-${stage}-${model_id}-${dataset_id}-${seed} scripts/train.beehive
 
 echo

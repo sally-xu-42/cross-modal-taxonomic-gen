@@ -1,9 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=prismatic-${STAGE:-unknown}-${MODEL_ID:-model}-${DATASET_ID:-data}
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=20
 #SBATCH --exclude=g6
-##SBATCH --nodelist=g15
+#SBATCH --nodelist=g15
 #SBATCH --gpus=nvidia_rtx_a6000:8
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
