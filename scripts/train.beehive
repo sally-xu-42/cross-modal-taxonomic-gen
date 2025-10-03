@@ -2,12 +2,12 @@
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=20
 #SBATCH --exclude=g6
-#SBATCH --nodelist=g15
-#SBATCH --gpus=nvidia_rtx_a6000:8
+##SBATCH --nodelist=g15
+#SBATCH --gpus=nvidia_rtx_a6000:4
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
-#SBATCH --time=07:55:00
+#SBATCH --time=00:55:00
 #SBATCH --signal=SIGHUP@600
 #SBATCH --dependency=singleton
 #SBATCH -o /share/data/speech/txu/vlm_semantics/logs/training_%j.out
@@ -39,7 +39,7 @@ ARGS=(
     --model.align_global_batch_size 16
     --model.align_epochs 4500
     --model.finetune_per_device_batch_size 16 # 16
-    --model.finetune_global_batch_size 128 # 64
+    --model.finetune_global_batch_size 64 # 64
     --model.finetune_epochs 3
 )
 
@@ -58,4 +58,4 @@ else
 fi
 
 # Run training with torchrun
-torchrun --standalone --nnodes 1 --nproc-per-node 8 prismatic-vlms/scripts/resumable_pretrain.py "${ARGS[@]}"
+torchrun --standalone --nnodes 1 --nproc-per-node 4 prismatic-vlms/scripts/resumable_pretrain.py "${ARGS[@]}"
