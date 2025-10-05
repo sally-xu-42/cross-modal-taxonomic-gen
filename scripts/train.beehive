@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=speech-gpu
+#SBATCH --partition=speech-gpu,greg-gpu
 #SBATCH --cpus-per-task=20
 #SBATCH --exclude=g6
 ##SBATCH --nodelist=g15
@@ -38,8 +38,8 @@ ARGS=(
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
     --model.align_epochs 4500
-    --model.finetune_per_device_batch_size 16 # 16
-    --model.finetune_global_batch_size 64 # 64
+    --model.finetune_per_device_batch_size 24 # 16
+    --model.finetune_global_batch_size 96 # 64
     --model.finetune_epochs 3
 )
 

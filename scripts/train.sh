@@ -4,13 +4,13 @@
 
 seed=42
 stage="finetune"
-# model_id="prism-dinosiglip+7b"
-# dataset_id="clevr"
+model_id="prism-dinosiglip+7b"
+dataset_id="clevr"
 timestamp=$(date +%s)
 reset_for_new_stage="False"
 
-dataset_id="llava-v15"
-model_id="reproduction-llava-v15+7b-lora"
+# dataset_id="llava-v15"
+# model_id="reproduction-llava-v15+7b-lora"
 
 Help()
 {
