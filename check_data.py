@@ -1,9 +1,12 @@
 import os
 import re
-from pathlib import Path
 import json
 import torch
+import random
+
 from tqdm import tqdm
+from pathlib import Path
+
 # check which line of data we are at
 ROOT_DIR = "/share/data/speech/txu/vlm_semantics/data/vision_features/"
 
@@ -27,9 +30,9 @@ def check_data(file_name):
             res.add(image_path)
             missed += 1
     print(f"Total missing images in {file_name}: {missed}")
-    # with open("./missing_images.txt", 'w') as f:
-    #     for r in res:
-    #         f.write(r + "\n")
+    with open("./missing_images.txt", 'w') as f:
+        for r in res:
+            f.write(r + "\n")
 
 def create_training_set(original_file, missing_file):
     with open(original_file, 'r') as f:
@@ -57,7 +60,20 @@ def clean_data(file_name):
         json.dump(data, f)
     print(f"Cleaned data saved to {file_name}")
 
+def sample_data(file_name, sample_ratio=0.1):
+    with open(file_name, 'r') as f:
+        data = json.load(f)
+    total = len(data)
+    sample_size = int(total * sample_ratio)
+    print(f"Sampling {sample_size} entries from {total} total entries.")
+    sampled_data = random.sample(data, sample_size)
+    output_file = file_name.replace(".json", f"_sampled_{sample_ratio}.json")
+    with open(output_file, 'w') as f:
+        json.dump(sampled_data, f)
+    print(f"Sampled data saved to {output_file}")
+
 if __name__ == "__main__":
-    check_data("./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json")
+    # check_data("./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json")
     # create_training_set(ROOT_DIR+"../preprocessed_CLEVR/clevr_train_qa_preprocessed.json", "./missing_images.txt")
     # clean_data("./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json")
+    sample_data("./data/preprocessed_CLEVR/clevr_train_qa_preprocessed.json", sample_ratio=0.1)
