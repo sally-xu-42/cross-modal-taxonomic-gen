@@ -233,12 +233,12 @@ if __name__ == "__main__":
         # pure_prompts = [prompt.replace("<image>", "").strip() for prompt in prompts]
         prompts_text = []
         for prompt in prompts:
-            prompt_builder = vlm.get_prompt_builder()
+            # prompt_builder = vlm.get_prompt_builder()
             # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
             # print(prompt_builder.system_prompt)
             # example message: "<image>\nIs the green cylinder to the right of the sphere?"
-            prompt_builder.add_turn(role="human", message=prompt)
-            prompt_text = prompt_builder.get_prompt() 
+            # prompt_builder.add_turn(role="human", message=prompt)
+            prompt_text = prompt
             print(f"[Debug] Full prompt:\n{prompt_text}\n") 
             prompts_text.append(prompt_text)
             # prompts_text.append(prompt)

@@ -1,13 +1,14 @@
 #!/bin/bash
-#SBATCH --partition=speech-gpu,greg-gpu
-#SBATCH --cpus-per-task=20
+#SBATCH --partition=greg-gpu,speech-gpu
+#SBATCH --cpus-per-task=10
+#SBATCH --nodelist=g0
 #SBATCH --exclude=g6
-##SBATCH --nodelist=g15
-#SBATCH --gpus=nvidia_rtx_a6000:4
+#SBATCH --constraint=48g
+#SBATCH --gpus=4
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
-#SBATCH --time=00:55:00
+##SBATCH --time=23:55:00
 #SBATCH --signal=SIGHUP@600
 #SBATCH --dependency=singleton
 #SBATCH -o /share/data/speech/txu/vlm_semantics/logs/training_%j.out
@@ -16,6 +17,7 @@
 export HF_HOME="/share/data/speech/txu/cache"  # Optional: Set Hugging Face cache directory
 export TOKENIZERS_PARALLELISM=false  # Disable tokenizer parallelism for PyTorch DataLoaders
 export WANDB__SERVICE_WAIT=300
+# export CUDA_VISIBLE_DEVICES=0,1,2,3
 # export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
 # export CUDA_LAUNCH_BLOCKING=1  # For debugging
 
@@ -38,9 +40,9 @@ ARGS=(
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
     --model.align_epochs 4500
-    --model.finetune_per_device_batch_size 24 # 16
-    --model.finetune_global_batch_size 96 # 64
-    --model.finetune_epochs 3
+    --model.finetune_per_device_batch_size 24 # 128
+    --model.finetune_global_batch_size 192 # 512
+    --model.finetune_epochs 50 # trying to overfit 
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then

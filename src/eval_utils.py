@@ -92,26 +92,27 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         assert (len(conversation) == 2) and ("<image>" not in conversation[-1]["value"]), "Unexpected text!"
         
         # Use the same prompt builder as training
-        from prismatic.models.backbones.llm.prompting.llama2_chat_prompter import LLaMa2ChatPromptBuilder
+        from prismatic.models.backbones.llm.prompting import PurePromptBuilder
     
         # Create Prompt Builder --> add each message sequentially (same as FinetuneDataset)
-        prompt_builder, input_ids, labels = LLaMa2ChatPromptBuilder(model_family="prismatic"), [], []
+        prompt_builder, input_ids, labels = PurePromptBuilder(model_family="prismatic"), [], []
         
         for turn_idx, turn in enumerate(conversation):
             # Get "effective" string added to prompt --> handle whitespace for tokenizer type!
-            msg = prompt_builder.add_turn(turn["from"], turn["value"])
-            msg = msg.rstrip()
-            
-            # Tokenize Input IDs
-            turn_input_ids = self.tokenizer(msg, add_special_tokens=turn_idx == 0).input_ids
-            
-            # [CRITICAL] We do not want to take the loss for the "USER: <msg>" prompts =>> just the responses!
-            turn_labels = (
-                [IGNORE_INDEX for _ in range(len(turn_input_ids))] if (turn_idx % 2) == 0 else list(turn_input_ids)
-            )
-            # Add to Trackers
-            input_ids.extend(turn_input_ids)
-            labels.extend(turn_labels)
+            if turn["from"] == "human":
+                msg = prompt_builder.add_turn(turn["from"], turn["value"])
+                msg = msg.rstrip() # Remove trailing whitespace for tokenization
+                # Tokenize Input IDs
+                turn_input_ids = self.tokenizer(msg, add_special_tokens=True).input_ids
+                # print(f"[Debug] Human turn input IDs: {turn_input_ids}")
+                # import sys; sys.exit(0)
+                # [CRITICAL] We do not want to take the loss for the "USER: <msg>" prompts =>> just the responses!
+                turn_labels = (
+                    [IGNORE_INDEX for _ in range(len(turn_input_ids))] if (turn_idx % 2) == 0 else list(turn_input_ids)
+                )
+                # Add to Trackers
+                input_ids.extend(turn_input_ids)
+                labels.extend(turn_labels)
         
         # Tensorize =>> Set the <BOS> token's label to IGNORE_INDEX (since we're inserting the image patches after)
         input_ids, labels = torch.tensor(input_ids), torch.tensor(labels)
