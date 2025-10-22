@@ -150,8 +150,11 @@ data/
 
 # Framework
 # prismatic-vlms/
+AdaptVis/data/
+AdaptVis/figures/
+AdaptVis/output/
+AdaptVis/outputs/
 # Model Checkpoints
 runs/
 # Logs
 logs/
-

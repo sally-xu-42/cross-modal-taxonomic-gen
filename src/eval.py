@@ -125,6 +125,7 @@ if __name__ == "__main__":
         llm_backbone = vlm.llm_backbone
         image_transform = vision_backbone.get_image_transform()
         tokenizer = llm_backbone.tokenizer
+        inference_mode = True # Pretrained models are always in inference mode
     else:
         if os.path.isdir(args.model_path):
             config_path = os.path.join(args.model_path, "config.json")
