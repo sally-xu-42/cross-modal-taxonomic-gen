@@ -74,6 +74,7 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         labels = copy.deepcopy(input_ids)
         labels[0] = IGNORE_INDEX
         image = Image.open(self.image_dir / image_path).convert("RGB")
+        concept = os.path.split(image_path)[0] # get concept from image path in THINGS
         pixel_values = self.image_transform(Image.open(self.image_dir / image_path).convert("RGB"))
 
         return dict(pixel_values=pixel_values, 
@@ -82,7 +83,8 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
                     answer=answer, 
                     input_ids=input_ids, 
                     labels=labels, 
-                    image=image)
+                    image=image,
+                    concept=concept)
 
     def __get_finetune_item__(self, idx: int) -> Dict[str, torch.Tensor]:
         """
@@ -96,11 +98,19 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
     
         # Create Prompt Builder --> add each message sequentially (same as FinetuneDataset)
         prompt_builder, input_ids, labels = PurePromptBuilder(model_family="prismatic"), [], []
+        prompts = {"in front of": "In this 3D scene, `in front of` means closer to the camera/viewer (smaller depth value). ",
+                   "behind": "In this 3D scene, `behind` means farther away from the camera/viewer (larger depth value). "}
         
         for turn_idx, turn in enumerate(conversation):
             # Get "effective" string added to prompt --> handle whitespace for tokenizer type!
             if turn["from"] == "human":
-                msg = prompt_builder.add_turn(turn["from"], turn["value"])
+                # if identify_relation(turn["value"]) in ["behind", "in front of"]: # special prompts for front and behind
+                #     question_part = prompts[identify_relation(turn["value"])] + turn["value"]
+                # else:
+                #     question_part = turn["value"]
+                question_part = turn["value"]
+                msg = prompt_builder.add_turn(turn["from"], question_part)
+                # msg = prompt_builder.add_turn(turn["from"], turn["value"])
                 msg = msg.rstrip() # Remove trailing whitespace for tokenization
                 # Tokenize Input IDs
                 turn_input_ids = self.tokenizer(msg, add_special_tokens=True).input_ids
@@ -126,6 +136,7 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
         
         # Process Image
         image = Image.open(self.image_dir / image_path).convert("RGB")
+        concept = os.path.split(image_path)[0] # get concept from image path in THINGS
         pixel_values = self.image_transform(image)
         
         return dict(
@@ -136,7 +147,8 @@ class EvalDataset(Dataset[Dict[str, torch.Tensor]]):
             input_text=prompt_builder.get_prompt(),  # Get the full formatted prompt
             pure_question=conversation[0]["value"], 
             answer=conversation[-1]["value"], 
-            image=image
+            image=image,
+            concept=concept,
         )
 
     def __len__(self) -> int:
@@ -154,7 +166,8 @@ class PaddedCollatorForEval:
         self.dummy_pixel_values = torch.zeros(self.default_image_resolution, dtype=self.pixel_values_dtype)
 
     def __call__(self, instances: Sequence[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
-        input_text, pure_question, answer, input_ids, labels, image = tuple([instance[key] for instance in instances] for key in ("input_text", "pure_question", "answer", "input_ids", "labels", "image"))
+        # input_text, pure_question, answer, input_ids, labels, image = tuple([instance[key] for instance in instances] for key in ("input_text", "pure_question", "answer", "input_ids", "labels", "image"))
+        input_text, pure_question, answer, input_ids, labels, image, concept = tuple([instance[key] for instance in instances] for key in ("input_text", "pure_question", "answer", "input_ids", "labels", "image", "concept"))
         pixel_values = [instance["pixel_values"] for instance in instances]
         input_ids = pad_sequence(input_ids, batch_first=True, padding_value=self.pad_token_id)
         labels = pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
@@ -192,6 +205,7 @@ class PaddedCollatorForEval:
             input_text=input_text,
             pure_question=pure_question,
             answer=answer,
+            concept=concept,
             input_ids=input_ids,
             image=image,
             attention_mask=attention_mask,

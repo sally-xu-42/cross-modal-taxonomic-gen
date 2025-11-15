@@ -2,11 +2,13 @@
 #SBATCH --job-name=eval_vlm
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=2
-#SBATCH --gpus=nvidia_rtx_a6000:1
+#SBATCH -G1
+#SBATCH --exclude=g11
+##SBATCH --constraint=48g
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
-#SBATCH --time=07:55:00
+#SBATCH --time=04:00:00
 #SBATCH --signal=SIGHUP@600
 #SBATCH -o /share/data/speech/txu/vlm_semantics/logs/eval_%j.out
 
@@ -23,12 +25,11 @@ case $TASK in
 
     ppl)
         prefix="python3"
-        application="src/eval.py"
+        application="src/eval_things.py"
         options="--model_path ${MODEL_PATH} \
                 --dataset_path ${DATASET_PATH} \
                 --image_dir ${IMAGE_DIR} \
-                --output_path ${OUTPUT_PATH} \
-                --max_samples 1000"
+                --output_path ${OUTPUT_PATH}"
         ;;
 
     ppl_checkpoints)

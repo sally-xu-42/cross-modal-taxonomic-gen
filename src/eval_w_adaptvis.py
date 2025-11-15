@@ -5,6 +5,7 @@ import json
 import argparse
 import torch
 import pandas as pd
+import torch.nn.functional as F
 
 from tqdm import tqdm
 from pathlib import Path
@@ -17,6 +18,12 @@ from prismatic import load, available_model_ids
 from prismatic.conf import ModelConfig, DatasetConfig, DatasetRegistry
 from prismatic.models import get_llm_backbone_and_tokenizer, get_vision_backbone_and_transform, get_vlm
 from eval_utils import get_dataset_and_collator
+from adaptvis_utils import (
+    apply_attention_scaling_hook, 
+    remove_attention_scaling_hook,
+    calculate_uncertainty,
+    get_image_token_positions
+)
 
 IGNORE_INDEX = -100
 
@@ -57,10 +64,10 @@ def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFr
         relation_counts[relation] = total
     
     stats_data = {
-        'Relation': sorted(list(relation_accuracy.keys())),
-        'Count': [relation_counts[rel] for rel in sorted(relation_accuracy.keys())],
-        'Correct': [int(relation_accuracy[rel] * relation_counts[rel]) for rel in sorted(relation_accuracy.keys())],
-        'Accuracy': [f"{relation_accuracy[rel] * 100:.1f}%" for rel in sorted(relation_accuracy.keys())]
+        'Relation': list(relation_accuracy.keys()),
+        'Count': [relation_counts[rel] for rel in relation_accuracy.keys()],
+        'Correct': [int(relation_accuracy[rel] * relation_counts[rel]) for rel in relation_accuracy.keys()],
+        'Accuracy': [f"{relation_accuracy[rel] * 100:.1f}%" for rel in relation_accuracy.keys()]
     }
     
     stats_df = pd.DataFrame(stats_data)
@@ -75,7 +82,7 @@ def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFr
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Evaluate VLM on CLEVR spatial relations")
+    parser = argparse.ArgumentParser(description="Evaluate VLM on CLEVR spatial relations with AdaptVis")
     parser.add_argument(
         "--model_path", 
         type=str, 
@@ -106,6 +113,45 @@ if __name__ == "__main__":
         default=None,
         help="Maximum number of samples to evaluate (for testing)"
     )
+    # AdaptVis-specific arguments
+    parser.add_argument(
+        "--method",
+        type=str,
+        default="base",
+        choices=["base", "scaling_vis", "adapt_vis"],
+        help="Evaluation method: base, scaling_vis, or adapt_vis"
+    )
+    parser.add_argument(
+        "--weight",
+        type=float,
+        default=1.2,
+        help="Weight for ScalingVis method"
+    )
+    parser.add_argument(
+        "--weight1",
+        type=float,
+        default=0.5,
+        help="Weight1 for AdaptVis (low uncertainty)"
+    )
+    parser.add_argument(
+        "--weight2",
+        type=float,
+        default=1.2,
+        help="Weight2 for AdaptVis (high uncertainty)"
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.3,
+        help="Uncertainty threshold for AdaptVis"
+    )
+    parser.add_argument(
+        "--num_image_tokens",
+        type=int,
+        default=256,
+        help="Number of image tokens (patches)"
+    )
+    
     args = parser.parse_args()
 
     if args.model_path in available_model_ids(): # Load a pretrained VLM by ID to auto-download from the HF Hub)
@@ -223,7 +269,7 @@ if __name__ == "__main__":
         shuffle=False,
         num_workers=1
     )
-    print(f"Evaluating questions...")
+    print(f"Evaluating questions with method: {args.method}")
     
     results = []
     
@@ -231,42 +277,76 @@ if __name__ == "__main__":
         images = batch["image"]
         prompts = batch['input_text']
         pure_prompts = batch['pure_question']
-        # pure_prompts = [prompt.replace("<image>", "").strip() for prompt in prompts]
         prompts_text = []
         for prompt in prompts:
-            # prompt_builder = vlm.get_prompt_builder()
-            # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
-            # print(prompt_builder.system_prompt)
-            # example message: "<image>\nIs the green cylinder to the right of the sphere?"
-            # prompt_builder.add_turn(role="human", message=prompt)
             prompt_text = prompt
             print(f"[Debug] Full prompt:\n{prompt_text}\n") 
             prompts_text.append(prompt_text)
-            # prompts_text.append(prompt)
         prompts = prompts_text
-        # input_ids = batch['input_ids']
-        # labels = batch['labels']
         answers = batch['answer']
         candidates = ["Yes", "No"] # ======= added for candidate scoring
 
         # process one by one
         print(prompts[0])
         for i in range(len(prompts)):
-            # output = vlm.generate(
-            #     images[i],
-            #     prompts[i],
-            #     max_new_tokens=1,
-            #     temperature=None,
-            #     use_cache=False   # ================ transformers library version mismatch ==============
-            # )
-            output, _ = vlm.candidate_scoring(
-                images[i],
-                prompts[i],
-                candidates,
-                max_new_tokens=1,
-                temperature=0.0,
-                top_p=1.0
-            )
+            if args.method == "base":
+                # Standard evaluation without attention scaling
+                output, _ = vlm.candidate_scoring(
+                    images[i],
+                    prompts[i],
+                    candidates,
+                    max_new_tokens=1,
+                    temperature=0.0,
+                    top_p=1.0
+                )
+                
+            elif args.method == "scaling_vis":
+                # Apply fixed weight scaling
+                apply_attention_scaling_hook(vlm, args.weight, args.num_image_tokens)
+                output, _ = vlm.candidate_scoring(
+                    images[i],
+                    prompts[i],
+                    candidates,
+                    max_new_tokens=1,
+                    temperature=0.0,
+                    top_p=1.0
+                )
+                remove_attention_scaling_hook(vlm)
+                
+            elif args.method == "adapt_vis":
+                # Two-pass evaluation with uncertainty-based weight selection
+                # First pass: Generate with weight=1.0 to measure uncertainty
+                apply_attention_scaling_hook(vlm, 1.0, args.num_image_tokens)
+                output_base = vlm.generate(
+                    images[i],
+                    prompts[i],
+                    max_new_tokens=1,
+                    temperature=0.0,
+                    return_dict_in_generate=True,
+                    output_scores=True
+                )
+                remove_attention_scaling_hook(vlm)
+                
+                # Calculate uncertainty
+                uncertainty = calculate_uncertainty(output_base.scores[0][0])
+                print(f"Uncertainty: {uncertainty:.3f}, Threshold: {args.threshold}")
+                
+                # Select weight based on uncertainty
+                weight = args.weight1 if uncertainty < args.threshold else args.weight2
+                print(f"Selected weight: {weight}")
+                
+                # Second pass: Generate with selected weight
+                apply_attention_scaling_hook(vlm, weight, args.num_image_tokens)
+                output, _ = vlm.candidate_scoring(
+                    images[i],
+                    prompts[i],
+                    candidates,
+                    max_new_tokens=1,
+                    temperature=0.0,
+                    top_p=1.0
+                )
+                remove_attention_scaling_hook(vlm)
+            
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
             print(f"Ground truth answer: {answers[i]}, Model's answer: {predicted}\n")
@@ -282,13 +362,12 @@ if __name__ == "__main__":
     accuracy_dict, stats_df = calculate_accuracy(results)
     
     print("\nEvaluation Results:")
+    print(f"Method: {args.method}")
+    if args.method == "scaling_vis":
+        print(f"Weight: {args.weight}")
+    elif args.method == "adapt_vis":
+        print(f"Weight1: {args.weight1}, Weight2: {args.weight2}, Threshold: {args.threshold}")
     print(f"Overall Accuracy: {accuracy_dict['overall'] * 100:.1f}%")
     print(f"Total Illegal Ratio: {accuracy_dict['total_illegal_ratio'] * 100:.1f}%")
     print("\nAccuracy by Relation Type:")
     print(stats_df.to_string(index=False))
-    
-    # results_df = pd.DataFrame(results)
-    # results_df.to_csv(args.output_path, index=False)
-    # print(f"\nResults saved to {args.output_path}")
-    # stats_df.to_csv(args.output_path.replace('.csv', '_summary.csv'), index=False)
-    # print(f"\nSummary statistics saved to {args.output_path.replace('.csv', '_summary.csv')}")

@@ -20,27 +20,41 @@ from eval_utils import get_dataset_and_collator
 
 IGNORE_INDEX = -100
 
-
-def identify_relation(question: str) -> str:
-    """Identify the spatial relation in a question."""
-    spatial_relations = ["right", "left", "behind", "in front of"]
+# TODO: fix this! 
+def extract_hypernym(question: str) -> str:
+    """Extract the hypernym from the metafile."""
+    # Pattern 1: With article "a" or "an"
+    match = re.search(r'Is there (?:a|an) (.+?) in', question, re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
     
-    for relation in spatial_relations:
-        pattern = r'\b' + re.escape(relation) + r'\b'
-        if re.search(pattern, question.lower()):
-            return relation
-    
-    return "other"
+    # Pattern 2: Without article
+    match = re.search(r'Is there (.+?) in', question, re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    else:
+        print(f"Warning: Could not extract hypernym from question: {question}")
+    return ""
 
-
-def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFrame]:
+def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Calculate accuracy overall and per relation type."""
     relation_results = defaultdict(list)
+    confusion_data = {"yes_yes": 0, "yes_no": 0, "no_yes": 0, "no_no": 0, "illegal": 0}
     
     for result in results:
-        relation = result.get("relation", "other")
+        relation = result["hypernym"]
         is_correct = result["correct"]
         relation_results[relation].append(is_correct)
+        if result["illegal"]:
+            confusion_data["illegal"] += 1
+        elif result["answer"] == "Yes" and result["correct"]:
+            confusion_data["yes_yes"] += 1
+        elif result["answer"] == "Yes" and not result["correct"]:
+            confusion_data["yes_no"] += 1
+        elif result["answer"] == "No" and not result["correct"]:
+            confusion_data["no_yes"] += 1
+        elif result["answer"] == "No" and result["correct"]:
+            confusion_data["no_no"] += 1
 
     all_correct = sum(result["correct"] for result in results)
     all_illegal = sum(result["illegal"] for result in results)
@@ -57,7 +71,7 @@ def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFr
         relation_counts[relation] = total
     
     stats_data = {
-        'Relation': sorted(list(relation_accuracy.keys())),
+        'Concept': sorted(list(relation_accuracy.keys())),
         'Count': [relation_counts[rel] for rel in sorted(relation_accuracy.keys())],
         'Correct': [int(relation_accuracy[rel] * relation_counts[rel]) for rel in sorted(relation_accuracy.keys())],
         'Accuracy': [f"{relation_accuracy[rel] * 100:.1f}%" for rel in sorted(relation_accuracy.keys())]
@@ -70,8 +84,30 @@ def calculate_accuracy(results: List[Dict]) -> Tuple[Dict[str, float], pd.DataFr
         "total_illegal_ratio": total_illegal_ratio,
         **relation_accuracy
     }
-    
-    return accuracy_dict, stats_df
+
+    # Top 10 categories by accuracy
+    sorted_relations = sorted(relation_accuracy.items(), key=lambda x: x[1], reverse=True)
+    top_10 = sorted_relations[:10]
+    top_10_data = {
+        'Rank': list(range(1, len(top_10) + 1)),
+        'Concept': [rel for rel, _ in top_10],
+        'Count': [relation_counts[rel] for rel, _ in top_10],
+        'Correct': [int(acc * relation_counts[rel]) for rel, acc in top_10],
+        'Accuracy': [f"{acc * 100:.1f}%" for _, acc in top_10]
+    }
+    top_10_df = pd.DataFrame(top_10_data)
+
+    # Confusion matrix as DataFrame
+    confusion_df = pd.DataFrame({
+        '': ['Predicted Yes', 'Predicted No', 'Illegal'],
+        'Actual Yes': [confusion_data["yes_yes"], confusion_data["yes_no"], '-'],
+        'Actual No': [confusion_data["no_yes"], confusion_data["no_no"], '-'],
+        'Total': [confusion_data["yes_yes"] + confusion_data["no_yes"], 
+                  confusion_data["yes_no"] + confusion_data["no_no"],
+                  confusion_data["illegal"]]
+    })
+
+    return accuracy_dict, stats_df, confusion_df, top_10_df
 
 
 if __name__ == "__main__":
@@ -85,19 +121,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--dataset_path", 
         type=str, 
-        default="data/clevr_val_qa_preprocessed.json",
-        help="Path to the preprocessed CLEVR question dataset"
+        default="data/preprocessed_THINGS/val_hyp.json",
+        help="Path to the preprocessed THINGS question dataset"
     )
     parser.add_argument(
         "--image_dir", 
         type=str, 
-        default="./data/CLEVR_v1.0/images",
-        help="Directory containing CLEVR images"
+        default="./data/hypernymy_THINGS/images",
+        help="Directory containing THINGS images"
     )
     parser.add_argument(
         "--output_path", 
         type=str, 
-        default="./evaluation_results.csv",
+        default="./evaluation_results.csv", # current dir
         help="Path to save evaluation results"
     )
     parser.add_argument(
@@ -112,14 +148,17 @@ if __name__ == "__main__":
         hf_token = os.environ.get(".hf_token", None)
         model_id = args.model_path
         vlm = load(model_id, hf_token=hf_token)
-        # Evaluate on CLEVR
         for dataset_variant in DatasetRegistry:
-            if dataset_variant.dataset_id == "clevr-mini":
+            if dataset_variant.dataset_id == "things":
                 dataset_cfg = dataset_variant.value()
         if args.dataset_path:
+            dataset_cfg.align_stage_components = (
+                Path(args.dataset_path),  # By default, this is the preprocessed THINGS dataset validation split
+                Path("data/hypernymy_THINGS/images")
+            )
             dataset_cfg.finetune_stage_components = (
-                Path(args.dataset_path),  # By default, this is the preprocessed CLEVR dataset validation split
-                Path("data/CLEVR_v1.0/images")
+                Path(args.dataset_path),  # By default, this is the preprocessed THINGS dataset validation split
+                Path("data/hypernymy_THINGS/images")
             )
         vision_backbone = vlm.vision_backbone
         llm_backbone = vlm.llm_backbone
@@ -187,13 +226,22 @@ if __name__ == "__main__":
         vlm.projector.load_state_dict(checkpoint["model"]["projector"])
         dataset_cfg = decode(DatasetConfig, config["dataset"])
         dataset_cfg.dataset_root_dir = Path("/share/data/speech/txu/vlm_semantics")
+        if args.dataset_path: # Customized evaluation dataset path
+            dataset_cfg.align_stage_components = (
+                Path(args.dataset_path),  # By default, this is the preprocessed THINGS dataset validation split
+                Path("data/hypernymy_THINGS/images")
+            )
+            dataset_cfg.finetune_stage_components = (
+                Path(args.dataset_path),  # By default, this is the preprocessed THINGS dataset validation split
+                Path("data/hypernymy_THINGS/images")
+            )    
         if inference_mode: # Finetune stage
             print("Loading fine-tuned LLM weights from model.llm_backbone") # Load fine-tuned LLM weights
             vlm.llm_backbone.load_state_dict(checkpoint["model"]["llm_backbone"], strict=False)
-            dataset_cfg.finetune_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
+            # dataset_cfg.finetune_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
         else: # Align stage
             print("Warning: No LLM backbone weights found in checkpoint")
-            dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
+            # dataset_cfg.align_stage_components = [args.dataset_path, "data/CLEVR_v1.0/images"]
     
     vlm.to(torch.cuda.current_device())
     vlm.projector.to(torch.cuda.current_device())
@@ -231,34 +279,19 @@ if __name__ == "__main__":
         images = batch["image"]
         prompts = batch['input_text']
         pure_prompts = batch['pure_question']
-        # pure_prompts = [prompt.replace("<image>", "").strip() for prompt in prompts]
+        concepts = batch['concept']
         prompts_text = []
         for prompt in prompts:
-            # prompt_builder = vlm.get_prompt_builder()
-            # EVERY TIME TURN COUNT IS 0 =>> SYSTEM PROMPT
-            # print(prompt_builder.system_prompt)
-            # example message: "<image>\nIs the green cylinder to the right of the sphere?"
-            # prompt_builder.add_turn(role="human", message=prompt)
             prompt_text = prompt
             print(f"[Debug] Full prompt:\n{prompt_text}\n") 
             prompts_text.append(prompt_text)
-            # prompts_text.append(prompt)
         prompts = prompts_text
-        # input_ids = batch['input_ids']
-        # labels = batch['labels']
         answers = batch['answer']
         candidates = ["Yes", "No"] # ======= added for candidate scoring
 
         # process one by one
         print(prompts[0])
         for i in range(len(prompts)):
-            # output = vlm.generate(
-            #     images[i],
-            #     prompts[i],
-            #     max_new_tokens=1,
-            #     temperature=None,
-            #     use_cache=False   # ================ transformers library version mismatch ==============
-            # )
             output, _ = vlm.candidate_scoring(
                 images[i],
                 prompts[i],
@@ -267,6 +300,7 @@ if __name__ == "__main__":
                 temperature=0.0,
                 top_p=1.0
             )
+            hypernym = extract_hypernym(prompts[i])
             predicted = output.strip().lower()
             predicted = re.sub(r'[^\w\s]', '', predicted).strip()
             print(f"Ground truth answer: {answers[i]}, Model's answer: {predicted}\n")
@@ -274,21 +308,37 @@ if __name__ == "__main__":
                 "question": prompts[i],
                 "answer": answers[i],
                 "predicted_answer": predicted,
-                "relation": identify_relation(pure_prompts[i]),
+                "concept": concepts[i],
+                "hypernym": hypernym,
                 "correct": answers[i].strip().lower() == predicted.lower().strip(),
                 "illegal": predicted not in ["yes", "no"]
             })
 
-    accuracy_dict, stats_df = calculate_accuracy(results)
+    accuracy_dict, stats_df, confusion_df, top_10_df = calculate_accuracy(results)
     
     print("\nEvaluation Results:")
     print(f"Overall Accuracy: {accuracy_dict['overall'] * 100:.1f}%")
     print(f"Total Illegal Ratio: {accuracy_dict['total_illegal_ratio'] * 100:.1f}%")
-    print("\nAccuracy by Relation Type:")
-    print(stats_df.to_string(index=False))
+
+    print("\n" + "-"*50)
+    print("CONFUSION MATRIX")
+    print("-"*50)
+    print(confusion_df.to_string(index=False))
+
+    print("\n" + "-"*50)
+    print("TOP 10 CATEGORIES BY ACCURACY")
+    print("-"*50)
+    print(top_10_df.to_string(index=False))
+
+    # print("\nAccuracy by Relation Type:")
+    # print(stats_df.to_string(index=False))
     
-    # results_df = pd.DataFrame(results)
-    # results_df.to_csv(args.output_path, index=False)
-    # print(f"\nResults saved to {args.output_path}")
-    # stats_df.to_csv(args.output_path.replace('.csv', '_summary.csv'), index=False)
-    # print(f"\nSummary statistics saved to {args.output_path.replace('.csv', '_summary.csv')}")
+    results_df = pd.DataFrame(results)
+    results_df.to_csv(args.output_path, index=False)
+    print(f"\nResults saved to {args.output_path}")
+    accuracy_dict_df = pd.DataFrame([accuracy_dict])
+    accuracy_dict_df.to_csv(args.output_path.replace('.csv', '_accuracy.csv'), index=False)
+    print(f"\nAccuracy summary saved to {args.output_path.replace('.csv', '_accuracy.csv')}")
+    # stats_df.to_csv(args.output_path.replace('.csv', '_stats_by_relation.csv'), index=False)
+    # confusion_df.to_csv(args.output_path.replace('.csv', '_confusion_matrix.csv'), index=False)
+    # top_10_df.to_csv(args.output_path.replace('.csv', '_top_10_categories.csv'), index=False)

@@ -2,7 +2,7 @@
 #SBATCH --partition=greg-gpu,speech-gpu
 #SBATCH --cpus-per-task=10
 ##SBATCH --nodelist=g0
-#SBATCH --exclude=g6
+#SBATCH --exclude=g6,g14,g15,g19
 #SBATCH --constraint=48g
 #SBATCH --gpus=4
 #SBATCH --mail-user=sallyxu@ttic.edu
@@ -17,8 +17,8 @@
 export HF_HOME="/share/data/speech/txu/cache"  # Optional: Set Hugging Face cache directory
 export TOKENIZERS_PARALLELISM=false  # Disable tokenizer parallelism for PyTorch DataLoaders
 export WANDB__SERVICE_WAIT=300
-export NCCL_DEBUG=INFO
-export TORCH_DISTRIBUTED_DEBUG=INFO
+# export NCCL_DEBUG=INFO
+# export TORCH_DISTRIBUTED_DEBUG=INFO
 # export CUDA_VISIBLE_DEVICES=0,1,2,3
 # export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
 # export CUDA_LAUNCH_BLOCKING=1  # For debugging
@@ -41,10 +41,10 @@ ARGS=(
     --model.type "$MODEL_ID"
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
-    --model.align_epochs 4500
-    --model.finetune_per_device_batch_size 24 # 128
-    --model.finetune_global_batch_size 192 # 512
-    --model.finetune_epochs 50 # trying to overfit 
+    --model.align_epochs 5
+    --model.finetune_per_device_batch_size 4 # 128
+    --model.finetune_global_batch_size 32 # 512
+    --model.finetune_epochs 5 # trying to overfit 
 )
 
 if [[ -n "${CHECKPOINT}" ]]; then
