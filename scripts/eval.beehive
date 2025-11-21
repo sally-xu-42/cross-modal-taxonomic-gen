@@ -3,7 +3,7 @@
 #SBATCH --partition=speech-gpu
 #SBATCH --cpus-per-task=2
 #SBATCH -G1
-#SBATCH --exclude=g11
+#SBATCH --exclude=g7
 ##SBATCH --constraint=48g
 #SBATCH --mail-user=sallyxu@ttic.edu
 #SBATCH --open-mode=append

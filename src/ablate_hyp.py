@@ -1,10 +1,11 @@
+""" Ablate leaf-level concepts from hypernym-based datasets. Based on the directory names of images. """
 import re
 import json
 import random
 
 from collections import defaultdict
 
-# 52 hypernyms and 1222 (1216) leaf-level concepts
+# 53 hypernyms and 1222 (1216) leaf-level concepts
 def check_hypernyms():
     file_name = "./data/preprocessed_THINGS/test_hyp.json"
     with open(file_name, 'r') as f:
@@ -17,7 +18,7 @@ def check_hypernyms():
     # bracelet -> bracelet1, bracelet2, ... (all mapped to bracelet)
     # Hypernym is extracted from the question (TODO:  map them to match trains_hyp.jsonl when plotting)
     # Example: office supply item (in the q) -> office supply (metadata)
-    # Still the same 52 hypernyms, just different wording
+    # Still the same 53 hypernyms, just different wording
     for i, item in enumerate(data):
         question = item['conversations'][0]['value']
         concept = item['image'].split('/')[0] # image = "aardvark/aardvark_13s.jpg"
@@ -153,7 +154,8 @@ def check_ablations(ratio: float):
             print(f"Error: Found entry with removed concept {concept} in ablated dataset.")
     print("Ablation check completed.")
 
-def combine_ablations(ratio: float):
+# ATTENTION: THIS ONLY WORKS FOR TRAIN SPLIT!!! NAMING ISSUE
+def combine_ablations(ratio: float): 
     with open(f"./data/preprocessed_THINGS/train_hyp_ablated_{int(ratio*100)}pct.json", 'r') as f:
         ablated_data = json.load(f)
     with open("./data/preprocessed_THINGS/train.json", 'r') as f:

@@ -2,7 +2,7 @@
 #SBATCH --partition=greg-gpu,speech-gpu
 #SBATCH --cpus-per-task=10
 ##SBATCH --nodelist=g0
-#SBATCH --exclude=g6,g14,g15,g19
+#SBATCH --exclude=g6
 #SBATCH --constraint=48g
 #SBATCH --gpus=4
 #SBATCH --mail-user=sallyxu@ttic.edu
