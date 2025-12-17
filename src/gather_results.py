@@ -4,8 +4,8 @@ import argparse
 import os
 import pandas as pd
 
-def clean_results():
-    file_path = 
+# def clean_results():
+#     file_path = 
 
 def gather_results(run_dir):
     """ Gather results from a single run and save them to a csv file. """

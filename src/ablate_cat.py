@@ -7,9 +7,9 @@ def create_ablations(n_categories: int):
     """Create ablated datasets by removing entire categories."""
 
     # Select categories to remove
-    with open("./data/hypernymy_THINGS/train_hyp_to_concepts.json", 'r') as f:
-        hyps = json.load(f)
-    categories_to_remove = random.sample(list(hyps.keys()), n_categories)
+    # with open("./data/hypernymy_THINGS/train_hyp_to_concepts.json", 'r') as f:
+    #     hyps = json.load(f)
+    # categories_to_remove = random.sample(list(hyps.keys()), n_categories)
 
     if n_categories == 10:
         categories_to_remove = ['container', 'personal hygiene item', 'dessert', 'item of clothing', 'furniture', 'breakfast food', 'scientific equipment', 'garden tool', 'car part', 'sea animal']
@@ -22,8 +22,8 @@ def create_ablations(n_categories: int):
     print(f"Removing {n_categories} categories: {categories_to_remove}")
     
     # Process all splits
-    for split in ['val', 'test']:
-        with open(f"./data/preprocessed_THINGS/{split}_hyp.json", 'r') as f:
+    for split in ['train']:
+        with open(f"./data/preprocessed_THINGS/{split}_hyp_shuffled.json", 'r') as f:
             data = json.load(f)
 
         indices_to_remove = []
@@ -38,23 +38,24 @@ def create_ablations(n_categories: int):
         # Split data
         trained = [item for i, item in enumerate(data) if i not in indices_to_remove]
         ablated = [item for i, item in enumerate(data) if i in indices_to_remove]
-        with open(f"./data/preprocessed_THINGS/{split}_hyp_trained_{n_categories}cat.json", 'w') as f:
+        # with open(f"./data/preprocessed_THINGS/{split}_hyp_trained_{n_categories}cat_shuffled.json", 'w') as f:
+        #     json.dump(trained, f)
+        with open(f"./data/preprocessed_THINGS/{split}_hyp_ablated_{n_categories}cat_shuffled.json", 'w') as f:
             json.dump(trained, f)
-        with open(f"./data/preprocessed_THINGS/{split}_hyp_ablated_{n_categories}cat.json", 'w') as f:
-            json.dump(ablated, f)
         print(f"{split.capitalize()} - Trained: {len(trained)}, Ablated: {len(ablated)}")
 
 def combine_ablations(n_categories: int):
-    with open(f"./data/preprocessed_THINGS/train_hyp_ablated_{n_categories}cat.json", 'r') as f:
+    with open(f"./data/preprocessed_THINGS/train_hyp_ablated_{n_categories}cat_shuffled.json", 'r') as f:
         ablated_data = json.load(f)
-    with open(f"./data/preprocessed_THINGS/train.json", 'r') as f:
+    with open(f"./data/preprocessed_THINGS/train_shuffled.json", 'r') as f:
         original_data = json.load(f)
     combined_data = original_data + ablated_data
     print(f"Combined dataset size ablating {n_categories} categories of train split: {len(combined_data)}")
-    output_path = f"./data/preprocessed_THINGS/train_combined_ablated_{n_categories}cat.json"
+    output_path = f"./data/preprocessed_THINGS/train_combined_ablated_{n_categories}cat_shuffled.json"
     with open(output_path, 'w') as f:
         json.dump(combined_data, f)
 
 if __name__ == "__main__":
     for n in [10, 20, 30, 40]:
         create_ablations(n)
+        combine_ablations(n)
