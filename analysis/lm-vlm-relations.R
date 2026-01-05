@@ -11,6 +11,50 @@ stimuli <- stream_in(file("llm-backbone-exp-data/yn_questions.jsonl")) %>%
 stimuli %>%
   distinct(hyponym, hypernym)
 
+stimuli %>% 
+  filter(q_type == "positive_sample") %>% 
+  distinct(hyponym, hypernym) %>% 
+  count(hyponym, sort = TRUE) %>%
+  count(n) %>%
+  ggplot(aes(n, nn)) +
+  geom_col(color = "#66a61e", fill = "#66a61e", width = 0.7) +
+  geom_text(aes(label = nn), nudge_y = 0.1, size = 4) +
+  scale_y_log10(expand = c(0,0), limits = c(0.95,1100)) +
+  scale_x_continuous(breaks = c(1,2,3,4,5,6)) +
+  theme_bw(base_size = 18, base_family = "Times") +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_text(color="black")
+  ) +
+  labs(
+    x = "Hypernyms per leaf",
+    y = "Count (log-scaled)"
+  )
+
+ggsave("plots/hypernym-counts.pdf", height = 3.02, width = 3.72, dpi=300, device=cairo_pdf)
+
+
+stimuli %>% 
+  filter(q_type == "positive_sample") %>% 
+  distinct(hyponym, hypernym) %>% 
+  count(hypernym, sort = TRUE) %>%
+  mutate(hypernym = factor(hypernym), hypernym = fct_reorder(hypernym, -n)) %>%
+  ggplot(aes(hypernym, n)) +
+  geom_col(color = "#66a61e", fill = "#66a61e",width=0.8) +
+  scale_y_log10(limits = c(1,1000), expand=c(0.01,0.001)) +
+  theme_bw(base_size = 18, base_family = "Times") +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    axis.text = element_text(color="black"),
+    panel.grid = element_blank(),
+    axis.title.x = element_blank()
+  ) +
+  labs(
+    y = "Number of leaves\n(log-scaled)"
+  )
+
+ggsave("plots/hypernym-distribution.pdf", width = 12, height = 4.4, device=cairo_pdf, dpi = 300)
+
 raw_results_vlm <- fs::dir_ls("kanishka_res/", regexp = "*.csv") %>%
   map_df(read_csv, .id = "file") %>%
   mutate(
