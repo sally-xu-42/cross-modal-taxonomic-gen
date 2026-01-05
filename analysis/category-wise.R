@@ -34,7 +34,7 @@ raw_results %>%
   group_by(model, vision_encoder) %>%
   summarize(
     accuracy = mean(answer == predicted_answer)
-  ) 
+  )
   
 
 vlm_corrects <- raw_results %>%
@@ -90,7 +90,8 @@ raw_results %>%
     mean = mean(accuracy)
   ) %>%
   ungroup() %>%
-  filter(model == "500m", vision_encoder == "DINOv2") %>%
+  # filter(model == "500m", vision_encoder == "DINOv2") %>%
+  filter(model == "1b-llama", vision_encoder == "DINOv2") %>%
   # filter(model == "1b", n > 10) %>%
   # filter(model == "1b", vision_encoder == "DINOv2", n > 10) %>%
   mutate(
@@ -101,7 +102,7 @@ raw_results %>%
   ggplot(aes(hypernym, mean)) +
   geom_point(size = 2) +
   geom_linerange(aes(ymin = mean-cb, ymax=mean+cb)) +
-  scale_y_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1.01)) +
   theme_bw(base_size = 16) +
   theme(
     axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
@@ -111,3 +112,58 @@ raw_results %>%
     y = "Generalization Accuracy"
   )
 
+raw_results %>%
+  group_by(model, vision_encoder, concept, hypernym) %>%
+  summarise(
+    accuracy = mean(answer == predicted_answer)
+  ) %>%
+  ungroup() %>%
+  group_by(model, vision_encoder, hypernym) %>%
+  summarize(
+    n = n(),
+    sd = sd(accuracy),
+    cb = qt(0.05/2, n-1, lower.tail = FALSE) * sd/sqrt(n),
+    mean = mean(accuracy)
+  ) %>%
+  ungroup() %>%
+  filter(model %in% c("500m", "1b"), vision_encoder == "DINOv2") %>%
+  # filter(model == "500m", vision_encoder == "DINOv2") %>%
+  # filter(model == "1b-llama", vision_encoder == "DINOv2") %>%
+  # filter(model == "1b", n > 10) %>%
+  # filter(model == "1b", vision_encoder == "DINOv2", n > 10) %>%
+  mutate(
+    model = case_when(
+      model == "500m" ~ "Qwen3-0.6B",
+      TRUE ~ "Qwen3-1.7B"
+    ),
+    hypernym = factor(hypernym),
+    hypernym = fct_reorder(hypernym, mean, .desc = TRUE)
+  ) %>%
+  # ggplot(aes(hypernym, mean, color = vision_encoder)) +
+  ggplot(aes(hypernym, mean, color = model, fill = model, shape = model)) +
+  geom_point(size = 2) +
+  geom_linerange(aes(ymin = mean-cb, ymax=mean+cb)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
+  scale_y_continuous(limits = c(0, 1.01), labels = scales::percent_format(suffix = "")) +
+  scale_shape_manual(values = c(21,23)) +
+  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
+  # theme_bw(base_size = 16) +
+  theme_bw(base_size = 18, base_family = "Times") +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    panel.grid = element_blank(),
+    legend.position = "top",
+    axis.title.x = element_blank(),
+    axis.text = element_text(color="black")
+  ) +
+  labs(
+    x = "Hypernym",
+    y = "Accuracy on\nunseen images (%)",
+    color = "LM Backbone",
+    shape = "LM Backbone",
+    fill = "LM Backbone"
+  )
+
+#1186,471
+
+ggsave("plots/category-wise-seed42.pdf", height = 4.71, width = 11.86, dpi=300, device=cairo_pdf)

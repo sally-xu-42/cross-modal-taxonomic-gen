@@ -1,10 +1,15 @@
 library(tidyverse)
 
+question_scores <- read_csv("kanishka_res/llm-backbone-yn-filtering/allenai_Olmo-3-1025-7B.csv")
+
 stimuli <- stream_in(file("llm-backbone-exp-data/yn_questions.jsonl")) %>%
   as_tibble() %>%
   mutate(
     idx = row_number()-1
-  )
+  ) %>% inner_join(question_scores)
+
+stimuli %>%
+  distinct(hyponym, hypernym)
 
 raw_results_vlm <- fs::dir_ls("kanishka_res/", regexp = "*.csv") %>%
   map_df(read_csv, .id = "file") %>%
@@ -39,7 +44,7 @@ llm_stimuli <- stream_in(file("llm-backbone-exp-data/yn_questions.jsonl")) %>%
   as_tibble() %>%
   mutate(
     idx = row_number()-1
-  )
+  ) %>% inner_join(question_scores)
 
 raw_results_llm <- fs::dir_ls("kanishka_res/llm-backbone-yn/", regexp="*.csv") %>%
   map_df(read_csv, .id = "model") %>%
@@ -66,6 +71,29 @@ llm_corrects <- raw_results_llm %>%
     llm_max_correct = phrasing_1 | phrasing_2 | phrasing_3 | phrasing_4,
     llm_joint_correct = phrasing_1 & phrasing_2 & phrasing_3 & phrasing_4
   )
+
+llm_corrects_filtered <- raw_results_llm %>%
+  group_by(model, item, q_type) %>%
+  filter(score == max(score)) %>%
+  ungroup() %>%
+  select(model, hyponym, hypernym, phrasing_id, correct) %>%
+  distinct()
+
+llm_corrects_filtered %>% count(model, phrasing_id)
+
+llm_corrects_filtered %>%
+  group_by(model) %>%
+  summarize(
+    n = n(),
+    accuracy = mean(correct)
+  )
+  # select(model, hyponym, hypernym, phrasing_id, correct) %>%
+  # distinct() %>%
+  # pivot_wider(names_from = phrasing_id, values_from = correct, names_prefix = "phrasing_") %>%
+  # mutate(
+  #   llm_max_correct = phrasing_1 | phrasing_2 | phrasing_3 | phrasing_4,
+  #   llm_joint_correct = phrasing_1 & phrasing_2 & phrasing_3 & phrasing_4
+  # )
 
 llm_corrects %>% 
   group_by(model) %>% 
@@ -177,6 +205,54 @@ llm_corrects %>%
 
 ggsave("plots/lm-agreement-seed42.pdf", height = 7.62, width = 14.88, dpi=300, device=cairo_pdf)
 
+
+llm_corrects_filtered %>%
+  inner_join(vlm_corrects) %>%
+  group_by(model, vision_encoder, hypernym) %>%
+  summarize(
+    n = n(),
+    max_agreement = mean(correct == vlm_max_correct), # model was correct for all surface forms
+    joint_agreement = mean(correct == vlm_joint_correct) # model was correct for at least one image
+  ) %>%
+  ungroup() %>%
+  filter(vision_encoder == "DINOv2") %>% 
+  pivot_longer(max_agreement:joint_agreement, names_to = "agreement_type", values_to = "agreement") %>%
+  mutate(
+    agreement_type = case_when(
+      agreement_type == "max_agreement" ~ "Maximum",
+      agreement_type == "joint_agreement" ~ "Joint"
+    ),
+    hypernym = factor(hypernym),
+    hypernym = fct_reorder(hypernym, n)
+  ) %>% 
+  # ggplot(aes(hypernym, agreement, color = model, fill = model, shape = model)) +
+  ggplot(aes(hypernym, agreement, color = agreement_type, fill = agreement_type, shape = agreement_type)) +
+  geom_point(size = 2) +
+  # facet_wrap(~agreement_type, nrow = 2) +
+  facet_wrap(~model, nrow = 2) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(suffix = "")) +
+  scale_shape_manual(values = c(21,23)) +
+  scale_color_manual(values = c("#e7298a", "#66a61e"), aesthetics=c("fill", "color")) +
+  theme_bw(base_size = 18, base_family = "Times") +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    legend.position = "top",
+    axis.text = element_text(color = "black"),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Hypernym Category",
+    y = "Agreement between\nVLM and LM predictions (%)",
+    shape = "Agreement Type",
+    color = "Agreement Type",
+    fill = "Agreement Type"
+  )
+
+ggsave("plots/lm-agreement-seed42.pdf", height = 7.62, width = 14.88, dpi=300, device=cairo_pdf)
+
+
+
 llm_corrects %>%
   inner_join(vlm_corrects) %>%
   group_by(model, vision_encoder) %>%
@@ -198,6 +274,31 @@ overall_agreement <- llm_corrects %>%
     n = n(),
     max_agreement = mean(llm_max_correct == vlm_max_correct), # model was correct for all surface forms
     joint_agreement = mean(llm_joint_correct == vlm_joint_correct) # model was correct for at least one image
+  ) %>%
+  ungroup() %>%
+  filter(vision_encoder == "DINOv2") %>% 
+  pivot_longer(max_agreement:joint_agreement, names_to = "measure", values_to = "value") %>%
+  mutate(
+    measure = case_when(
+      measure == "max_agreement" ~ "Maximum",
+      measure == "joint_agreement" ~ "Joint"
+    )
+  ) %>%
+  group_by(model, measure) %>%
+  summarize(
+    n = n(),
+    sd = sd(value),
+    conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
+    value = mean(value)
+  )
+
+llm_corrects_filtered %>%
+  inner_join(vlm_corrects) %>%
+  group_by(model, vision_encoder, hypernym) %>%
+  summarize(
+    n = n(),
+    max_agreement = mean(correct == vlm_max_correct), # model was correct for all surface forms
+    joint_agreement = mean(correct == vlm_joint_correct) # model was correct for at least one image
   ) %>%
   ungroup() %>%
   filter(vision_encoder == "DINOv2") %>% 
