@@ -25,7 +25,7 @@ case $TASK in
 
     ppl)
         prefix="python3"
-        application="src/eval_things.py"
+        application="src/evaluation/eval_things.py"
         options="--model_path ${MODEL_PATH} \
                 --dataset_path ${DATASET_PATH} \
                 --image_dir ${IMAGE_DIR} \

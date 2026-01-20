@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --partition=greg-gpu,speech-gpu
 #SBATCH --cpus-per-task=10
-##SBATCH --nodelist=g0
-#SBATCH --exclude=g6
+##SBATCH --nodelist=g19
+##SBATCH --exclude=g1,g6,g7
 #SBATCH --constraint=48g
 #SBATCH --gpus=4
 #SBATCH --mail-user=sallyxu@ttic.edu
@@ -26,7 +26,7 @@ export WANDB__SERVICE_WAIT=300
 # Define experiment parameters
 # RUN_ID="train-clevr-align-$(date +%s)"  # Unique run ID with timestamp
 RUN_ROOT_DIR="/share/data/speech/txu/vlm_semantics/runs"
-RUN_ID="${STAGE}-${MODEL_ID}-${DATASET_ID}-${SEED}"
+RUN_ID="${STAGE}-${MODEL_ID}-${DATASET_ID}-${SEED}-random"
 RESET_FOR_NEW_STAGE="${RESET_FOR_NEW_STAGE:-False}"
 
 # Activate the virtual environment
@@ -39,6 +39,7 @@ ARGS=(
     --stage "$STAGE"
     --dataset.type "$DATASET_ID"
     --model.type "$MODEL_ID"
+    --random_init_llm True
     --model.align_per_device_batch_size 4
     --model.align_global_batch_size 16
     --model.align_epochs 5
