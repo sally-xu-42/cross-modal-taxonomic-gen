@@ -11,12 +11,6 @@ The codebase is built on top of [Prismatic VLMs](https://github.com/TRI-ML/prism
 
 ## Installation
 
-### Prerequisites
-
-- Python 3.8+
-- PyTorch 2.1+ (with CUDA support)
-- CUDA-capable GPU(s)
-
 ### Setup
 
 1. Clone the repository:
@@ -81,7 +75,7 @@ Train a model using the provided script:
 
 #### Concept Ablation
 
-Remove specific concepts from training to test generalization:
+Remove specific concepts from training to test taxonomic generalization:
 
 ```bash
 # Ablate 30% of concepts from training set
@@ -128,6 +122,7 @@ python src/evaluation/visual_coherence.py
 Evaluate language-only models (without vision):
 
 ```bash
+python src/llm-backbone-yn.py
 ```
 
 ## Configuration
@@ -148,7 +143,6 @@ Models are configured using the Prismatic framework. Common model IDs include:
 Evaluation results are saved as CSV files with the following metrics:
 - Overall accuracy
 - Per-category accuracy
-- Confusion matrices
 - Illegal answer rates
 
 ## Citation
