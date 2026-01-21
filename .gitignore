@@ -190,6 +190,7 @@ dmypy.json
 # Caches and Datasets
 cache/
 data/
+!data/llm-backbone-exp-data/
 
 # Framework
 # prismatic-vlms/
