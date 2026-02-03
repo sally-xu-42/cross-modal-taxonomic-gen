@@ -48,28 +48,34 @@ read_results <- function(path) {
     )
 }
 
-# leaf <- read_csv("kanishka_res/raw-results-google-drive/all_leaf_evals.csv")
-# leaf_shuffled <- read_csv("kanishka_res/raw-results-google-drive/shuffled_leaf_evals.csv")
+# leaf <- read_csv("main-results/all_leaf_evals.csv")
+# leaf_shuffled <- read_csv("main-results/shuffled_leaf_evals.csv")
+
+unseen_counts <- read_csv("main-results/all_unseen_counts.csv")
+leaf_counts <- read_csv("main-results/all_leaf_counts.csv")
+seen_counts <- read_csv("main-results/all_seen_counts.csv")
 
 leaf <- bind_rows(
-  read_results("kanishka_res/raw-results-google-drive/all_leaf_evals.csv"),
-  read_results("kanishka_res/raw-results-google-drive/random_leaf_evals.csv")
+  read_results("main-results/all_leaf_evals.csv"),
+  read_results("main-results/random_leaf_evals.csv")
 ) %>%
   distinct()
 unseen <- bind_rows(
-  read_results("kanishka_res/raw-results-google-drive/all_unseen_evals.csv"),
-  read_results("kanishka_res/raw-results-google-drive/random_unseen_evals.csv")
+  read_results("main-results/all_unseen_evals.csv"),
+  read_results("main-results/random_unseen_evals.csv")
 ) %>%
   distinct()
 seen <- bind_rows(
-  read_results("kanishka_res/raw-results-google-drive/all_seen_evals.csv"),
-  read_results("kanishka_res/raw-results-google-drive/random_seen_evals.csv")
+  read_results("main-results/all_seen_evals.csv"),
+  read_results("main-results/random_seen_evals.csv")
 ) %>%
   distinct()
-unseen_shuffled <- read_results("kanishka_res/raw-results-google-drive/shuffled_unseen_evals.csv")
+unseen_shuffled <- read_results("main-results/shuffled_unseen_evals.csv")
 
 unseen_shuffled %>% filter(vision_encoder=="DINOv2", str_detect(lm, "Qwen")) %>%
   filter(is.na(ablation_amt))
+
+unseen %>% filter(seen_hypernyms==0, random==TRUE) %>% View()
 
 leaf %>% count(seed, random, vision_encoder, lm, shuffled, ablation_type, ablation_amt)
 
@@ -147,20 +153,33 @@ dino_vs_siglip %>%
 
 ggsave("plots/dino-vs-siglip.pdf", width = 4.45, height = 3.6, dpi=300, device=cairo_pdf)
 
+
 # Dino across ablations
 exp1_ablation_results_raw <- bind_rows(
   unseen %>%
     select(-overall, -total_illegal_ratio) %>%
-    pivot_longer(mammal:condiment, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Held out Hypernyms"),
+    pivot_longer(musical:`hardware item`, names_to = "category", values_to = "acc") %>%
+    mutate(experiment = "Held out Hypernyms") %>%
+    inner_join(
+      unseen_counts %>%
+        pivot_longer(animal:weapon, names_to = "category", values_to = "count")
+    ),
   seen %>%
     select(-overall, -total_illegal_ratio) %>%
-    pivot_longer(musical:headwear, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Seen Hypernyms"),
+    pivot_longer(mammal:`hardware item`, names_to = "category", values_to = "acc") %>%
+    mutate(experiment = "Seen Hypernyms") %>%
+    inner_join(
+      seen_counts %>%
+        pivot_longer(animal:weapon, names_to = "category", values_to = "count")
+    ),
   leaf %>%
     select(-overall, -total_illegal_ratio) %>%
-    pivot_longer(aardvark:zucchini, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Leaves")
+    pivot_longer(aardvark:`waffle iron`, names_to = "category", values_to = "acc") %>%
+    mutate(experiment = "Leaves") %>%
+    inner_join(
+      leaf_counts %>%
+        pivot_longer(aardvark:zucchini, names_to = "category", values_to = "count")
+    )
 ) %>%
   mutate(
     experiment = factor(experiment, levels = c("Leaves", "Seen Hypernyms", "Held out Hypernyms"))
@@ -169,10 +188,14 @@ exp1_ablation_results_raw <- bind_rows(
   filter(str_detect(lm, "Qwen")) %>% 
   filter(!is.na(acc)) %>%
   group_by(experiment, lm, seen_hypernyms, ablation_type, category, random) %>%
-  summarize(acc = mean(acc)) %>%
+  summarize(acc = mean(acc), count = mean(count)) %>%
   ungroup() %>%
   group_by(experiment, lm, seen_hypernyms, ablation_type, random) %>%
   summarize(
+    total = sum(count),
+    weighted = sum(count * acc)/sum(count),
+    weighted_sd = sqrt(sum(count * ((acc - (sum(count * acc)/sum(count)))^2))/(sum(count) - 1)),
+    weighted_conf = 1.96 * weighted_sd/sqrt(sum(count)),
     n = n(),
     sd = sd(acc),
     conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
@@ -197,15 +220,15 @@ exp1_ablation_results %>%
     ablation_type = glue::glue("{ablation_type} Ablation")
   ) %>%
   # filter(experiment == "Unseen") %>%
-  ggplot(aes(seen_hypernyms, acc, color = lm, shape = lm, fill = lm, linetype = Rep)) +
+  ggplot(aes(seen_hypernyms, weighted, color = lm, shape = lm, fill = lm, linetype = Rep)) +
   geom_point(size = 2)+
   geom_line() +
-  geom_ribbon(aes(ymin = acc-conf, ymax=acc+conf), color = NA, alpha = 0.2) +
+  geom_ribbon(aes(ymin = weighted-weighted_conf, ymax=weighted+weighted_conf), color = NA, alpha = 0.2) +
   geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_wrap(~ablation_type) +
   facet_grid(ablation_type ~ experiment) +
   scale_x_continuous(limits = c(0,90), breaks = c(0,15,30,45,60,75,90)) +
-  scale_y_continuous(limits = c(0.4,1), breaks = c(0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
+  scale_y_continuous(limits = c(0.3,1), breaks = c(0.3,0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
   scale_shape_manual(values = c(21,23)) +
   scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
   # guides(
@@ -245,10 +268,10 @@ exp1_ablation_results %>%
     ablation_type = glue::glue("{ablation_type} Ablation")
   ) %>%
   # filter(experiment == "Unseen") %>%
-  ggplot(aes(deprivation, acc, color = lm, shape = lm, fill = lm, linetype = Rep)) +
+  ggplot(aes(deprivation, weighted, color = lm, shape = lm, fill = lm, linetype = Rep)) +
   geom_point(size = 2)+
   geom_line() +
-  geom_ribbon(aes(ymin = acc-conf, ymax=acc+conf), color = NA, alpha = 0.2) +
+  geom_ribbon(aes(ymin = weighted-weighted_conf, ymax=weighted+weighted_conf), color = NA, alpha = 0.2) +
   geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_wrap(~ablation_type) +
   facet_grid(ablation_type ~ experiment) +
@@ -285,13 +308,13 @@ ggsave("plots/main-exp-results.pdf", height = 5.25, width = 10.47, dpi = 300, de
 exp3_results_raw <- bind_rows(
   unseen_shuffled %>%
     select(-overall, -total_illegal_ratio) %>%
-    pivot_longer(mammal:`kitchen tool`, names_to = "hypernym", values_to = "acc") %>%
+    pivot_longer(mammal:`arts and crafts item`, names_to = "hypernym", values_to = "acc") %>%
     filter(vision_encoder %in% c("DINOv2"), random == F) %>%
     filter(str_detect(lm, "Qwen")) %>% 
     filter(!is.na(acc)),
   unseen %>%
     select(-overall, -total_illegal_ratio) %>%
-    pivot_longer(mammal:condiment, names_to = "hypernym", values_to = "acc") %>%
+    pivot_longer(musical:`hardware item`, names_to = "hypernym", values_to = "acc") %>%
     filter(vision_encoder %in% c("DINOv2"), random == F) %>%
     filter(str_detect(lm, "Qwen")) %>% 
     filter(!is.na(acc))
