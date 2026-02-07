@@ -1,0 +1,160 @@
+shuffle_type,category,avg_cosine,n_images
+original,mammal,0.32052997,824
+original,animal,0.2051288,1741
+original,musical,0.24447973,301
+original,electronic device,0.28890124,588
+original,home appliance,0.30774447,314
+original,furniture,0.3364628,326
+original,tool,0.24047066,872
+original,car part,0.2520023,239
+original,vehicle,0.266092,669
+original,watercraft,0.39036003,171
+original,food,0.24699682,2217
+original,piece of jewelry,0.28458902,141
+original,insect,0.32845968,188
+original,fruit,0.29510063,315
+original,plant,0.19261082,319
+original,protective clothing item,0.24609903,138
+original,item of clothing,0.2369512,928
+original,outerwear,0.3125613,149
+original,body part,0.202576,53
+original,weapon,0.1831309,397
+original,vegetable,0.2909545,336
+original,container,0.19905068,881
+original,hardware item,0.21859309,573
+original,garden tool,0.21203487,137
+original,school supply,0.30356604,183
+original,breakfast food,0.35988823,271
+original,dessert,0.37246186,347
+original,toy,0.14247005,280
+original,sports equipment,0.17291136,549
+original,medical equipment,0.22743645,236
+original,headwear,0.28326228,154
+original,clothing accessory,0.2317462,328
+original,sea animal,0.24193813,271
+original,fastener,0.21381739,217
+original,arts and crafts item,0.24844842,315
+original,scientific equipment,0.26171118,271
+original,drink,0.41713497,146
+original,piece of women's clothing,0.3113411,165
+original,office supply item,0.34146813,170
+original,bird,0.300626,320
+original,home decor item,0.14416753,363
+original,farm animal,0.34861273,150
+original,kitchen appliance,0.43856624,158
+original,seafood,0.2426431,213
+original,construction equipment,0.18503499,255
+original,game,0.298181,124
+original,footwear,0.3542999,138
+original,kitchen tool,0.34031436,226
+original,safety equipment,0.18056588,166
+original,condiment,0.44059435,68
+original,source of light,0.16713984,150
+original,candy,0.36110884,138
+original,personal hygiene item,0.26480228,229
+shuffled,mammal,0.08719046,765
+shuffled,animal,0.090857334,1593
+shuffled,musical,0.10559211,290
+shuffled,electronic device,0.10897642,614
+shuffled,home appliance,0.106384344,329
+shuffled,furniture,0.1119088,323
+shuffled,tool,0.10443177,889
+shuffled,car part,0.13158026,244
+shuffled,vehicle,0.09682093,676
+shuffled,watercraft,0.12020045,184
+shuffled,food,0.09101702,2227
+shuffled,piece of jewelry,0.15947928,134
+shuffled,insect,0.10351064,169
+shuffled,fruit,0.0997812,310
+shuffled,plant,0.10246637,320
+shuffled,protective clothing item,0.113911875,152
+shuffled,item of clothing,0.10755572,943
+shuffled,outerwear,0.13353439,145
+shuffled,body part,0.15639178,68
+shuffled,weapon,0.10580211,426
+shuffled,vegetable,0.09471787,356
+shuffled,container,0.1040496,880
+shuffled,hardware item,0.10434082,591
+shuffled,garden tool,0.15348417,131
+shuffled,school supply,0.13094126,172
+shuffled,breakfast food,0.09803817,249
+shuffled,dessert,0.11260643,331
+shuffled,toy,0.11020753,283
+shuffled,sports equipment,0.101585135,552
+shuffled,medical equipment,0.10557048,234
+shuffled,headwear,0.12713054,156
+shuffled,clothing accessory,0.114947446,329
+shuffled,sea animal,0.09954861,276
+shuffled,fastener,0.11766047,233
+shuffled,arts and crafts item,0.10601016,318
+shuffled,scientific equipment,0.09281506,286
+shuffled,drink,0.15769655,129
+shuffled,piece of women's clothing,0.13348475,182
+shuffled,office supply item,0.118907295,179
+shuffled,bird,0.11928343,250
+shuffled,home decor item,0.11172592,355
+shuffled,farm animal,0.12287014,140
+shuffled,kitchen appliance,0.122544065,175
+shuffled,seafood,0.10283856,218
+shuffled,construction equipment,0.11658626,255
+shuffled,game,0.18781182,124
+shuffled,footwear,0.14953789,142
+shuffled,kitchen tool,0.111792654,270
+shuffled,safety equipment,0.13035716,183
+shuffled,condiment,0.23226248,65
+shuffled,source of light,0.1242739,163
+shuffled,candy,0.13753448,155
+shuffled,personal hygiene item,0.09962293,245
+local_shuffled,mammal,0.31319627,829
+local_shuffled,animal,0.20254579,1745
+local_shuffled,musical,0.24447973,301
+local_shuffled,electronic device,0.2786257,590
+local_shuffled,home appliance,0.30704167,312
+local_shuffled,furniture,0.3364628,326
+local_shuffled,tool,0.23964897,869
+local_shuffled,car part,0.2376549,247
+local_shuffled,vehicle,0.25010836,677
+local_shuffled,watercraft,0.3594098,171
+local_shuffled,food,0.24577776,2217
+local_shuffled,piece of jewelry,0.27453682,141
+local_shuffled,insect,0.32845968,188
+local_shuffled,fruit,0.2962357,316
+local_shuffled,plant,0.18926121,320
+local_shuffled,protective clothing item,0.2604862,134
+local_shuffled,item of clothing,0.23520032,928
+local_shuffled,outerwear,0.30241963,147
+local_shuffled,body part,0.20257601,53
+local_shuffled,weapon,0.184069,397
+local_shuffled,vegetable,0.27907947,333
+local_shuffled,container,0.19243497,878
+local_shuffled,hardware item,0.21124896,577
+local_shuffled,garden tool,0.18081675,123
+local_shuffled,school supply,0.30074438,183
+local_shuffled,breakfast food,0.3598882,271
+local_shuffled,dessert,0.3717235,344
+local_shuffled,toy,0.14156063,280
+local_shuffled,sports equipment,0.17099938,545
+local_shuffled,medical equipment,0.2151756,236
+local_shuffled,headwear,0.2764828,154
+local_shuffled,clothing accessory,0.2295899,326
+local_shuffled,sea animal,0.24193816,271
+local_shuffled,fastener,0.2252174,214
+local_shuffled,arts and crafts item,0.22475216,305
+local_shuffled,scientific equipment,0.25827074,271
+local_shuffled,drink,0.41713497,146
+local_shuffled,piece of women's clothing,0.30778614,163
+local_shuffled,office supply item,0.32966414,169
+local_shuffled,bird,0.300626,320
+local_shuffled,home decor item,0.1351337,359
+local_shuffled,farm animal,0.34861273,150
+local_shuffled,kitchen appliance,0.43856627,158
+local_shuffled,seafood,0.24264313,213
+local_shuffled,construction equipment,0.18582436,255
+local_shuffled,game,0.298181,124
+local_shuffled,footwear,0.35429987,138
+local_shuffled,kitchen tool,0.33386517,229
+local_shuffled,safety equipment,0.18104146,166
+local_shuffled,condiment,0.44059435,68
+local_shuffled,source of light,0.16713983,150
+local_shuffled,candy,0.3611088,138
+local_shuffled,personal hygiene item,0.22637792,227
