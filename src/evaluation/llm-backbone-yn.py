@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-STIMULI_PATH = "llm-backbone-exp-data/yn_questions.jsonl"
+STIMULI_PATH = "data/llm-backbone-exp-data/yn_questions.jsonl"
 
 OPTIONS = ["Yes", "No", "yes", "no"]
 
