@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-STIMULI_PATH = "llm-backbone-exp-data/yn_questions.jsonl"
+STIMULI_PATH = "data/llm-backbone-exp-data/yn_questions.jsonl"
 
 
 def read_jsonl(path):
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="kanishka_res/llm-backbone-yn-filtering/",
+        default="results/llm-backbone-yn-filtering/",
         help="Directory to save evaluation results",
     )
     parser.add_argument(
