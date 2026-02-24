@@ -1,7 +1,7 @@
 shuffle_type,category,avg_cosine,n_images
 original,mammal,0.32052997,824
 original,animal,0.2051288,1741
-original,musical,0.24447973,301
+original,musical instrument,0.24447973,301
 original,electronic device,0.28890124,588
 original,home appliance,0.30774447,314
 original,furniture,0.3364628,326
@@ -23,7 +23,7 @@ original,vegetable,0.2909545,336
 original,container,0.19905068,881
 original,hardware item,0.21859309,573
 original,garden tool,0.21203487,137
-original,school supply,0.30356604,183
+original,school supply item,0.30356604,183
 original,breakfast food,0.35988823,271
 original,dessert,0.37246186,347
 original,toy,0.14247005,280
@@ -54,7 +54,7 @@ original,candy,0.36110884,138
 original,personal hygiene item,0.26480228,229
 shuffled,mammal,0.08719046,765
 shuffled,animal,0.090857334,1593
-shuffled,musical,0.10559211,290
+shuffled,musical instrument,0.10559211,290
 shuffled,electronic device,0.10897642,614
 shuffled,home appliance,0.106384344,329
 shuffled,furniture,0.1119088,323
@@ -76,7 +76,7 @@ shuffled,vegetable,0.09471787,356
 shuffled,container,0.1040496,880
 shuffled,hardware item,0.10434082,591
 shuffled,garden tool,0.15348417,131
-shuffled,school supply,0.13094126,172
+shuffled,school supply item,0.13094126,172
 shuffled,breakfast food,0.09803817,249
 shuffled,dessert,0.11260643,331
 shuffled,toy,0.11020753,283
@@ -107,7 +107,7 @@ shuffled,candy,0.13753448,155
 shuffled,personal hygiene item,0.09962293,245
 local_shuffled,mammal,0.31319627,829
 local_shuffled,animal,0.20254579,1745
-local_shuffled,musical,0.24447973,301
+local_shuffled,musical instrument,0.24447973,301
 local_shuffled,electronic device,0.2786257,590
 local_shuffled,home appliance,0.30704167,312
 local_shuffled,furniture,0.3364628,326
@@ -129,7 +129,7 @@ local_shuffled,vegetable,0.27907947,333
 local_shuffled,container,0.19243497,878
 local_shuffled,hardware item,0.21124896,577
 local_shuffled,garden tool,0.18081675,123
-local_shuffled,school supply,0.30074438,183
+local_shuffled,school supply item,0.30074438,183
 local_shuffled,breakfast food,0.3598882,271
 local_shuffled,dessert,0.3717235,344
 local_shuffled,toy,0.14156063,280
