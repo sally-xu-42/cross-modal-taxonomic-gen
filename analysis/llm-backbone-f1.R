@@ -65,9 +65,37 @@ coherence_backbone %>%
 
 # model accs
 raw_results_llm %>%
+  mutate(
+    answer = factor(answer),
+    prediction = factor(prediction)
+  ) %>%
   group_by(model) %>%
   summarize(
-    acc = mean(correct)
+    acc = mean(correct),
+    f1 = yardstick::f_meas_vec(answer, prediction, estimator = "macro")
   )
+
+answers <- raw_results_llm %>%
+  filter(model == "Qwen3-0.6B") %>%
+  pull(answer) %>%
+  factor()
+  # factor(levels = c("Yes", "No"))
+
+predictions <- raw_results_llm %>%
+  filter(model == "Qwen3-0.6B") %>%
+  pull(prediction) %>%
+  factor()
+  # factor(levels = c("Yes", "No"))
+
+# majority <- factor(rep(c("No"), length(answers)), levels = c("Yes", "No"))
+majority <- factor(rep(c("No"), length(answers)), levels = c("No", "Yes"))
+
+answers
+
+yardstick::f_meas_vec(answers, predictions, estimator = "macro")
+yardstick::f_meas_vec(answers, majority, estimator = "micro")
+
+
+
 
 
