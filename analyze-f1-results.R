@@ -3,6 +3,9 @@ library(lmerTest)
 library(ggbeeswarm)
 library(ggdist)
 
+depths <- read_csv("data/things-category-depths.csv") %>%
+  rename(hypernym = category)
+
 read_results <- function(path) {
   read_csv(path) %>%
     mutate(
@@ -281,116 +284,65 @@ exp1_chance <- chance_f1 %>%
     experiment = factor(experiment, levels = c("Leaves", "Seen Hypernyms", "Held-Out Hypernyms"))
   )
 
-
-unseen_categorywise <- unseen_shuffled %>%
-  pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
+depth_wise <- unseen %>%
+  pivot_longer(animal:weapon, names_to = "hypernym", values_to = "acc") %>%
   mutate(experiment = "Held-Out Hypernyms") %>%
-  inner_join(
-    unseen_counts %>%
-      pivot_longer(animal:weapon, names_to = "category", values_to = "count")
-  ) %>%
-  filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Qwen")) %>%
-  filter(seen_hypernyms==0) %>%
-  filter(
-    # experiment == "Held-Out Hypernyms",
-    # lm == "Qwen3-0.6B",
-    # seed == 42
-  ) %>%
   mutate(
-    model = case_when(
-      random == FALSE ~ "LM",
-      TRUE ~ "Random"
+    hypernym = case_when(
+      hypernym == "arts and crafts item" ~ "arts and crafts supply",
+      hypernym == "car part" ~ "part of car",
+      hypernym == "hardware item" ~ "hardware",
+      hypernym == "home decor item" ~ "home decor",
+      hypernym == "item of clothing" ~ "clothing",
+      hypernym == "musical" ~ "musical instrument",
+      hypernym == "office supply item" ~ "office supply",
+      hypernym == "piece of jewelry" ~ "jewelry",
+      hypernym == "piece of women's clothing" ~ "women's clothing",
+      hypernym == "protective clothing item" ~ "protective clothing",
+      hypernym == "source of light" ~ "lighting",
+      TRUE ~ hypernym
     )
   ) %>%
+  inner_join(depths) %>%
+  filter(seen_hypernyms == 0) 
+
+depth_wise %>%
+  filter(vision_encoder %in% c("DINOv2")) %>%
+  filter(str_detect(lm, "Qwen")) %>% 
+  filter(!is.na(acc)) %>%
   filter(random == FALSE) %>%
-  select(shuffled, model = lm, seed, category, acc) %>%
-  mutate(
-   category = case_when(
-     category == "musical" ~ "musical instrument",
-     category == "school supply" ~ "school supply item",
-     TRUE ~ category
-    ) 
-  )
+  ggplot(aes(factor(depth), acc, color = lm, group = lm)) +
+  geom_quasirandom(dodge.width = 0.4)
 
-reg_data <- unseen_categorywise %>%
-  filter(shuffled == "Original") %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "original")) %>%
-  mutate(
-    model = factor(model),
-    category = factor(category),
-    seed = factor(seed)
-  )
-
-fit1 <- lmer(acc ~ backbone_acc + avg_cosine + (backbone_acc + avg_cosine || category) + (1|seed) + (1|model), data = reg_data)
-
-summary(fit1)
-
-reg_data %>% 
-  group_by(model, seed) %>% 
-  nest() %>%
-  mutate(
-    cor = map(data, function(x) {
-      cor.test(x$acc, x$avg_cosine, method = "spearman") %>%
-        broom::tidy()
-    })
+depth_wise %>%
+  filter(vision_encoder %in% c("DINOv2")) %>%
+  filter(str_detect(lm, "Qwen")) %>% 
+  filter(!is.na(acc)) %>%
+  group_by(experiment, lm, depth, ablation_type, random) %>%
+  summarize(
+    n = n(),
+    sd = sd(acc),
+    conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
+    acc = mean(acc)
   ) %>%
-  unnest(cor)
-
-reg_data %>%
-  ggplot(aes(avg_cosine, acc)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_grid(model ~ seed) +
+  ungroup() %>%
+  filter(random == FALSE) %>%
+  ggplot(aes(depth, acc, color = lm, fill = lm)) + 
+  geom_col(position = position_dodge(0.9)) +
+  geom_linerange(aes(ymin = acc-conf, ymax=acc+conf), position = position_dodge(0.9), color = "black") +
+  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
+  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1)) +
+  theme_bw(base_size = 18, base_family = "Times") +
+  # theme_classic(base_size = 18, base_family = "Times") +
+  theme(
+    panel.grid = element_blank(),
+    # legend.position = "top",
+    axis.text = element_text(color = "black")
+  ) +
   labs(
-    x = "Visual Coherence\n(avg. pairwise cosine between images ofcategory members)",
-    y = "Macro F1 on\nHeld-out Hypernyms (N = 53)"
+    x = "Depth", y = "Macro F1 per category",
+    color = "LM", fill = "LM"
   )
-
-
-reg_data_within <- unseen_categorywise %>%
-  filter(str_detect(shuffled, "Within")) %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "local_shuffled")) %>%
-  mutate(
-    model = factor(model),
-    category = factor(category),
-    seed = factor(seed)
-  )
-
-fit1_within <- lmer(acc ~ backbone_acc + avg_cosine + (backbone_acc + avg_cosine || category) + (1|seed) + (1|model), data = reg_data_within)
-
-summary(fit1_within)
-
-reg_data_across <- unseen_categorywise %>%
-  filter(str_detect(shuffled, "Across")) %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "shuffled")) %>%
-  mutate(
-    model = factor(model),
-    category = factor(category),
-    seed = factor(seed)
-  )
-
-fit1_across <- lmer(acc ~ backbone_acc + avg_cosine + (backbone_acc * avg_cosine || category) + (1|seed) + (1|model), data = reg_data_across)
-
-summary(fit1_across)
-
-reg_data_across %>%
-  ggplot(aes(avg_cosine, acc)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_grid(model ~ seed)
-
-reg_data_within %>% 
-  group_by(model, seed) %>% 
-  nest() %>%
-  mutate(
-    cor = map(data, function(x) {
-      cor.test(x$acc, x$avg_cosine, method = "spearman") %>%
-        broom::tidy()
-    })
-  ) %>%
-  unnest(cor)
-
 
 unseen %>%
   pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
