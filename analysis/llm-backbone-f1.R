@@ -52,9 +52,14 @@ raw_results_llm <- fs::dir_ls("results/llm-backbone-yn/", regexp="*.csv") %>%
 # category-wise acc 
 coherence_backbone <- raw_results_llm %>%
   inner_join(item_hyps) %>%
+  mutate(
+    answer = factor(answer),
+    prediction = factor(prediction)
+  ) %>%
   group_by(model, pos_hypernym) %>%
   summarize(
-    backbone_acc = mean(correct)
+    backbone_acc = mean(correct),
+    backbone_f1 = yardstick::f_meas_vec(answer, prediction, estimator = "macro")
   ) %>%
   ungroup() %>%
   rename(hypernym = pos_hypernym) %>%
@@ -75,11 +80,21 @@ raw_results_llm %>%
     f1 = yardstick::f_meas_vec(answer, prediction, estimator = "macro")
   )
 
+raw_results_llm %>%
+  filter(model == "Qwen3-0.6B") %>%
+  select(answer) %>%
+  write_csv("~/Downloads/llm-backbone-answers.csv")
+
+raw_results_llm %>%
+  filter(model == "Qwen3-1.7B") %>%
+  select(prediction) %>%
+  write_csv("~/Downloads/llm-backbone-predictions.csv")
+
 answers <- raw_results_llm %>%
   filter(model == "Qwen3-0.6B") %>%
   pull(answer) %>%
-  factor()
-  # factor(levels = c("Yes", "No"))
+  # factor()
+  factor(levels = c("Yes", "No"))
 
 predictions <- raw_results_llm %>%
   filter(model == "Qwen3-0.6B") %>%
@@ -88,12 +103,12 @@ predictions <- raw_results_llm %>%
   # factor(levels = c("Yes", "No"))
 
 # majority <- factor(rep(c("No"), length(answers)), levels = c("Yes", "No"))
-majority <- factor(rep(c("No"), length(answers)), levels = c("No", "Yes"))
+majority <- factor(rep(c("No"), length(answers)), levels = c("Yes", "No"))
 
 answers
 
 yardstick::f_meas_vec(answers, predictions, estimator = "macro")
-yardstick::f_meas_vec(answers, majority, estimator = "micro")
+yardstick::f_meas_vec(answers, majority, "macro")
 
 
 

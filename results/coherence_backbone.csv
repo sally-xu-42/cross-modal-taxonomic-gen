@@ -1,319 +1,319 @@
-model,hypernym,backbone_acc,shuffle_type,category,avg_cosine
-Qwen3-0.6B,animal,0.9790609137055838,original,animal,0.2051288
-Qwen3-0.6B,animal,0.9790609137055838,shuffled,animal,0.090857334
-Qwen3-0.6B,animal,0.9790609137055838,local_shuffled,animal,0.20254579
-Qwen3-0.6B,arts and crafts supply,0.8617021276595744,original,arts and crafts item,0.24844842
-Qwen3-0.6B,arts and crafts supply,0.8617021276595744,shuffled,arts and crafts item,0.10601016
-Qwen3-0.6B,arts and crafts supply,0.8617021276595744,local_shuffled,arts and crafts item,0.22475216
-Qwen3-0.6B,bird,0.950530035335689,original,bird,0.300626
-Qwen3-0.6B,bird,0.950530035335689,shuffled,bird,0.11928343
-Qwen3-0.6B,bird,0.950530035335689,local_shuffled,bird,0.300626
-Qwen3-0.6B,body part,0.9259259259259259,original,body part,0.202576
-Qwen3-0.6B,body part,0.9259259259259259,shuffled,body part,0.15639178
-Qwen3-0.6B,body part,0.9259259259259259,local_shuffled,body part,0.20257601
-Qwen3-0.6B,breakfast food,0.8984375,original,breakfast food,0.35988823
-Qwen3-0.6B,breakfast food,0.8984375,shuffled,breakfast food,0.09803817
-Qwen3-0.6B,breakfast food,0.8984375,local_shuffled,breakfast food,0.3598882
-Qwen3-0.6B,candy,0.8636363636363636,original,candy,0.36110884
-Qwen3-0.6B,candy,0.8636363636363636,shuffled,candy,0.13753448
-Qwen3-0.6B,candy,0.8636363636363636,local_shuffled,candy,0.3611088
-Qwen3-0.6B,clothing,0.8010012515644556,original,item of clothing,0.2369512
-Qwen3-0.6B,clothing,0.8010012515644556,shuffled,item of clothing,0.10755572
-Qwen3-0.6B,clothing,0.8010012515644556,local_shuffled,item of clothing,0.23520032
-Qwen3-0.6B,clothing accessory,0.8018575851393189,original,clothing accessory,0.2317462
-Qwen3-0.6B,clothing accessory,0.8018575851393189,shuffled,clothing accessory,0.114947446
-Qwen3-0.6B,clothing accessory,0.8018575851393189,local_shuffled,clothing accessory,0.2295899
-Qwen3-0.6B,condiment,0.9104477611940298,original,condiment,0.44059435
-Qwen3-0.6B,condiment,0.9104477611940298,shuffled,condiment,0.23226248
-Qwen3-0.6B,condiment,0.9104477611940298,local_shuffled,condiment,0.44059435
-Qwen3-0.6B,construction equipment,0.8374558303886925,original,construction equipment,0.18503499
-Qwen3-0.6B,construction equipment,0.8374558303886925,shuffled,construction equipment,0.11658626
-Qwen3-0.6B,construction equipment,0.8374558303886925,local_shuffled,construction equipment,0.18582436
-Qwen3-0.6B,container,0.829136690647482,original,container,0.19905068
-Qwen3-0.6B,container,0.829136690647482,shuffled,container,0.1040496
-Qwen3-0.6B,container,0.829136690647482,local_shuffled,container,0.19243497
-Qwen3-0.6B,dessert,0.9059561128526645,original,dessert,0.37246186
-Qwen3-0.6B,dessert,0.9059561128526645,shuffled,dessert,0.11260643
-Qwen3-0.6B,dessert,0.9059561128526645,local_shuffled,dessert,0.3717235
-Qwen3-0.6B,drink,0.9333333333333333,original,drink,0.41713497
-Qwen3-0.6B,drink,0.9333333333333333,shuffled,drink,0.15769655
-Qwen3-0.6B,drink,0.9333333333333333,local_shuffled,drink,0.41713497
-Qwen3-0.6B,electronic device,0.8984674329501916,original,electronic device,0.28890124
-Qwen3-0.6B,electronic device,0.8984674329501916,shuffled,electronic device,0.10897642
-Qwen3-0.6B,electronic device,0.8984674329501916,local_shuffled,electronic device,0.2786257
-Qwen3-0.6B,farm animal,0.9306930693069307,original,farm animal,0.34861273
-Qwen3-0.6B,farm animal,0.9306930693069307,shuffled,farm animal,0.12287014
-Qwen3-0.6B,farm animal,0.9306930693069307,local_shuffled,farm animal,0.34861273
-Qwen3-0.6B,fastener,0.7878787878787878,original,fastener,0.21381739
-Qwen3-0.6B,fastener,0.7878787878787878,shuffled,fastener,0.11766047
-Qwen3-0.6B,fastener,0.7878787878787878,local_shuffled,fastener,0.2252174
-Qwen3-0.6B,food,0.9154550350026925,original,food,0.24699682
-Qwen3-0.6B,food,0.9154550350026925,shuffled,food,0.09101702
-Qwen3-0.6B,food,0.9154550350026925,local_shuffled,food,0.24577776
-Qwen3-0.6B,footwear,0.8076923076923077,original,footwear,0.3542999
-Qwen3-0.6B,footwear,0.8076923076923077,shuffled,footwear,0.14953789
-Qwen3-0.6B,footwear,0.8076923076923077,local_shuffled,footwear,0.35429987
-Qwen3-0.6B,fruit,0.8924731182795699,original,fruit,0.29510063
-Qwen3-0.6B,fruit,0.8924731182795699,shuffled,fruit,0.0997812
-Qwen3-0.6B,fruit,0.8924731182795699,local_shuffled,fruit,0.2962357
-Qwen3-0.6B,furniture,0.9050279329608939,original,furniture,0.3364628
-Qwen3-0.6B,furniture,0.9050279329608939,shuffled,furniture,0.1119088
-Qwen3-0.6B,furniture,0.9050279329608939,local_shuffled,furniture,0.3364628
-Qwen3-0.6B,game,0.9240506329113924,original,game,0.298181
-Qwen3-0.6B,game,0.9240506329113924,shuffled,game,0.18781182
-Qwen3-0.6B,game,0.9240506329113924,local_shuffled,game,0.298181
-Qwen3-0.6B,garden tool,0.7542857142857143,original,garden tool,0.21203487
-Qwen3-0.6B,garden tool,0.7542857142857143,shuffled,garden tool,0.15348417
-Qwen3-0.6B,garden tool,0.7542857142857143,local_shuffled,garden tool,0.18081675
-Qwen3-0.6B,hardware,0.8467023172905526,original,hardware item,0.21859309
-Qwen3-0.6B,hardware,0.8467023172905526,shuffled,hardware item,0.10434082
-Qwen3-0.6B,hardware,0.8467023172905526,local_shuffled,hardware item,0.21124896
-Qwen3-0.6B,headwear,0.7647058823529411,original,headwear,0.28326228
-Qwen3-0.6B,headwear,0.7647058823529411,shuffled,headwear,0.12713054
-Qwen3-0.6B,headwear,0.7647058823529411,local_shuffled,headwear,0.2764828
-Qwen3-0.6B,home appliance,0.9278996865203761,original,home appliance,0.30774447
-Qwen3-0.6B,home appliance,0.9278996865203761,shuffled,home appliance,0.106384344
-Qwen3-0.6B,home appliance,0.9278996865203761,local_shuffled,home appliance,0.30704167
-Qwen3-0.6B,home decor,0.8177777777777778,original,home decor item,0.14416753
-Qwen3-0.6B,home decor,0.8177777777777778,shuffled,home decor item,0.11172592
-Qwen3-0.6B,home decor,0.8177777777777778,local_shuffled,home decor item,0.1351337
-Qwen3-0.6B,insect,0.9873417721518988,original,insect,0.32845968
-Qwen3-0.6B,insect,0.9873417721518988,shuffled,insect,0.10351064
-Qwen3-0.6B,insect,0.9873417721518988,local_shuffled,insect,0.32845968
-Qwen3-0.6B,jewelry,0.8070175438596491,original,piece of jewelry,0.28458902
-Qwen3-0.6B,jewelry,0.8070175438596491,shuffled,piece of jewelry,0.15947928
-Qwen3-0.6B,jewelry,0.8070175438596491,local_shuffled,piece of jewelry,0.27453682
-Qwen3-0.6B,kitchen appliance,0.903954802259887,original,kitchen appliance,0.43856624
-Qwen3-0.6B,kitchen appliance,0.903954802259887,shuffled,kitchen appliance,0.122544065
-Qwen3-0.6B,kitchen appliance,0.903954802259887,local_shuffled,kitchen appliance,0.43856627
-Qwen3-0.6B,kitchen tool,0.8160377358490566,original,kitchen tool,0.34031436
-Qwen3-0.6B,kitchen tool,0.8160377358490566,shuffled,kitchen tool,0.111792654
-Qwen3-0.6B,kitchen tool,0.8160377358490566,local_shuffled,kitchen tool,0.33386517
-Qwen3-0.6B,lighting,0.8571428571428571,original,source of light,0.16713984
-Qwen3-0.6B,lighting,0.8571428571428571,shuffled,source of light,0.1242739
-Qwen3-0.6B,lighting,0.8571428571428571,local_shuffled,source of light,0.16713983
-Qwen3-0.6B,mammal,0.964095744680851,original,mammal,0.32052997
-Qwen3-0.6B,mammal,0.964095744680851,shuffled,mammal,0.08719046
-Qwen3-0.6B,mammal,0.964095744680851,local_shuffled,mammal,0.31319627
-Qwen3-0.6B,medical equipment,0.875,original,medical equipment,0.22743645
-Qwen3-0.6B,medical equipment,0.875,shuffled,medical equipment,0.10557048
-Qwen3-0.6B,medical equipment,0.875,local_shuffled,medical equipment,0.2151756
-Qwen3-0.6B,musical instrument,0.9006622516556292,original,musical instrument,0.24447973
-Qwen3-0.6B,musical instrument,0.9006622516556292,shuffled,musical instrument,0.10559211
-Qwen3-0.6B,musical instrument,0.9006622516556292,local_shuffled,musical instrument,0.24447973
-Qwen3-0.6B,office supply,0.9011627906976745,original,office supply item,0.34146813
-Qwen3-0.6B,office supply,0.9011627906976745,shuffled,office supply item,0.118907295
-Qwen3-0.6B,office supply,0.9011627906976745,local_shuffled,office supply item,0.32966414
-Qwen3-0.6B,outerwear,0.8035714285714286,original,outerwear,0.3125613
-Qwen3-0.6B,outerwear,0.8035714285714286,shuffled,outerwear,0.13353439
-Qwen3-0.6B,outerwear,0.8035714285714286,local_shuffled,outerwear,0.30241963
-Qwen3-0.6B,part of car,0.8181818181818182,original,car part,0.2520023
-Qwen3-0.6B,part of car,0.8181818181818182,shuffled,car part,0.13158026
-Qwen3-0.6B,part of car,0.8181818181818182,local_shuffled,car part,0.2376549
-Qwen3-0.6B,personal hygiene item,0.864516129032258,original,personal hygiene item,0.26480228
-Qwen3-0.6B,personal hygiene item,0.864516129032258,shuffled,personal hygiene item,0.09962293
-Qwen3-0.6B,personal hygiene item,0.864516129032258,local_shuffled,personal hygiene item,0.22637792
-Qwen3-0.6B,plant,0.9049586776859504,original,plant,0.19261082
-Qwen3-0.6B,plant,0.9049586776859504,shuffled,plant,0.10246637
-Qwen3-0.6B,plant,0.9049586776859504,local_shuffled,plant,0.18926121
-Qwen3-0.6B,protective clothing,0.7608695652173914,original,protective clothing item,0.24609903
-Qwen3-0.6B,protective clothing,0.7608695652173914,shuffled,protective clothing item,0.113911875
-Qwen3-0.6B,protective clothing,0.7608695652173914,local_shuffled,protective clothing item,0.2604862
-Qwen3-0.6B,safety equipment,0.8048780487804879,original,safety equipment,0.18056588
-Qwen3-0.6B,safety equipment,0.8048780487804879,shuffled,safety equipment,0.13035716
-Qwen3-0.6B,safety equipment,0.8048780487804879,local_shuffled,safety equipment,0.18104146
-Qwen3-0.6B,school supply,0.8602150537634409,original,school supply item,0.30356604
-Qwen3-0.6B,school supply,0.8602150537634409,shuffled,school supply item,0.13094126
-Qwen3-0.6B,school supply,0.8602150537634409,local_shuffled,school supply item,0.30074438
-Qwen3-0.6B,scientific equipment,0.8333333333333334,original,scientific equipment,0.26171118
-Qwen3-0.6B,scientific equipment,0.8333333333333334,shuffled,scientific equipment,0.09281506
-Qwen3-0.6B,scientific equipment,0.8333333333333334,local_shuffled,scientific equipment,0.25827074
-Qwen3-0.6B,sea animal,0.972809667673716,original,sea animal,0.24193813
-Qwen3-0.6B,sea animal,0.972809667673716,shuffled,sea animal,0.09954861
-Qwen3-0.6B,sea animal,0.972809667673716,local_shuffled,sea animal,0.24193816
-Qwen3-0.6B,seafood,0.9676258992805755,original,seafood,0.2426431
-Qwen3-0.6B,seafood,0.9676258992805755,shuffled,seafood,0.10283856
-Qwen3-0.6B,seafood,0.9676258992805755,local_shuffled,seafood,0.24264313
-Qwen3-0.6B,sports equipment,0.8763157894736842,original,sports equipment,0.17291136
-Qwen3-0.6B,sports equipment,0.8763157894736842,shuffled,sports equipment,0.101585135
-Qwen3-0.6B,sports equipment,0.8763157894736842,local_shuffled,sports equipment,0.17099938
-Qwen3-0.6B,tool,0.8373101952277657,original,tool,0.24047066
-Qwen3-0.6B,tool,0.8373101952277657,shuffled,tool,0.10443177
-Qwen3-0.6B,tool,0.8373101952277657,local_shuffled,tool,0.23964897
-Qwen3-0.6B,toy,0.8518518518518519,original,toy,0.14247005
-Qwen3-0.6B,toy,0.8518518518518519,shuffled,toy,0.11020753
-Qwen3-0.6B,toy,0.8518518518518519,local_shuffled,toy,0.14156063
-Qwen3-0.6B,vegetable,0.9294478527607362,original,vegetable,0.2909545
-Qwen3-0.6B,vegetable,0.9294478527607362,shuffled,vegetable,0.09471787
-Qwen3-0.6B,vegetable,0.9294478527607362,local_shuffled,vegetable,0.27907947
-Qwen3-0.6B,vehicle,0.8732057416267942,original,vehicle,0.266092
-Qwen3-0.6B,vehicle,0.8732057416267942,shuffled,vehicle,0.09682093
-Qwen3-0.6B,vehicle,0.8732057416267942,local_shuffled,vehicle,0.25010836
-Qwen3-0.6B,watercraft,0.9527027027027027,original,watercraft,0.39036003
-Qwen3-0.6B,watercraft,0.9527027027027027,shuffled,watercraft,0.12020045
-Qwen3-0.6B,watercraft,0.9527027027027027,local_shuffled,watercraft,0.3594098
-Qwen3-0.6B,weapon,0.8513119533527697,original,weapon,0.1831309
-Qwen3-0.6B,weapon,0.8513119533527697,shuffled,weapon,0.10580211
-Qwen3-0.6B,weapon,0.8513119533527697,local_shuffled,weapon,0.184069
-Qwen3-0.6B,women's clothing,0.85,original,piece of women's clothing,0.3113411
-Qwen3-0.6B,women's clothing,0.85,shuffled,piece of women's clothing,0.13348475
-Qwen3-0.6B,women's clothing,0.85,local_shuffled,piece of women's clothing,0.30778614
-Qwen3-1.7B,animal,0.9942893401015228,original,animal,0.2051288
-Qwen3-1.7B,animal,0.9942893401015228,shuffled,animal,0.090857334
-Qwen3-1.7B,animal,0.9942893401015228,local_shuffled,animal,0.20254579
-Qwen3-1.7B,arts and crafts supply,0.875886524822695,original,arts and crafts item,0.24844842
-Qwen3-1.7B,arts and crafts supply,0.875886524822695,shuffled,arts and crafts item,0.10601016
-Qwen3-1.7B,arts and crafts supply,0.875886524822695,local_shuffled,arts and crafts item,0.22475216
-Qwen3-1.7B,bird,0.9893992932862191,original,bird,0.300626
-Qwen3-1.7B,bird,0.9893992932862191,shuffled,bird,0.11928343
-Qwen3-1.7B,bird,0.9893992932862191,local_shuffled,bird,0.300626
-Qwen3-1.7B,body part,0.8888888888888888,original,body part,0.202576
-Qwen3-1.7B,body part,0.8888888888888888,shuffled,body part,0.15639178
-Qwen3-1.7B,body part,0.8888888888888888,local_shuffled,body part,0.20257601
-Qwen3-1.7B,breakfast food,0.9453125,original,breakfast food,0.35988823
-Qwen3-1.7B,breakfast food,0.9453125,shuffled,breakfast food,0.09803817
-Qwen3-1.7B,breakfast food,0.9453125,local_shuffled,breakfast food,0.3598882
-Qwen3-1.7B,candy,0.9393939393939394,original,candy,0.36110884
-Qwen3-1.7B,candy,0.9393939393939394,shuffled,candy,0.13753448
-Qwen3-1.7B,candy,0.9393939393939394,local_shuffled,candy,0.3611088
-Qwen3-1.7B,clothing,0.8973717146433041,original,item of clothing,0.2369512
-Qwen3-1.7B,clothing,0.8973717146433041,shuffled,item of clothing,0.10755572
-Qwen3-1.7B,clothing,0.8973717146433041,local_shuffled,item of clothing,0.23520032
-Qwen3-1.7B,clothing accessory,0.9071207430340558,original,clothing accessory,0.2317462
-Qwen3-1.7B,clothing accessory,0.9071207430340558,shuffled,clothing accessory,0.114947446
-Qwen3-1.7B,clothing accessory,0.9071207430340558,local_shuffled,clothing accessory,0.2295899
-Qwen3-1.7B,condiment,0.9552238805970149,original,condiment,0.44059435
-Qwen3-1.7B,condiment,0.9552238805970149,shuffled,condiment,0.23226248
-Qwen3-1.7B,condiment,0.9552238805970149,local_shuffled,condiment,0.44059435
-Qwen3-1.7B,construction equipment,0.9257950530035336,original,construction equipment,0.18503499
-Qwen3-1.7B,construction equipment,0.9257950530035336,shuffled,construction equipment,0.11658626
-Qwen3-1.7B,construction equipment,0.9257950530035336,local_shuffled,construction equipment,0.18582436
-Qwen3-1.7B,container,0.9496402877697842,original,container,0.19905068
-Qwen3-1.7B,container,0.9496402877697842,shuffled,container,0.1040496
-Qwen3-1.7B,container,0.9496402877697842,local_shuffled,container,0.19243497
-Qwen3-1.7B,dessert,0.9623824451410659,original,dessert,0.37246186
-Qwen3-1.7B,dessert,0.9623824451410659,shuffled,dessert,0.11260643
-Qwen3-1.7B,dessert,0.9623824451410659,local_shuffled,dessert,0.3717235
-Qwen3-1.7B,drink,0.9866666666666667,original,drink,0.41713497
-Qwen3-1.7B,drink,0.9866666666666667,shuffled,drink,0.15769655
-Qwen3-1.7B,drink,0.9866666666666667,local_shuffled,drink,0.41713497
-Qwen3-1.7B,electronic device,0.8984674329501916,original,electronic device,0.28890124
-Qwen3-1.7B,electronic device,0.8984674329501916,shuffled,electronic device,0.10897642
-Qwen3-1.7B,electronic device,0.8984674329501916,local_shuffled,electronic device,0.2786257
-Qwen3-1.7B,farm animal,0.9603960396039604,original,farm animal,0.34861273
-Qwen3-1.7B,farm animal,0.9603960396039604,shuffled,farm animal,0.12287014
-Qwen3-1.7B,farm animal,0.9603960396039604,local_shuffled,farm animal,0.34861273
-Qwen3-1.7B,fastener,0.898989898989899,original,fastener,0.21381739
-Qwen3-1.7B,fastener,0.898989898989899,shuffled,fastener,0.11766047
-Qwen3-1.7B,fastener,0.898989898989899,local_shuffled,fastener,0.2252174
-Qwen3-1.7B,food,0.9784598815293484,original,food,0.24699682
-Qwen3-1.7B,food,0.9784598815293484,shuffled,food,0.09101702
-Qwen3-1.7B,food,0.9784598815293484,local_shuffled,food,0.24577776
-Qwen3-1.7B,footwear,0.8923076923076924,original,footwear,0.3542999
-Qwen3-1.7B,footwear,0.8923076923076924,shuffled,footwear,0.14953789
-Qwen3-1.7B,footwear,0.8923076923076924,local_shuffled,footwear,0.35429987
-Qwen3-1.7B,fruit,0.985663082437276,original,fruit,0.29510063
-Qwen3-1.7B,fruit,0.985663082437276,shuffled,fruit,0.0997812
-Qwen3-1.7B,fruit,0.985663082437276,local_shuffled,fruit,0.2962357
-Qwen3-1.7B,furniture,0.9664804469273743,original,furniture,0.3364628
-Qwen3-1.7B,furniture,0.9664804469273743,shuffled,furniture,0.1119088
-Qwen3-1.7B,furniture,0.9664804469273743,local_shuffled,furniture,0.3364628
-Qwen3-1.7B,game,0.9493670886075949,original,game,0.298181
-Qwen3-1.7B,game,0.9493670886075949,shuffled,game,0.18781182
-Qwen3-1.7B,game,0.9493670886075949,local_shuffled,game,0.298181
-Qwen3-1.7B,garden tool,0.92,original,garden tool,0.21203487
-Qwen3-1.7B,garden tool,0.92,shuffled,garden tool,0.15348417
-Qwen3-1.7B,garden tool,0.92,local_shuffled,garden tool,0.18081675
-Qwen3-1.7B,hardware,0.93048128342246,original,hardware item,0.21859309
-Qwen3-1.7B,hardware,0.93048128342246,shuffled,hardware item,0.10434082
-Qwen3-1.7B,hardware,0.93048128342246,local_shuffled,hardware item,0.21124896
-Qwen3-1.7B,headwear,0.9058823529411765,original,headwear,0.28326228
-Qwen3-1.7B,headwear,0.9058823529411765,shuffled,headwear,0.12713054
-Qwen3-1.7B,headwear,0.9058823529411765,local_shuffled,headwear,0.2764828
-Qwen3-1.7B,home appliance,0.9435736677115988,original,home appliance,0.30774447
-Qwen3-1.7B,home appliance,0.9435736677115988,shuffled,home appliance,0.106384344
-Qwen3-1.7B,home appliance,0.9435736677115988,local_shuffled,home appliance,0.30704167
-Qwen3-1.7B,home decor,0.9377777777777778,original,home decor item,0.14416753
-Qwen3-1.7B,home decor,0.9377777777777778,shuffled,home decor item,0.11172592
-Qwen3-1.7B,home decor,0.9377777777777778,local_shuffled,home decor item,0.1351337
-Qwen3-1.7B,insect,0.9873417721518988,original,insect,0.32845968
-Qwen3-1.7B,insect,0.9873417721518988,shuffled,insect,0.10351064
-Qwen3-1.7B,insect,0.9873417721518988,local_shuffled,insect,0.32845968
-Qwen3-1.7B,jewelry,0.9298245614035088,original,piece of jewelry,0.28458902
-Qwen3-1.7B,jewelry,0.9298245614035088,shuffled,piece of jewelry,0.15947928
-Qwen3-1.7B,jewelry,0.9298245614035088,local_shuffled,piece of jewelry,0.27453682
-Qwen3-1.7B,kitchen appliance,0.943502824858757,original,kitchen appliance,0.43856624
-Qwen3-1.7B,kitchen appliance,0.943502824858757,shuffled,kitchen appliance,0.122544065
-Qwen3-1.7B,kitchen appliance,0.943502824858757,local_shuffled,kitchen appliance,0.43856627
-Qwen3-1.7B,kitchen tool,0.9245283018867925,original,kitchen tool,0.34031436
-Qwen3-1.7B,kitchen tool,0.9245283018867925,shuffled,kitchen tool,0.111792654
-Qwen3-1.7B,kitchen tool,0.9245283018867925,local_shuffled,kitchen tool,0.33386517
-Qwen3-1.7B,lighting,0.9159663865546218,original,source of light,0.16713984
-Qwen3-1.7B,lighting,0.9159663865546218,shuffled,source of light,0.1242739
-Qwen3-1.7B,lighting,0.9159663865546218,local_shuffled,source of light,0.16713983
-Qwen3-1.7B,mammal,0.9946808510638298,original,mammal,0.32052997
-Qwen3-1.7B,mammal,0.9946808510638298,shuffled,mammal,0.08719046
-Qwen3-1.7B,mammal,0.9946808510638298,local_shuffled,mammal,0.31319627
-Qwen3-1.7B,medical equipment,0.9402173913043478,original,medical equipment,0.22743645
-Qwen3-1.7B,medical equipment,0.9402173913043478,shuffled,medical equipment,0.10557048
-Qwen3-1.7B,medical equipment,0.9402173913043478,local_shuffled,medical equipment,0.2151756
-Qwen3-1.7B,musical instrument,0.9602649006622517,original,musical instrument,0.24447973
-Qwen3-1.7B,musical instrument,0.9602649006622517,shuffled,musical instrument,0.10559211
-Qwen3-1.7B,musical instrument,0.9602649006622517,local_shuffled,musical instrument,0.24447973
-Qwen3-1.7B,office supply,0.9127906976744186,original,office supply item,0.34146813
-Qwen3-1.7B,office supply,0.9127906976744186,shuffled,office supply item,0.118907295
-Qwen3-1.7B,office supply,0.9127906976744186,local_shuffled,office supply item,0.32966414
-Qwen3-1.7B,outerwear,0.8988095238095238,original,outerwear,0.3125613
-Qwen3-1.7B,outerwear,0.8988095238095238,shuffled,outerwear,0.13353439
-Qwen3-1.7B,outerwear,0.8988095238095238,local_shuffled,outerwear,0.30241963
-Qwen3-1.7B,part of car,0.9242424242424242,original,car part,0.2520023
-Qwen3-1.7B,part of car,0.9242424242424242,shuffled,car part,0.13158026
-Qwen3-1.7B,part of car,0.9242424242424242,local_shuffled,car part,0.2376549
-Qwen3-1.7B,personal hygiene item,0.8838709677419355,original,personal hygiene item,0.26480228
-Qwen3-1.7B,personal hygiene item,0.8838709677419355,shuffled,personal hygiene item,0.09962293
-Qwen3-1.7B,personal hygiene item,0.8838709677419355,local_shuffled,personal hygiene item,0.22637792
-Qwen3-1.7B,plant,0.9917355371900827,original,plant,0.19261082
-Qwen3-1.7B,plant,0.9917355371900827,shuffled,plant,0.10246637
-Qwen3-1.7B,plant,0.9917355371900827,local_shuffled,plant,0.18926121
-Qwen3-1.7B,protective clothing,0.9184782608695652,original,protective clothing item,0.24609903
-Qwen3-1.7B,protective clothing,0.9184782608695652,shuffled,protective clothing item,0.113911875
-Qwen3-1.7B,protective clothing,0.9184782608695652,local_shuffled,protective clothing item,0.2604862
-Qwen3-1.7B,safety equipment,0.9329268292682927,original,safety equipment,0.18056588
-Qwen3-1.7B,safety equipment,0.9329268292682927,shuffled,safety equipment,0.13035716
-Qwen3-1.7B,safety equipment,0.9329268292682927,local_shuffled,safety equipment,0.18104146
-Qwen3-1.7B,school supply,0.9247311827956989,original,school supply item,0.30356604
-Qwen3-1.7B,school supply,0.9247311827956989,shuffled,school supply item,0.13094126
-Qwen3-1.7B,school supply,0.9247311827956989,local_shuffled,school supply item,0.30074438
-Qwen3-1.7B,scientific equipment,0.9128787878787878,original,scientific equipment,0.26171118
-Qwen3-1.7B,scientific equipment,0.9128787878787878,shuffled,scientific equipment,0.09281506
-Qwen3-1.7B,scientific equipment,0.9128787878787878,local_shuffled,scientific equipment,0.25827074
-Qwen3-1.7B,sea animal,0.9788519637462235,original,sea animal,0.24193813
-Qwen3-1.7B,sea animal,0.9788519637462235,shuffled,sea animal,0.09954861
-Qwen3-1.7B,sea animal,0.9788519637462235,local_shuffled,sea animal,0.24193816
-Qwen3-1.7B,seafood,0.960431654676259,original,seafood,0.2426431
-Qwen3-1.7B,seafood,0.960431654676259,shuffled,seafood,0.10283856
-Qwen3-1.7B,seafood,0.960431654676259,local_shuffled,seafood,0.24264313
-Qwen3-1.7B,sports equipment,0.9421052631578948,original,sports equipment,0.17291136
-Qwen3-1.7B,sports equipment,0.9421052631578948,shuffled,sports equipment,0.101585135
-Qwen3-1.7B,sports equipment,0.9421052631578948,local_shuffled,sports equipment,0.17099938
-Qwen3-1.7B,tool,0.9360086767895879,original,tool,0.24047066
-Qwen3-1.7B,tool,0.9360086767895879,shuffled,tool,0.10443177
-Qwen3-1.7B,tool,0.9360086767895879,local_shuffled,tool,0.23964897
-Qwen3-1.7B,toy,0.91005291005291,original,toy,0.14247005
-Qwen3-1.7B,toy,0.91005291005291,shuffled,toy,0.11020753
-Qwen3-1.7B,toy,0.91005291005291,local_shuffled,toy,0.14156063
-Qwen3-1.7B,vegetable,0.9846625766871165,original,vegetable,0.2909545
-Qwen3-1.7B,vegetable,0.9846625766871165,shuffled,vegetable,0.09471787
-Qwen3-1.7B,vegetable,0.9846625766871165,local_shuffled,vegetable,0.27907947
-Qwen3-1.7B,vehicle,0.9593301435406698,original,vehicle,0.266092
-Qwen3-1.7B,vehicle,0.9593301435406698,shuffled,vehicle,0.09682093
-Qwen3-1.7B,vehicle,0.9593301435406698,local_shuffled,vehicle,0.25010836
-Qwen3-1.7B,watercraft,0.9864864864864865,original,watercraft,0.39036003
-Qwen3-1.7B,watercraft,0.9864864864864865,shuffled,watercraft,0.12020045
-Qwen3-1.7B,watercraft,0.9864864864864865,local_shuffled,watercraft,0.3594098
-Qwen3-1.7B,weapon,0.9154518950437318,original,weapon,0.1831309
-Qwen3-1.7B,weapon,0.9154518950437318,shuffled,weapon,0.10580211
-Qwen3-1.7B,weapon,0.9154518950437318,local_shuffled,weapon,0.184069
-Qwen3-1.7B,women's clothing,0.9,original,piece of women's clothing,0.3113411
-Qwen3-1.7B,women's clothing,0.9,shuffled,piece of women's clothing,0.13348475
-Qwen3-1.7B,women's clothing,0.9,local_shuffled,piece of women's clothing,0.30778614
+model,hypernym,backbone_acc,backbone_f1,shuffle_type,category,avg_cosine
+Qwen3-0.6B,animal,0.9790609137055838,0.9457431060006198,original,animal,0.2051288
+Qwen3-0.6B,animal,0.9790609137055838,0.9457431060006198,shuffled,animal,0.090857334
+Qwen3-0.6B,animal,0.9790609137055838,0.9457431060006198,local_shuffled,animal,0.20254579
+Qwen3-0.6B,arts and crafts supply,0.8617021276595744,0.7648140623997605,original,arts and crafts item,0.24844842
+Qwen3-0.6B,arts and crafts supply,0.8617021276595744,0.7648140623997605,shuffled,arts and crafts item,0.10601016
+Qwen3-0.6B,arts and crafts supply,0.8617021276595744,0.7648140623997605,local_shuffled,arts and crafts item,0.22475216
+Qwen3-0.6B,bird,0.950530035335689,0.8517659383418137,original,bird,0.300626
+Qwen3-0.6B,bird,0.950530035335689,0.8517659383418137,shuffled,bird,0.11928343
+Qwen3-0.6B,bird,0.950530035335689,0.8517659383418137,local_shuffled,bird,0.300626
+Qwen3-0.6B,body part,0.9259259259259259,0.8928571428571428,original,body part,0.202576
+Qwen3-0.6B,body part,0.9259259259259259,0.8928571428571428,shuffled,body part,0.15639178
+Qwen3-0.6B,body part,0.9259259259259259,0.8928571428571428,local_shuffled,body part,0.20257601
+Qwen3-0.6B,breakfast food,0.8984375,0.7991308546595848,original,breakfast food,0.35988823
+Qwen3-0.6B,breakfast food,0.8984375,0.7991308546595848,shuffled,breakfast food,0.09803817
+Qwen3-0.6B,breakfast food,0.8984375,0.7991308546595848,local_shuffled,breakfast food,0.3598882
+Qwen3-0.6B,candy,0.8636363636363636,0.7779439252336449,original,candy,0.36110884
+Qwen3-0.6B,candy,0.8636363636363636,0.7779439252336449,shuffled,candy,0.13753448
+Qwen3-0.6B,candy,0.8636363636363636,0.7779439252336449,local_shuffled,candy,0.3611088
+Qwen3-0.6B,clothing,0.8010012515644556,0.691517027863777,original,item of clothing,0.2369512
+Qwen3-0.6B,clothing,0.8010012515644556,0.691517027863777,shuffled,item of clothing,0.10755572
+Qwen3-0.6B,clothing,0.8010012515644556,0.691517027863777,local_shuffled,item of clothing,0.23520032
+Qwen3-0.6B,clothing accessory,0.8018575851393189,0.6766362157427105,original,clothing accessory,0.2317462
+Qwen3-0.6B,clothing accessory,0.8018575851393189,0.6766362157427105,shuffled,clothing accessory,0.114947446
+Qwen3-0.6B,clothing accessory,0.8018575851393189,0.6766362157427105,local_shuffled,clothing accessory,0.2295899
+Qwen3-0.6B,condiment,0.9104477611940298,0.8074712643678159,original,condiment,0.44059435
+Qwen3-0.6B,condiment,0.9104477611940298,0.8074712643678159,shuffled,condiment,0.23226248
+Qwen3-0.6B,condiment,0.9104477611940298,0.8074712643678159,local_shuffled,condiment,0.44059435
+Qwen3-0.6B,construction equipment,0.8374558303886925,0.6846414728682171,original,construction equipment,0.18503499
+Qwen3-0.6B,construction equipment,0.8374558303886925,0.6846414728682171,shuffled,construction equipment,0.11658626
+Qwen3-0.6B,construction equipment,0.8374558303886925,0.6846414728682171,local_shuffled,construction equipment,0.18582436
+Qwen3-0.6B,container,0.829136690647482,0.7609165018309214,original,container,0.19905068
+Qwen3-0.6B,container,0.829136690647482,0.7609165018309214,shuffled,container,0.1040496
+Qwen3-0.6B,container,0.829136690647482,0.7609165018309214,local_shuffled,container,0.19243497
+Qwen3-0.6B,dessert,0.9059561128526645,0.809483994266603,original,dessert,0.37246186
+Qwen3-0.6B,dessert,0.9059561128526645,0.809483994266603,shuffled,dessert,0.11260643
+Qwen3-0.6B,dessert,0.9059561128526645,0.809483994266603,local_shuffled,dessert,0.3717235
+Qwen3-0.6B,drink,0.9333333333333333,0.9028749028749028,original,drink,0.41713497
+Qwen3-0.6B,drink,0.9333333333333333,0.9028749028749028,shuffled,drink,0.15769655
+Qwen3-0.6B,drink,0.9333333333333333,0.9028749028749028,local_shuffled,drink,0.41713497
+Qwen3-0.6B,electronic device,0.8984674329501916,0.7970555225457188,original,electronic device,0.28890124
+Qwen3-0.6B,electronic device,0.8984674329501916,0.7970555225457188,shuffled,electronic device,0.10897642
+Qwen3-0.6B,electronic device,0.8984674329501916,0.7970555225457188,local_shuffled,electronic device,0.2786257
+Qwen3-0.6B,farm animal,0.9306930693069307,0.7624327956989247,original,farm animal,0.34861273
+Qwen3-0.6B,farm animal,0.9306930693069307,0.7624327956989247,shuffled,farm animal,0.12287014
+Qwen3-0.6B,farm animal,0.9306930693069307,0.7624327956989247,local_shuffled,farm animal,0.34861273
+Qwen3-0.6B,fastener,0.7878787878787878,0.6271520803443329,original,fastener,0.21381739
+Qwen3-0.6B,fastener,0.7878787878787878,0.6271520803443329,shuffled,fastener,0.11766047
+Qwen3-0.6B,fastener,0.7878787878787878,0.6271520803443329,local_shuffled,fastener,0.2252174
+Qwen3-0.6B,food,0.9154550350026925,0.8337089225978116,original,food,0.24699682
+Qwen3-0.6B,food,0.9154550350026925,0.8337089225978116,shuffled,food,0.09101702
+Qwen3-0.6B,food,0.9154550350026925,0.8337089225978116,local_shuffled,food,0.24577776
+Qwen3-0.6B,footwear,0.8076923076923077,0.6380443256487359,original,footwear,0.3542999
+Qwen3-0.6B,footwear,0.8076923076923077,0.6380443256487359,shuffled,footwear,0.14953789
+Qwen3-0.6B,footwear,0.8076923076923077,0.6380443256487359,local_shuffled,footwear,0.35429987
+Qwen3-0.6B,fruit,0.8924731182795699,0.793801734331888,original,fruit,0.29510063
+Qwen3-0.6B,fruit,0.8924731182795699,0.793801734331888,shuffled,fruit,0.0997812
+Qwen3-0.6B,fruit,0.8924731182795699,0.793801734331888,local_shuffled,fruit,0.2962357
+Qwen3-0.6B,furniture,0.9050279329608939,0.8537370824321078,original,furniture,0.3364628
+Qwen3-0.6B,furniture,0.9050279329608939,0.8537370824321078,shuffled,furniture,0.1119088
+Qwen3-0.6B,furniture,0.9050279329608939,0.8537370824321078,local_shuffled,furniture,0.3364628
+Qwen3-0.6B,game,0.9240506329113924,0.8697802197802198,original,game,0.298181
+Qwen3-0.6B,game,0.9240506329113924,0.8697802197802198,shuffled,game,0.18781182
+Qwen3-0.6B,game,0.9240506329113924,0.8697802197802198,local_shuffled,game,0.298181
+Qwen3-0.6B,garden tool,0.7542857142857143,0.549428177953416,original,garden tool,0.21203487
+Qwen3-0.6B,garden tool,0.7542857142857143,0.549428177953416,shuffled,garden tool,0.15348417
+Qwen3-0.6B,garden tool,0.7542857142857143,0.549428177953416,local_shuffled,garden tool,0.18081675
+Qwen3-0.6B,hardware,0.8467023172905526,0.7423747276688453,original,hardware item,0.21859309
+Qwen3-0.6B,hardware,0.8467023172905526,0.7423747276688453,shuffled,hardware item,0.10434082
+Qwen3-0.6B,hardware,0.8467023172905526,0.7423747276688453,local_shuffled,hardware item,0.21124896
+Qwen3-0.6B,headwear,0.7647058823529411,0.6475953565505805,original,headwear,0.28326228
+Qwen3-0.6B,headwear,0.7647058823529411,0.6475953565505805,shuffled,headwear,0.12713054
+Qwen3-0.6B,headwear,0.7647058823529411,0.6475953565505805,local_shuffled,headwear,0.2764828
+Qwen3-0.6B,home appliance,0.9278996865203761,0.8469449485783425,original,home appliance,0.30774447
+Qwen3-0.6B,home appliance,0.9278996865203761,0.8469449485783425,shuffled,home appliance,0.106384344
+Qwen3-0.6B,home appliance,0.9278996865203761,0.8469449485783425,local_shuffled,home appliance,0.30704167
+Qwen3-0.6B,home decor,0.8177777777777778,0.7418930639881369,original,home decor item,0.14416753
+Qwen3-0.6B,home decor,0.8177777777777778,0.7418930639881369,shuffled,home decor item,0.11172592
+Qwen3-0.6B,home decor,0.8177777777777778,0.7418930639881369,local_shuffled,home decor item,0.1351337
+Qwen3-0.6B,insect,0.9873417721518988,0.9652288732394366,original,insect,0.32845968
+Qwen3-0.6B,insect,0.9873417721518988,0.9652288732394366,shuffled,insect,0.10351064
+Qwen3-0.6B,insect,0.9873417721518988,0.9652288732394366,local_shuffled,insect,0.32845968
+Qwen3-0.6B,jewelry,0.8070175438596491,0.6902173913043479,original,piece of jewelry,0.28458902
+Qwen3-0.6B,jewelry,0.8070175438596491,0.6902173913043479,shuffled,piece of jewelry,0.15947928
+Qwen3-0.6B,jewelry,0.8070175438596491,0.6902173913043479,local_shuffled,piece of jewelry,0.27453682
+Qwen3-0.6B,kitchen appliance,0.903954802259887,0.7836030204962243,original,kitchen appliance,0.43856624
+Qwen3-0.6B,kitchen appliance,0.903954802259887,0.7836030204962243,shuffled,kitchen appliance,0.122544065
+Qwen3-0.6B,kitchen appliance,0.903954802259887,0.7836030204962243,local_shuffled,kitchen appliance,0.43856627
+Qwen3-0.6B,kitchen tool,0.8160377358490566,0.6905572813353793,original,kitchen tool,0.34031436
+Qwen3-0.6B,kitchen tool,0.8160377358490566,0.6905572813353793,shuffled,kitchen tool,0.111792654
+Qwen3-0.6B,kitchen tool,0.8160377358490566,0.6905572813353793,local_shuffled,kitchen tool,0.33386517
+Qwen3-0.6B,lighting,0.8571428571428571,0.7746463183691656,original,source of light,0.16713984
+Qwen3-0.6B,lighting,0.8571428571428571,0.7746463183691656,shuffled,source of light,0.1242739
+Qwen3-0.6B,lighting,0.8571428571428571,0.7746463183691656,local_shuffled,source of light,0.16713983
+Qwen3-0.6B,mammal,0.964095744680851,0.9060969462083127,original,mammal,0.32052997
+Qwen3-0.6B,mammal,0.964095744680851,0.9060969462083127,shuffled,mammal,0.08719046
+Qwen3-0.6B,mammal,0.964095744680851,0.9060969462083127,local_shuffled,mammal,0.31319627
+Qwen3-0.6B,medical equipment,0.875,0.7797553994275306,original,medical equipment,0.22743645
+Qwen3-0.6B,medical equipment,0.875,0.7797553994275306,shuffled,medical equipment,0.10557048
+Qwen3-0.6B,medical equipment,0.875,0.7797553994275306,local_shuffled,medical equipment,0.2151756
+Qwen3-0.6B,musical instrument,0.9006622516556292,0.8645091822695461,original,musical instrument,0.24447973
+Qwen3-0.6B,musical instrument,0.9006622516556292,0.8645091822695461,shuffled,musical instrument,0.10559211
+Qwen3-0.6B,musical instrument,0.9006622516556292,0.8645091822695461,local_shuffled,musical instrument,0.24447973
+Qwen3-0.6B,office supply,0.9011627906976745,0.8043230944254836,original,office supply item,0.34146813
+Qwen3-0.6B,office supply,0.9011627906976745,0.8043230944254836,shuffled,office supply item,0.118907295
+Qwen3-0.6B,office supply,0.9011627906976745,0.8043230944254836,local_shuffled,office supply item,0.32966414
+Qwen3-0.6B,outerwear,0.8035714285714286,0.6776556776556777,original,outerwear,0.3125613
+Qwen3-0.6B,outerwear,0.8035714285714286,0.6776556776556777,shuffled,outerwear,0.13353439
+Qwen3-0.6B,outerwear,0.8035714285714286,0.6776556776556777,local_shuffled,outerwear,0.30241963
+Qwen3-0.6B,part of car,0.8181818181818182,0.7623049219687875,original,car part,0.2520023
+Qwen3-0.6B,part of car,0.8181818181818182,0.7623049219687875,shuffled,car part,0.13158026
+Qwen3-0.6B,part of car,0.8181818181818182,0.7623049219687875,local_shuffled,car part,0.2376549
+Qwen3-0.6B,personal hygiene item,0.864516129032258,0.7742874973996255,original,personal hygiene item,0.26480228
+Qwen3-0.6B,personal hygiene item,0.864516129032258,0.7742874973996255,shuffled,personal hygiene item,0.09962293
+Qwen3-0.6B,personal hygiene item,0.864516129032258,0.7742874973996255,local_shuffled,personal hygiene item,0.22637792
+Qwen3-0.6B,plant,0.9049586776859504,0.8260353180184403,original,plant,0.19261082
+Qwen3-0.6B,plant,0.9049586776859504,0.8260353180184403,shuffled,plant,0.10246637
+Qwen3-0.6B,plant,0.9049586776859504,0.8260353180184403,local_shuffled,plant,0.18926121
+Qwen3-0.6B,protective clothing,0.7608695652173914,0.6278727707299137,original,protective clothing item,0.24609903
+Qwen3-0.6B,protective clothing,0.7608695652173914,0.6278727707299137,shuffled,protective clothing item,0.113911875
+Qwen3-0.6B,protective clothing,0.7608695652173914,0.6278727707299137,local_shuffled,protective clothing item,0.2604862
+Qwen3-0.6B,safety equipment,0.8048780487804879,0.6893939393939393,original,safety equipment,0.18056588
+Qwen3-0.6B,safety equipment,0.8048780487804879,0.6893939393939393,shuffled,safety equipment,0.13035716
+Qwen3-0.6B,safety equipment,0.8048780487804879,0.6893939393939393,local_shuffled,safety equipment,0.18104146
+Qwen3-0.6B,school supply,0.8602150537634409,0.7344607950801669,original,school supply item,0.30356604
+Qwen3-0.6B,school supply,0.8602150537634409,0.7344607950801669,shuffled,school supply item,0.13094126
+Qwen3-0.6B,school supply,0.8602150537634409,0.7344607950801669,local_shuffled,school supply item,0.30074438
+Qwen3-0.6B,scientific equipment,0.8333333333333334,0.710410849621061,original,scientific equipment,0.26171118
+Qwen3-0.6B,scientific equipment,0.8333333333333334,0.710410849621061,shuffled,scientific equipment,0.09281506
+Qwen3-0.6B,scientific equipment,0.8333333333333334,0.710410849621061,local_shuffled,scientific equipment,0.25827074
+Qwen3-0.6B,sea animal,0.972809667673716,0.9008223191397278,original,sea animal,0.24193813
+Qwen3-0.6B,sea animal,0.972809667673716,0.9008223191397278,shuffled,sea animal,0.09954861
+Qwen3-0.6B,sea animal,0.972809667673716,0.9008223191397278,local_shuffled,sea animal,0.24193816
+Qwen3-0.6B,seafood,0.9676258992805755,0.8697078581471644,original,seafood,0.2426431
+Qwen3-0.6B,seafood,0.9676258992805755,0.8697078581471644,shuffled,seafood,0.10283856
+Qwen3-0.6B,seafood,0.9676258992805755,0.8697078581471644,local_shuffled,seafood,0.24264313
+Qwen3-0.6B,sports equipment,0.8763157894736842,0.8038203407330924,original,sports equipment,0.17291136
+Qwen3-0.6B,sports equipment,0.8763157894736842,0.8038203407330924,shuffled,sports equipment,0.101585135
+Qwen3-0.6B,sports equipment,0.8763157894736842,0.8038203407330924,local_shuffled,sports equipment,0.17099938
+Qwen3-0.6B,tool,0.8373101952277657,0.7178034785873442,original,tool,0.24047066
+Qwen3-0.6B,tool,0.8373101952277657,0.7178034785873442,shuffled,tool,0.10443177
+Qwen3-0.6B,tool,0.8373101952277657,0.7178034785873442,local_shuffled,tool,0.23964897
+Qwen3-0.6B,toy,0.8518518518518519,0.7694318577901709,original,toy,0.14247005
+Qwen3-0.6B,toy,0.8518518518518519,0.7694318577901709,shuffled,toy,0.11020753
+Qwen3-0.6B,toy,0.8518518518518519,0.7694318577901709,local_shuffled,toy,0.14156063
+Qwen3-0.6B,vegetable,0.9294478527607362,0.8557716352164965,original,vegetable,0.2909545
+Qwen3-0.6B,vegetable,0.9294478527607362,0.8557716352164965,shuffled,vegetable,0.09471787
+Qwen3-0.6B,vegetable,0.9294478527607362,0.8557716352164965,local_shuffled,vegetable,0.27907947
+Qwen3-0.6B,vehicle,0.8732057416267942,0.7961444674488153,original,vehicle,0.266092
+Qwen3-0.6B,vehicle,0.8732057416267942,0.7961444674488153,shuffled,vehicle,0.09682093
+Qwen3-0.6B,vehicle,0.8732057416267942,0.7961444674488153,local_shuffled,vehicle,0.25010836
+Qwen3-0.6B,watercraft,0.9527027027027027,0.900908656145385,original,watercraft,0.39036003
+Qwen3-0.6B,watercraft,0.9527027027027027,0.900908656145385,shuffled,watercraft,0.12020045
+Qwen3-0.6B,watercraft,0.9527027027027027,0.900908656145385,local_shuffled,watercraft,0.3594098
+Qwen3-0.6B,weapon,0.8513119533527697,0.7407407407407407,original,weapon,0.1831309
+Qwen3-0.6B,weapon,0.8513119533527697,0.7407407407407407,shuffled,weapon,0.10580211
+Qwen3-0.6B,weapon,0.8513119533527697,0.7407407407407407,local_shuffled,weapon,0.184069
+Qwen3-0.6B,women's clothing,0.85,0.7155555555555555,original,piece of women's clothing,0.3113411
+Qwen3-0.6B,women's clothing,0.85,0.7155555555555555,shuffled,piece of women's clothing,0.13348475
+Qwen3-0.6B,women's clothing,0.85,0.7155555555555555,local_shuffled,piece of women's clothing,0.30778614
+Qwen3-1.7B,animal,0.9942893401015228,0.9849697200896477,original,animal,0.2051288
+Qwen3-1.7B,animal,0.9942893401015228,0.9849697200896477,shuffled,animal,0.090857334
+Qwen3-1.7B,animal,0.9942893401015228,0.9849697200896477,local_shuffled,animal,0.20254579
+Qwen3-1.7B,arts and crafts supply,0.875886524822695,0.6783235016132712,original,arts and crafts item,0.24844842
+Qwen3-1.7B,arts and crafts supply,0.875886524822695,0.6783235016132712,shuffled,arts and crafts item,0.10601016
+Qwen3-1.7B,arts and crafts supply,0.875886524822695,0.6783235016132712,local_shuffled,arts and crafts item,0.22475216
+Qwen3-1.7B,bird,0.9893992932862191,0.966486401136857,original,bird,0.300626
+Qwen3-1.7B,bird,0.9893992932862191,0.966486401136857,shuffled,bird,0.11928343
+Qwen3-1.7B,bird,0.9893992932862191,0.966486401136857,local_shuffled,bird,0.300626
+Qwen3-1.7B,body part,0.8888888888888888,0.828752642706131,original,body part,0.202576
+Qwen3-1.7B,body part,0.8888888888888888,0.828752642706131,shuffled,body part,0.15639178
+Qwen3-1.7B,body part,0.8888888888888888,0.828752642706131,local_shuffled,body part,0.20257601
+Qwen3-1.7B,breakfast food,0.9453125,0.8448484848484848,original,breakfast food,0.35988823
+Qwen3-1.7B,breakfast food,0.9453125,0.8448484848484848,shuffled,breakfast food,0.09803817
+Qwen3-1.7B,breakfast food,0.9453125,0.8448484848484848,local_shuffled,breakfast food,0.3598882
+Qwen3-1.7B,candy,0.9393939393939394,0.8577586206896552,original,candy,0.36110884
+Qwen3-1.7B,candy,0.9393939393939394,0.8577586206896552,shuffled,candy,0.13753448
+Qwen3-1.7B,candy,0.9393939393939394,0.8577586206896552,local_shuffled,candy,0.3611088
+Qwen3-1.7B,clothing,0.8973717146433041,0.7855188036874083,original,item of clothing,0.2369512
+Qwen3-1.7B,clothing,0.8973717146433041,0.7855188036874083,shuffled,item of clothing,0.10755572
+Qwen3-1.7B,clothing,0.8973717146433041,0.7855188036874083,local_shuffled,item of clothing,0.23520032
+Qwen3-1.7B,clothing accessory,0.9071207430340558,0.7812838569880822,original,clothing accessory,0.2317462
+Qwen3-1.7B,clothing accessory,0.9071207430340558,0.7812838569880822,shuffled,clothing accessory,0.114947446
+Qwen3-1.7B,clothing accessory,0.9071207430340558,0.7812838569880822,local_shuffled,clothing accessory,0.2295899
+Qwen3-1.7B,condiment,0.9552238805970149,0.8873949579831932,original,condiment,0.44059435
+Qwen3-1.7B,condiment,0.9552238805970149,0.8873949579831932,shuffled,condiment,0.23226248
+Qwen3-1.7B,condiment,0.9552238805970149,0.8873949579831932,local_shuffled,condiment,0.44059435
+Qwen3-1.7B,construction equipment,0.9257950530035336,0.7814189561955203,original,construction equipment,0.18503499
+Qwen3-1.7B,construction equipment,0.9257950530035336,0.7814189561955203,shuffled,construction equipment,0.11658626
+Qwen3-1.7B,construction equipment,0.9257950530035336,0.7814189561955203,local_shuffled,construction equipment,0.18582436
+Qwen3-1.7B,container,0.9496402877697842,0.9165862963201097,original,container,0.19905068
+Qwen3-1.7B,container,0.9496402877697842,0.9165862963201097,shuffled,container,0.1040496
+Qwen3-1.7B,container,0.9496402877697842,0.9165862963201097,local_shuffled,container,0.19243497
+Qwen3-1.7B,dessert,0.9623824451410659,0.8957970383275261,original,dessert,0.37246186
+Qwen3-1.7B,dessert,0.9623824451410659,0.8957970383275261,shuffled,dessert,0.11260643
+Qwen3-1.7B,dessert,0.9623824451410659,0.8957970383275261,local_shuffled,dessert,0.3717235
+Qwen3-1.7B,drink,0.9866666666666667,0.9786263892846965,original,drink,0.41713497
+Qwen3-1.7B,drink,0.9866666666666667,0.9786263892846965,shuffled,drink,0.15769655
+Qwen3-1.7B,drink,0.9866666666666667,0.9786263892846965,local_shuffled,drink,0.41713497
+Qwen3-1.7B,electronic device,0.8984674329501916,0.7716629664171405,original,electronic device,0.28890124
+Qwen3-1.7B,electronic device,0.8984674329501916,0.7716629664171405,shuffled,electronic device,0.10897642
+Qwen3-1.7B,electronic device,0.8984674329501916,0.7716629664171405,local_shuffled,electronic device,0.2786257
+Qwen3-1.7B,farm animal,0.9603960396039604,0.8355718355718356,original,farm animal,0.34861273
+Qwen3-1.7B,farm animal,0.9603960396039604,0.8355718355718356,shuffled,farm animal,0.12287014
+Qwen3-1.7B,farm animal,0.9603960396039604,0.8355718355718356,local_shuffled,farm animal,0.34861273
+Qwen3-1.7B,fastener,0.898989898989899,0.7336561743341404,original,fastener,0.21381739
+Qwen3-1.7B,fastener,0.898989898989899,0.7336561743341404,shuffled,fastener,0.11766047
+Qwen3-1.7B,fastener,0.898989898989899,0.7336561743341404,local_shuffled,fastener,0.2252174
+Qwen3-1.7B,food,0.9784598815293484,0.9519785261002012,original,food,0.24699682
+Qwen3-1.7B,food,0.9784598815293484,0.9519785261002012,shuffled,food,0.09101702
+Qwen3-1.7B,food,0.9784598815293484,0.9519785261002012,local_shuffled,food,0.24577776
+Qwen3-1.7B,footwear,0.8923076923076924,0.7505482456140351,original,footwear,0.3542999
+Qwen3-1.7B,footwear,0.8923076923076924,0.7505482456140351,shuffled,footwear,0.14953789
+Qwen3-1.7B,footwear,0.8923076923076924,0.7505482456140351,local_shuffled,footwear,0.35429987
+Qwen3-1.7B,fruit,0.985663082437276,0.9681069958847737,original,fruit,0.29510063
+Qwen3-1.7B,fruit,0.985663082437276,0.9681069958847737,shuffled,fruit,0.0997812
+Qwen3-1.7B,fruit,0.985663082437276,0.9681069958847737,local_shuffled,fruit,0.2962357
+Qwen3-1.7B,furniture,0.9664804469273743,0.9455375253549695,original,furniture,0.3364628
+Qwen3-1.7B,furniture,0.9664804469273743,0.9455375253549695,shuffled,furniture,0.1119088
+Qwen3-1.7B,furniture,0.9664804469273743,0.9455375253549695,local_shuffled,furniture,0.3364628
+Qwen3-1.7B,game,0.9493670886075949,0.9017412935323382,original,game,0.298181
+Qwen3-1.7B,game,0.9493670886075949,0.9017412935323382,shuffled,game,0.18781182
+Qwen3-1.7B,game,0.9493670886075949,0.9017412935323382,local_shuffled,game,0.298181
+Qwen3-1.7B,garden tool,0.92,0.7447916666666667,original,garden tool,0.21203487
+Qwen3-1.7B,garden tool,0.92,0.7447916666666667,shuffled,garden tool,0.15348417
+Qwen3-1.7B,garden tool,0.92,0.7447916666666667,local_shuffled,garden tool,0.18081675
+Qwen3-1.7B,hardware,0.93048128342246,0.8357987166497804,original,hardware item,0.21859309
+Qwen3-1.7B,hardware,0.93048128342246,0.8357987166497804,shuffled,hardware item,0.10434082
+Qwen3-1.7B,hardware,0.93048128342246,0.8357987166497804,local_shuffled,hardware item,0.21124896
+Qwen3-1.7B,headwear,0.9058823529411765,0.8059360730593608,original,headwear,0.28326228
+Qwen3-1.7B,headwear,0.9058823529411765,0.8059360730593608,shuffled,headwear,0.12713054
+Qwen3-1.7B,headwear,0.9058823529411765,0.8059360730593608,local_shuffled,headwear,0.2764828
+Qwen3-1.7B,home appliance,0.9435736677115988,0.8713709677419355,original,home appliance,0.30774447
+Qwen3-1.7B,home appliance,0.9435736677115988,0.8713709677419355,shuffled,home appliance,0.106384344
+Qwen3-1.7B,home appliance,0.9435736677115988,0.8713709677419355,local_shuffled,home appliance,0.30704167
+Qwen3-1.7B,home decor,0.9377777777777778,0.891439205955335,original,home decor item,0.14416753
+Qwen3-1.7B,home decor,0.9377777777777778,0.891439205955335,shuffled,home decor item,0.11172592
+Qwen3-1.7B,home decor,0.9377777777777778,0.891439205955335,local_shuffled,home decor item,0.1351337
+Qwen3-1.7B,insect,0.9873417721518988,0.9652288732394366,original,insect,0.32845968
+Qwen3-1.7B,insect,0.9873417721518988,0.9652288732394366,shuffled,insect,0.10351064
+Qwen3-1.7B,insect,0.9873417721518988,0.9652288732394366,local_shuffled,insect,0.32845968
+Qwen3-1.7B,jewelry,0.9298245614035088,0.8371428571428571,original,piece of jewelry,0.28458902
+Qwen3-1.7B,jewelry,0.9298245614035088,0.8371428571428571,shuffled,piece of jewelry,0.15947928
+Qwen3-1.7B,jewelry,0.9298245614035088,0.8371428571428571,local_shuffled,piece of jewelry,0.27453682
+Qwen3-1.7B,kitchen appliance,0.943502824858757,0.8750705815923208,original,kitchen appliance,0.43856624
+Qwen3-1.7B,kitchen appliance,0.943502824858757,0.8750705815923208,shuffled,kitchen appliance,0.122544065
+Qwen3-1.7B,kitchen appliance,0.943502824858757,0.8750705815923208,local_shuffled,kitchen appliance,0.43856627
+Qwen3-1.7B,kitchen tool,0.9245283018867925,0.8527777777777777,original,kitchen tool,0.34031436
+Qwen3-1.7B,kitchen tool,0.9245283018867925,0.8527777777777777,shuffled,kitchen tool,0.111792654
+Qwen3-1.7B,kitchen tool,0.9245283018867925,0.8527777777777777,local_shuffled,kitchen tool,0.33386517
+Qwen3-1.7B,lighting,0.9159663865546218,0.8363586358635864,original,source of light,0.16713984
+Qwen3-1.7B,lighting,0.9159663865546218,0.8363586358635864,shuffled,source of light,0.1242739
+Qwen3-1.7B,lighting,0.9159663865546218,0.8363586358635864,local_shuffled,source of light,0.16713983
+Qwen3-1.7B,mammal,0.9946808510638298,0.9865982321072142,original,mammal,0.32052997
+Qwen3-1.7B,mammal,0.9946808510638298,0.9865982321072142,shuffled,mammal,0.08719046
+Qwen3-1.7B,mammal,0.9946808510638298,0.9865982321072142,local_shuffled,mammal,0.31319627
+Qwen3-1.7B,medical equipment,0.9402173913043478,0.8889803082661402,original,medical equipment,0.22743645
+Qwen3-1.7B,medical equipment,0.9402173913043478,0.8889803082661402,shuffled,medical equipment,0.10557048
+Qwen3-1.7B,medical equipment,0.9402173913043478,0.8889803082661402,local_shuffled,medical equipment,0.2151756
+Qwen3-1.7B,musical instrument,0.9602649006622517,0.9391129032258064,original,musical instrument,0.24447973
+Qwen3-1.7B,musical instrument,0.9602649006622517,0.9391129032258064,shuffled,musical instrument,0.10559211
+Qwen3-1.7B,musical instrument,0.9602649006622517,0.9391129032258064,local_shuffled,musical instrument,0.24447973
+Qwen3-1.7B,office supply,0.9127906976744186,0.8215150466966448,original,office supply item,0.34146813
+Qwen3-1.7B,office supply,0.9127906976744186,0.8215150466966448,shuffled,office supply item,0.118907295
+Qwen3-1.7B,office supply,0.9127906976744186,0.8215150466966448,local_shuffled,office supply item,0.32966414
+Qwen3-1.7B,outerwear,0.8988095238095238,0.6979375991538868,original,outerwear,0.3125613
+Qwen3-1.7B,outerwear,0.8988095238095238,0.6979375991538868,shuffled,outerwear,0.13353439
+Qwen3-1.7B,outerwear,0.8988095238095238,0.6979375991538868,local_shuffled,outerwear,0.30241963
+Qwen3-1.7B,part of car,0.9242424242424242,0.8636363636363635,original,car part,0.2520023
+Qwen3-1.7B,part of car,0.9242424242424242,0.8636363636363635,shuffled,car part,0.13158026
+Qwen3-1.7B,part of car,0.9242424242424242,0.8636363636363635,local_shuffled,car part,0.2376549
+Qwen3-1.7B,personal hygiene item,0.8838709677419355,0.7702569169960474,original,personal hygiene item,0.26480228
+Qwen3-1.7B,personal hygiene item,0.8838709677419355,0.7702569169960474,shuffled,personal hygiene item,0.09962293
+Qwen3-1.7B,personal hygiene item,0.8838709677419355,0.7702569169960474,local_shuffled,personal hygiene item,0.22637792
+Qwen3-1.7B,plant,0.9917355371900827,0.9828902714932126,original,plant,0.19261082
+Qwen3-1.7B,plant,0.9917355371900827,0.9828902714932126,shuffled,plant,0.10246637
+Qwen3-1.7B,plant,0.9917355371900827,0.9828902714932126,local_shuffled,plant,0.18926121
+Qwen3-1.7B,protective clothing,0.9184782608695652,0.7848959551087211,original,protective clothing item,0.24609903
+Qwen3-1.7B,protective clothing,0.9184782608695652,0.7848959551087211,shuffled,protective clothing item,0.113911875
+Qwen3-1.7B,protective clothing,0.9184782608695652,0.7848959551087211,local_shuffled,protective clothing item,0.2604862
+Qwen3-1.7B,safety equipment,0.9329268292682927,0.8466898954703832,original,safety equipment,0.18056588
+Qwen3-1.7B,safety equipment,0.9329268292682927,0.8466898954703832,shuffled,safety equipment,0.13035716
+Qwen3-1.7B,safety equipment,0.9329268292682927,0.8466898954703832,local_shuffled,safety equipment,0.18104146
+Qwen3-1.7B,school supply,0.9247311827956989,0.8382608695652174,original,school supply item,0.30356604
+Qwen3-1.7B,school supply,0.9247311827956989,0.8382608695652174,shuffled,school supply item,0.13094126
+Qwen3-1.7B,school supply,0.9247311827956989,0.8382608695652174,local_shuffled,school supply item,0.30074438
+Qwen3-1.7B,scientific equipment,0.9128787878787878,0.8082788671023965,original,scientific equipment,0.26171118
+Qwen3-1.7B,scientific equipment,0.9128787878787878,0.8082788671023965,shuffled,scientific equipment,0.09281506
+Qwen3-1.7B,scientific equipment,0.9128787878787878,0.8082788671023965,local_shuffled,scientific equipment,0.25827074
+Qwen3-1.7B,sea animal,0.9788519637462235,0.9256442347806553,original,sea animal,0.24193813
+Qwen3-1.7B,sea animal,0.9788519637462235,0.9256442347806553,shuffled,sea animal,0.09954861
+Qwen3-1.7B,sea animal,0.9788519637462235,0.9256442347806553,local_shuffled,sea animal,0.24193816
+Qwen3-1.7B,seafood,0.960431654676259,0.8407540488465345,original,seafood,0.2426431
+Qwen3-1.7B,seafood,0.960431654676259,0.8407540488465345,shuffled,seafood,0.10283856
+Qwen3-1.7B,seafood,0.960431654676259,0.8407540488465345,local_shuffled,seafood,0.24264313
+Qwen3-1.7B,sports equipment,0.9421052631578948,0.8911458333333333,original,sports equipment,0.17291136
+Qwen3-1.7B,sports equipment,0.9421052631578948,0.8911458333333333,shuffled,sports equipment,0.101585135
+Qwen3-1.7B,sports equipment,0.9421052631578948,0.8911458333333333,local_shuffled,sports equipment,0.17099938
+Qwen3-1.7B,tool,0.9360086767895879,0.852912785431341,original,tool,0.24047066
+Qwen3-1.7B,tool,0.9360086767895879,0.852912785431341,shuffled,tool,0.10443177
+Qwen3-1.7B,tool,0.9360086767895879,0.852912785431341,local_shuffled,tool,0.23964897
+Qwen3-1.7B,toy,0.91005291005291,0.8292864353647521,original,toy,0.14247005
+Qwen3-1.7B,toy,0.91005291005291,0.8292864353647521,shuffled,toy,0.11020753
+Qwen3-1.7B,toy,0.91005291005291,0.8292864353647521,local_shuffled,toy,0.14156063
+Qwen3-1.7B,vegetable,0.9846625766871165,0.9623339110340843,original,vegetable,0.2909545
+Qwen3-1.7B,vegetable,0.9846625766871165,0.9623339110340843,shuffled,vegetable,0.09471787
+Qwen3-1.7B,vegetable,0.9846625766871165,0.9623339110340843,local_shuffled,vegetable,0.27907947
+Qwen3-1.7B,vehicle,0.9593301435406698,0.9230577662281414,original,vehicle,0.266092
+Qwen3-1.7B,vehicle,0.9593301435406698,0.9230577662281414,shuffled,vehicle,0.09682093
+Qwen3-1.7B,vehicle,0.9593301435406698,0.9230577662281414,local_shuffled,vehicle,0.25010836
+Qwen3-1.7B,watercraft,0.9864864864864865,0.9667714414009878,original,watercraft,0.39036003
+Qwen3-1.7B,watercraft,0.9864864864864865,0.9667714414009878,shuffled,watercraft,0.12020045
+Qwen3-1.7B,watercraft,0.9864864864864865,0.9667714414009878,local_shuffled,watercraft,0.3594098
+Qwen3-1.7B,weapon,0.9154518950437318,0.8052853087990604,original,weapon,0.1831309
+Qwen3-1.7B,weapon,0.9154518950437318,0.8052853087990604,shuffled,weapon,0.10580211
+Qwen3-1.7B,weapon,0.9154518950437318,0.8052853087990604,local_shuffled,weapon,0.184069
+Qwen3-1.7B,women's clothing,0.9,0.7496087636932707,original,piece of women's clothing,0.3113411
+Qwen3-1.7B,women's clothing,0.9,0.7496087636932707,shuffled,piece of women's clothing,0.13348475
+Qwen3-1.7B,women's clothing,0.9,0.7496087636932707,local_shuffled,piece of women's clothing,0.30778614
