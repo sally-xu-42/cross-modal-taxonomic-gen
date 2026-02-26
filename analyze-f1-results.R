@@ -194,8 +194,8 @@ dino_vs_siglip %>%
   geom_hline(yintercept = 0.471, linetype = "dashed", linewidth = 0.5) +
   scale_y_continuous(limits = c(0.4, 1), labels = scales::percent_format(suffix = ""), breaks = c(0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)) +
   scale_shape_manual(values = c(21,23)) +
-  theme_bw(base_size = 18, base_family = "Times") +
-  # theme_classic(base_size = 18, base_family = "Times") +
+  # theme_bw(base_size = 18, base_family = "Times") +
+  theme_classic(base_size = 18, base_family = "Times") +
   theme(
     panel.grid = element_blank(),
     legend.position = "top",
@@ -209,7 +209,7 @@ dino_vs_siglip %>%
   ) +
   labs(
     x = "LM Backbone",
-    y = "F1 on unseen images",
+    y = "Macro F1 on\nUnseen Images",
     color = "Image Encoder",
     fill = "Image Encoder",
     shape = "Image Encoder"
@@ -316,6 +316,8 @@ unseen_categorywise <- unseen_shuffled %>%
     ) 
   )
 
+coherence_backbone <- read_csv("results/coherence_backbone.csv")
+
 reg_data <- unseen_categorywise %>%
   filter(shuffled == "Original") %>%
   inner_join(coherence_backbone %>% filter(shuffle_type == "original")) %>%
@@ -328,6 +330,9 @@ reg_data <- unseen_categorywise %>%
 fit1 <- lmer(acc ~ backbone_f1 + avg_cosine + (backbone_f1 + avg_cosine || category) + (1|seed) + (1|model), data = reg_data)
 
 summary(fit1)
+
+# coherence: b = 0.83, t = 3.34, p < .01
+# backbone f1: b = 0.26, t = 0.26, p = 0.79
 
 fit1 <- lmer(acc ~ backbone_f1 + avg_cosine + (backbone_f1 + avg_cosine || category) + (1| model:seed), data = reg_data)
 
@@ -380,10 +385,39 @@ reg_data %>%
   scale_y_continuous(limits = c(0.18,1.05), labels = scales::percent_format(suffix = ""))+
   labs(
     x = "Visual Coherence",
-    y = "Macro F1"
+    y = "Macro F1 on\nUnseen Images"
   ) +
-  theme_classic(base_size = 16, base_family = "Times")
+  theme_classic(base_size = 16, base_family = "Times") +
+  theme(
+    axis.text = element_text(color = "black")
+  )
 
+ggsave("plots/coherence-vs-f1-maintext.pdf", width = 4, height = 3.43, dpi = 300, device = cairo_pdf)
+
+
+reg_data %>%
+  mutate(
+    seed = glue::glue("Seed {seed}")
+  ) %>%
+  # filter(model == "Qwen3-1.7B", seed == 7) %>%
+  ggplot(aes(avg_cosine, acc)) +
+  geom_point(alpha = 0.7, color = "mediumpurple4") +
+  geom_smooth(method = "lm", color = "black") +
+  # scale_x_continuous(limits = c(0.15, 0.45)) +
+  # geom_richtext(x = 0.4, y = 0.30, label = "<i>&rho;</i> = 0.47") +
+  # geom_richtext(x = 0.4, y = 0.30, label = "<i>r</i> = 0.43") +
+  ggh4x::facet_grid2(model ~ seed, scales = "free", independent = "all") +
+  scale_y_continuous(limits = c(0,1.05), labels = scales::percent_format(suffix = ""))+
+  labs(
+    x = "Visual Coherence",
+    y = "Macro F1 on Unseen Images"
+  ) +
+  theme_classic(base_size = 16, base_family = "Times") +
+  theme(
+    axis.text = element_text(color = "black"),
+    strip.background = element_rect(color = NA),
+    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
+  )
 
 reg_data_within <- unseen_categorywise %>%
   filter(str_detect(shuffled, "Within")) %>%
@@ -569,7 +603,8 @@ exp1_ablation_results %>%
   geom_ribbon(aes(deprivation, acc, ymin = acc-conf, ymax=acc+conf, fill = lm), color = NA, alpha = 0.2) +
   # geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_wrap(~ablation_type) +
-  facet_grid(ablation_type ~ experiment) +
+  # facet_grid(ablation_type ~ experiment) +
+  ggh4x::facet_grid2(ablation_type ~ experiment, scales="free", independent = "all") +
   scale_x_continuous(limits = c(0,100)) +
   # scale_y_continuous(limits = c(0.3,1), breaks = c(0.3,0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
   scale_y_continuous(limits = c(0,1), breaks = c(0,0.2,0.4,0.6,0.8,1), labels = scales::percent_format(suffix = "")) +
@@ -584,12 +619,15 @@ exp1_ablation_results %>%
   #   fill = guide_legend(nrow = 2),
   #   # shape = guide_legend("Premise", override.aes = list(alpha = 1), nrow = 1)
   # ) +
-  theme_bw(base_size = 18, base_family = "Times") +
-  # theme_classic(base_size = 18, base_family = "Times") +
+  # theme_bw(base_size = 18, base_family = "Times") +
+  theme_classic(base_size = 18, base_family = "Times") +
   theme(
     panel.grid = element_blank(),
     # legend.position = "top",
-    axis.text = element_text(color = "black")
+    # axis.text = element_text(color = "black"),
+    axis.text = element_text(color = "black"),
+    strip.background = element_rect(color = NA),
+    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
   ) +
   labs(
     x = "% of Image-Hypernym pairs ablated from training",
