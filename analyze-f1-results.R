@@ -509,12 +509,12 @@ depth_wise %>%
   geom_col(position = position_dodge(0.9)) +
   geom_linerange(aes(ymin = acc-conf, ymax=acc+conf), position = position_dodge(0.9), color = "black") +
   scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
-  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1)) +
-  theme_bw(base_size = 18, base_family = "Times") +
-  # theme_classic(base_size = 18, base_family = "Times") +
+  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1), ) +
+  # theme_bw(base_size = 18, base_family = "Times") +
+  theme_classic(base_size = 18, base_family = "Times") +
   theme(
     panel.grid = element_blank(),
-    # legend.position = "top",
+    legend.position = "top",
     axis.text = element_text(color = "black")
   ) +
   labs(
@@ -607,7 +607,8 @@ exp1_ablation_results %>%
   ggh4x::facet_grid2(ablation_type ~ experiment, scales="free", independent = "all") +
   scale_x_continuous(limits = c(0,100)) +
   # scale_y_continuous(limits = c(0.3,1), breaks = c(0.3,0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
-  scale_y_continuous(limits = c(0,1), breaks = c(0,0.2,0.4,0.6,0.8,1), labels = scales::percent_format(suffix = "")) +
+  # scale_y_continuous(limits = c(0,1), breaks = c(0,0.2,0.4,0.6,0.8,1), labels = scales::percent_format(suffix = "")) +
+  scale_y_continuous(limits = c(0,1), breaks = c(0,0.25,0.5,0.75,1), labels = scales::percent_format(suffix = "")) +
   scale_shape_manual(values = c(21,23)) +
   scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
   scale_linetype_manual(values = c("solid", "dotted")) +
@@ -683,24 +684,26 @@ unseen_shuffled %>%
   geom_ribbon(data = exp3_chance, aes(ymin = acc-conf, ymax=acc+conf), fill = "black", color = NA, alpha = 0.05, show.legend = F) +
   # geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_grid(lm ~ ablation_type) +
-  facet_wrap(~lm) +
+  facet_wrap(~lm, scales = "free") +
   # scale_y_continuous(limits = c(0.4,1), breaks = c(0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
   scale_y_continuous(limits = c(0,1), breaks = c(0, 0.2, 0.4,0.6,0.8, 1), labels = scales::percent_format(suffix = "")) +
   scale_x_continuous(limits = c(0,100)) +
   scale_shape_manual(values = c(21,23,24)) +
   scale_color_manual(values = c("#7570b3", "#1b9e77", "#d95f02"), aesthetics=c("fill", "color")) +
-  theme_bw(base_size = 18, base_family = "Times") +
+  theme_classic(base_size = 18, base_family = "Times") +
   theme(
     panel.grid = element_blank(),
     legend.position = "top",
     axis.text = element_text(color = "black"),
     legend.box.margin = margin(0,0,0,-30),
     axis.title = element_text(size = 16),
-    legend.title = element_text(size=16)
+    legend.title = element_text(size=16),
+    strip.background = element_rect(color = NA),
+    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
   ) +
   labs(
     x = "% of Image-Hypernym pairs ablated from training",
-    y = "Macro F1/category\non unseen images",
+    y = "Macro F1 on\nUnseen Images",
     color = "Shuffle",
     fill = "Shuffle",
     shape = "Shuffle"
