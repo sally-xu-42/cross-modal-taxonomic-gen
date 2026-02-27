@@ -82,7 +82,7 @@ hyp_random <- read_csv("results/main-results/macro-f1s/all_hyp_guess_f1_scores.c
   )
 
 hyp_random %>%
-  count(run_name, ablation_amt, seen_hypernyms, test, experiment) %>% View()
+  count(run_name, ablation_amt, seen_hypernyms, test, experiment)
 
 seen_hypernyms <- hyp_random %>% distinct(seen_hypernyms) %>% pull(seen_hypernyms)
 ablation_type <- c("Random", "Systematic")
@@ -206,10 +206,14 @@ dino_vs_siglip %>%
     legend.box.margin = margin(0,0,0,-30),
     axis.title = element_text(size = 16),
     legend.title = element_text(size=16),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    legend.background = element_rect(fill='transparent'),
+    legend.box.background = element_rect(fill='transparent', color = NA)
   ) +
   labs(
     x = "LM Backbone",
-    y = "Macro F1 on\nUnseen Images",
+    y = "Macro F1 on\nunseen images",
     color = "Image Encoder",
     fill = "Image Encoder",
     shape = "Image Encoder"
@@ -385,11 +389,15 @@ reg_data %>%
   scale_y_continuous(limits = c(0.18,1.05), labels = scales::percent_format(suffix = ""))+
   labs(
     x = "Visual Coherence",
-    y = "Macro F1 on\nUnseen Images"
+    y = "Macro F1 on\nunseen images"
   ) +
   theme_classic(base_size = 16, base_family = "Times") +
   theme(
-    axis.text = element_text(color = "black")
+    axis.text = element_text(color = "black"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    legend.background = element_rect(fill='transparent'),
+    legend.box.background = element_rect(fill='transparent', color = NA)
   )
 
 ggsave("plots/coherence-vs-f1-maintext.pdf", width = 4, height = 3.43, dpi = 300, device = cairo_pdf)
@@ -613,8 +621,8 @@ exp1_ablation_results %>%
   scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
   scale_linetype_manual(values = c("solid", "dotted")) +
   geom_line(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", linetype = "dashed") +
-  geom_point(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", fill = "black", size = 1) +
-  geom_ribbon(data=exp1_chance, aes(x = deprivation, y = acc, ymin = acc-conf, ymax=acc+conf, group = 1), color = NA, fill = "black", alpha = 0.2) +
+  # geom_point(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", fill = "black", size = 1) +
+  geom_ribbon(data=exp1_chance, aes(x = deprivation, y = acc, ymin = acc-conf, ymax=acc+conf, group = 1), color = NA, fill = "black", alpha = 0.1) +
   # guides(
   #   color = guide_legend(nrow = 2),
   #   fill = guide_legend(nrow = 2),
@@ -627,8 +635,12 @@ exp1_ablation_results %>%
     # legend.position = "top",
     # axis.text = element_text(color = "black"),
     axis.text = element_text(color = "black"),
-    strip.background = element_rect(color = NA),
-    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
+    strip.background = element_rect(color = NA, fill='transparent'),
+    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue", size = 12),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    legend.background = element_rect(fill='transparent'),
+    legend.box.background = element_rect(fill='transparent', color = NA)
   ) +
   labs(
     x = "% of Image-Hypernym pairs ablated from training",
@@ -640,7 +652,7 @@ exp1_ablation_results %>%
     # color = "Image Encoder"
   )
 
-ggsave("plots/main-exp-results.pdf", height = 5.25, width = 10.47, dpi = 300, device=cairo_pdf)
+ggsave("plots/main-exp-results.pdf", height = 5.40, width = 10.34, dpi = 300, device=cairo_pdf)
 
 exp3_chance <- chance_f1 %>% 
   filter(ablation_type == "Random", experiment=="Held-Out Hypernyms") %>%
@@ -679,14 +691,15 @@ unseen_shuffled %>%
   geom_point(size = 2)+
   geom_line() +
   geom_ribbon(aes(ymin = acc-conf, ymax=acc+conf), color = NA, alpha = 0.2) +
-  geom_point(data = exp3_chance, color="black", fill="black", size = 1, show.legend = F) +
+  # geom_point(data = exp3_chance, color="black", fill="black", size = 1, show.legend = F) +
   geom_line(data = exp3_chance, color="black", linewidth = 0.5, linetype = "dashed", show.legend = F) +
   geom_ribbon(data = exp3_chance, aes(ymin = acc-conf, ymax=acc+conf), fill = "black", color = NA, alpha = 0.05, show.legend = F) +
   # geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_grid(lm ~ ablation_type) +
   facet_wrap(~lm, scales = "free") +
   # scale_y_continuous(limits = c(0.4,1), breaks = c(0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
-  scale_y_continuous(limits = c(0,1), breaks = c(0, 0.2, 0.4,0.6,0.8, 1), labels = scales::percent_format(suffix = "")) +
+  # scale_y_continuous(limits = c(0,1), breaks = c(0, 0.2, 0.4,0.6,0.8, 1), labels = scales::percent_format(suffix = "")) +
+  scale_y_continuous(limits = c(0,1), breaks = c(0, 0.25, 0.5,0.75, 1), labels = scales::percent_format(suffix = "")) +
   scale_x_continuous(limits = c(0,100)) +
   scale_shape_manual(values = c(21,23,24)) +
   scale_color_manual(values = c("#7570b3", "#1b9e77", "#d95f02"), aesthetics=c("fill", "color")) +
@@ -698,12 +711,16 @@ unseen_shuffled %>%
     legend.box.margin = margin(0,0,0,-30),
     axis.title = element_text(size = 16),
     legend.title = element_text(size=16),
-    strip.background = element_rect(color = NA),
-    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
+    strip.background = element_rect(color = NA, fill='transparent'),
+    strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    legend.background = element_rect(fill='transparent'),
+    legend.box.background = element_rect(fill='transparent', color = NA)
   ) +
   labs(
     x = "% of Image-Hypernym pairs ablated from training",
-    y = "Macro F1 on\nUnseen Images",
+    y = "Macro F1 on\nunseen images",
     color = "Shuffle",
     fill = "Shuffle",
     shape = "Shuffle"
