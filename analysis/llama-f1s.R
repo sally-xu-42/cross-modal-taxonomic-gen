@@ -5,8 +5,6 @@ library(ggdist)
 library(ggtext)
 library(performance)
 
-depths <- read_csv("data/things-category-depths.csv") %>%
-  rename(hypernym = category)
 
 read_results <- function(path) {
   read_csv(path) %>%
@@ -23,8 +21,8 @@ read_results <- function(path) {
         TRUE ~ "SigLIP"
       ),
       lm = case_when(
-        str_detect(run_name, "1b-llama-chat") ~ "Llama2-Instruct",
-        str_detect(run_name, "1b-llama-things") ~ "Llama2",
+        str_detect(run_name, "1b-llama-chat") ~ "Llama3.2-Instruct",
+        str_detect(run_name, "1b-llama-things") ~ "Llama3.2",
         str_detect(run_name, "500m") ~ "Qwen3-0.6B",
         str_detect(run_name, "8b") ~ "Qwen3-8B",
         TRUE ~ "Qwen3-1.7B"
@@ -134,136 +132,45 @@ chance_f1 <- bind_rows(
   leaf_random_chance_f1
 )
 
-# leaf_random
 
-unseen_counts <- read_csv("results/main-results/all_unseen_counts.csv")
-leaf_counts <- read_csv("results/main-results/all_leaf_counts.csv")
-seen_counts <- read_csv("results/main-results/all_seen_counts.csv")
-
-
-leaf <- read_results("results/main-results/macro-f1s/all_leaf_f1_scores.csv") %>% 
+leaf <- read_results("results/main-results/macro-f1s/llama_leaf_f1_scores.csv") %>% 
   distinct() %>%
   filter(shuffled == "Original")
-seen <- read_results("results/main-results/macro-f1s/all_seen_f1_scores.csv") %>% 
+seen <- read_results("results/main-results/macro-f1s/llama_seen_f1_scores.csv") %>% 
   distinct() %>%
   filter(shuffled == "Original")
-unseen <- read_results("results/main-results/macro-f1s/all_unseen_f1_scores.csv") %>% 
+unseen <- read_results("results/main-results/macro-f1s/llama_unseen_f1_scores.csv") %>% 
   distinct() %>%
   filter(shuffled == "Original")
 
-unseen_shuffled <- read_results("results/main-results/macro-f1s/all_unseen_f1_scores.csv") %>%
+unseen_shuffled <- read_results("results/main-results/macro-f1s/llama_unseen_f1_scores.csv") %>%
   distinct() %>%
   filter(ablation_type %in% c("Random", "Full"), vision_encoder=="DINOv2", random==F)
-
-dino_vs_siglip <- unseen %>%
-  pivot_longer(animal:weapon, names_to = "hypernym", values_to = "f1") %>%
-  filter(vision_encoder %in% c("SigLIP", "DINOv2"), ablation_type == "Full", random == F) %>%
-  filter(str_detect(lm, "Qwen"))
-
-fit_dinosiglip <- lmer(
-  f1 ~ vision_encoder * lm + 
-    (1 + vision_encoder * lm | seed) + 
-    (1 + vision_encoder * lm | hypernym),
-  data = dino_vs_siglip %>% 
-    mutate(
-      lm = case_when(
-        lm == "Qwen3-0.6B" ~ 1,
-        TRUE ~ -1
-      ),
-      vision_encoder = case_when(
-        vision_encoder == "DINOv2" ~ 1,
-        TRUE ~ -1
-      )
-    )
-)
-
-summary(fit_dinosiglip)
-
-dino_vs_siglip %>%
-  # group_by(lm, vision_encoder, hypernym) %>%
-  # summarize(f1 = mean(f1)) %>%
-  # ungroup() %>%
-  group_by(lm, vision_encoder) %>%
-  summarize(
-    n = n(),
-    sd = sd(f1),
-    conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
-    f1 = mean(f1)
-  ) %>% 
-  ggplot(aes(lm, f1, color = vision_encoder, fill = vision_encoder, shape = vision_encoder)) +
-  geom_point(size = 2, position = position_dodge(0.5))+
-  geom_linerange(aes(ymin = f1-conf, ymax = f1+conf), position = position_dodge(0.5)) +
-  geom_hline(yintercept = 0.471, linetype = "dashed", linewidth = 0.5) +
-  scale_y_continuous(limits = c(0.4, 1), labels = scales::percent_format(suffix = ""), breaks = c(0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)) +
-  scale_shape_manual(values = c(21,23)) +
-  # theme_bw(base_size = 18, base_family = "Times") +
-  theme_classic(base_size = 18, base_family = "Times") +
-  theme(
-    panel.grid = element_blank(),
-    legend.position = "top",
-    axis.text = element_text(color = "black"),
-    # legend.margin = 
-    # legend.justification='left',
-    # legend.direction='horizontal'
-    legend.box.margin = margin(0,0,0,-30),
-    axis.title = element_text(size = 16),
-    legend.title = element_text(size=16),
-    panel.background = element_rect(fill='transparent'),
-    plot.background = element_rect(fill='transparent', color=NA),
-    legend.background = element_rect(fill='transparent'),
-    legend.box.background = element_rect(fill='transparent', color = NA)
-  ) +
-  labs(
-    x = "LM Backbone",
-    y = "Macro F1 on\nunseen images",
-    color = "Image Encoder",
-    fill = "Image Encoder",
-    shape = "Image Encoder"
-  )
-
-ggsave("plots/dino-vs-siglip.pdf", width = 4.45, height = 3.6, dpi=300, device=cairo_pdf)
-
 
 # exp1_ablation_results_raw %>% count(ablation_type)
 
 exp1_ablation_results_raw <- bind_rows(
   unseen %>%
     pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Held-Out Hypernyms") %>%
-    inner_join(
-      unseen_counts %>%
-        pivot_longer(animal:weapon, names_to = "category", values_to = "count")
-    ),
+    mutate(experiment = "Held-Out Hypernyms"),
   seen %>%
     pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Seen Hypernyms") %>%
-    inner_join(
-      seen_counts %>%
-        pivot_longer(animal:weapon, names_to = "category", values_to = "count")
-    ),
+    mutate(experiment = "Seen Hypernyms"),
   leaf %>%
     pivot_longer(aardvark:zucchini, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Leaves") %>%
-    inner_join(
-      leaf_counts %>%
-        pivot_longer(aardvark:zucchini, names_to = "category", values_to = "count")
-    )
+    mutate(experiment = "Leaves")
 ) %>%
   mutate(
     experiment = factor(experiment, levels = c("Leaves", "Seen Hypernyms", "Held-Out Hypernyms"))
   ) %>%
   filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Qwen")) %>% 
+  filter(str_detect(lm, "Llama")) %>% 
   filter(!is.na(acc)) %>%
   group_by(experiment, lm, seen_hypernyms, ablation_type, category, random) %>%
   # summarize(n = n(), acc = mean(acc), count = mean(count)) %>%
   # ungroup() %>%
   group_by(experiment, lm, seen_hypernyms, ablation_type, random) %>%
   summarize(
-    total = sum(count),
-    weighted = sum(count * acc)/sum(count),
-    weighted_sd = sqrt(sum(count * ((acc - (sum(count * acc)/sum(count)))^2))/(sum(count) - 1)),
-    weighted_conf = 1.96 * weighted_sd/sqrt(sum(count)),
     n = n(),
     sd = sd(acc),
     conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
@@ -294,12 +201,8 @@ exp1_chance <- chance_f1 %>%
 unseen_categorywise <- unseen_shuffled %>%
   pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
   mutate(experiment = "Held-Out Hypernyms") %>%
-  inner_join(
-    unseen_counts %>%
-      pivot_longer(animal:weapon, names_to = "category", values_to = "count")
-  ) %>%
   filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Qwen")) %>%
+  filter(str_detect(lm, "Llama")) %>%
   filter(seen_hypernyms==0) %>%
   filter(
     # experiment == "Held-Out Hypernyms",
@@ -326,7 +229,7 @@ coherence_backbone <- read_csv("results/coherence_backbone.csv")
 
 reg_data <- unseen_categorywise %>%
   filter(shuffled == "Original") %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "original")) %>%
+  inner_join(coherence_backbone %>% filter(shuffle_type == "original") %>% distinct(category, avg_cosine)) %>%
   mutate(
     model = factor(model),
     category = factor(category),
@@ -336,18 +239,6 @@ reg_data <- unseen_categorywise %>%
 fit1 <- lmer(acc ~ backbone_f1 + avg_cosine + (backbone_f1 + avg_cosine || category) + (1|seed) + (1|model), data = reg_data)
 
 summary(fit1)
-
-# coherence: b = 0.83, t = 3.34, p < .01
-# backbone f1: b = 0.26, t = 0.26, p = 0.79
-
-fit1 <- lmer(acc ~ backbone_f1 + avg_cosine + (backbone_f1 + avg_cosine || category) + (1| model:seed), data = reg_data)
-summary(fit1)
-
-r2(fit1)
-
-fit2 <- lmer(acc ~ backbone_f1 + avg_cosine + (backbone_acc + avg_cosine || category) + (1|seed) + (1|model), data = reg_data)
-
-summary(fit2)
 
 reg_data %>% 
   group_by(model, seed) %>% 
@@ -382,19 +273,19 @@ reg_data %>%
   )
 
 reg_data %>%
-  filter(model == "Qwen3-1.7B", seed == 7) %>%
+  filter(model == "Llama2-Instruct", seed == 42) %>%
   ggplot(aes(avg_cosine, acc)) +
   geom_point(alpha = 0.7, color = "mediumpurple4") +
   geom_smooth(method = "lm", color = "black") +
   # scale_x_continuous(limits = c(0.15, 0.45)) +
   # geom_richtext(x = 0.4, y = 0.30, label = "<i>&rho;</i> = 0.47") +
-  geom_richtext(x = 0.4, y = 0.30, label = "<i>r</i> = 0.43") +
-  scale_y_continuous(limits = c(0.18,1.05), labels = scales::percent_format(suffix = ""))+
+  geom_richtext(x = 0.4, y = 0.30, label = "<i>r</i> = 0.57") +
+  scale_y_continuous(limits = c(0,1.10), breaks = c(0,0.25,0.5,0.75,1), labels = scales::percent_format(suffix = ""))+
   labs(
     x = "Visual Coherence",
     y = "Macro F1 on\nunseen images"
   ) +
-  theme_classic(base_size = 18, base_family = "Times") +
+  theme_classic(base_size = 16, base_family = "Times") +
   theme(
     axis.text = element_text(color = "black"),
     panel.background = element_rect(fill='transparent'),
@@ -403,7 +294,7 @@ reg_data %>%
     legend.box.background = element_rect(fill='transparent', color = NA)
   )
 
-ggsave("plots/coherence-vs-f1-maintext.pdf", width = 4, height = 3.43, dpi = 300, device = cairo_pdf)
+ggsave("plots/coherence-vs-f1-llama2.pdf", width = 4, height = 3.43, dpi = 300, device = cairo_pdf)
 
 
 reg_data %>%
@@ -430,48 +321,6 @@ reg_data %>%
     strip.text = element_text(color = "black", face = "bold", family = "Helvetica Neue")
   )
 
-reg_data_within <- unseen_categorywise %>%
-  filter(str_detect(shuffled, "Within")) %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "local_shuffled")) %>%
-  mutate(
-    model = factor(model),
-    category = factor(category),
-    seed = factor(seed)
-  )
-
-fit1_within <- lmer(acc ~ backbone_acc + avg_cosine + (backbone_acc + avg_cosine || category) + (1|seed) + (1|model), data = reg_data_within)
-
-summary(fit1_within)
-
-reg_data_across <- unseen_categorywise %>%
-  filter(str_detect(shuffled, "Across")) %>%
-  inner_join(coherence_backbone %>% filter(shuffle_type == "shuffled")) %>%
-  mutate(
-    model = factor(model),
-    category = factor(category),
-    seed = factor(seed)
-  )
-
-fit1_across <- lmer(acc ~ backbone_acc + avg_cosine + (backbone_acc * avg_cosine || category) + (1|seed) + (1|model), data = reg_data_across)
-
-summary(fit1_across)
-
-reg_data_across %>%
-  ggplot(aes(avg_cosine, acc)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_grid(model ~ seed)
-
-reg_data_within %>% 
-  group_by(model, seed) %>% 
-  nest() %>%
-  mutate(
-    cor = map(data, function(x) {
-      cor.test(x$acc, x$avg_cosine, method = "spearman") %>%
-        broom::tidy()
-    })
-  ) %>%
-  unnest(cor)
 
 depth_wise <- unseen %>%
   pivot_longer(animal:weapon, names_to = "hypernym", values_to = "acc") %>%
@@ -610,7 +459,7 @@ exp1_ablation_results %>%
   # filter(experiment == "Unseen") %>%
   ggplot(aes(group = interaction(lm, Rep))) +
   geom_point(aes(deprivation, acc, color = lm, shape = lm, fill = lm), size = 2)+
-  geom_line(aes(deprivation, acc, color = lm, linetype = Rep)) +
+  geom_line(aes(deprivation, acc, color = lm)) +
   geom_ribbon(aes(deprivation, acc, ymin = acc-conf, ymax=acc+conf, fill = lm), color = NA, alpha = 0.2) +
   # geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
   # facet_wrap(~ablation_type) +
@@ -621,7 +470,7 @@ exp1_ablation_results %>%
   # scale_y_continuous(limits = c(0,1), breaks = c(0,0.2,0.4,0.6,0.8,1), labels = scales::percent_format(suffix = "")) +
   scale_y_continuous(limits = c(0,1), breaks = c(0,0.25,0.5,0.75,1), labels = scales::percent_format(suffix = "")) +
   scale_shape_manual(values = c(21,23)) +
-  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
+  scale_color_manual(values = c("#DC267F", "#66a61e"), aesthetics=c("fill", "color")) +
   scale_linetype_manual(values = c("solid", "dotted")) +
   geom_line(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", linetype = "dashed") +
   # geom_point(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", fill = "black", size = 1) +
@@ -655,7 +504,7 @@ exp1_ablation_results %>%
     # color = "Image Encoder"
   )
 
-ggsave("plots/main-exp-results.pdf", height = 5.40, width = 10.34, dpi = 300, device=cairo_pdf)
+ggsave("plots/main-exp-results-llama.pdf", height = 5.40, width = 10.34, dpi = 300, device=cairo_pdf)
 
 exp3_chance <- chance_f1 %>% 
   filter(ablation_type == "Random", experiment=="Held-Out Hypernyms") %>%
@@ -669,10 +518,6 @@ exp3_chance <- chance_f1 %>%
 unseen_shuffled %>%
   pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
   mutate(experiment = "Held out Hypernyms") %>%
-  inner_join(
-    unseen_counts %>%
-      pivot_longer(animal:weapon, names_to = "category", values_to = "count")
-  ) %>%
   mutate(
     shuffled = factor(shuffled, levels = c("Original", "Across-category", "Within-category"))
   ) %>%
@@ -730,90 +575,7 @@ unseen_shuffled %>%
     # color = "Image Encoder"
   )
 
-ggsave("plots/counterfactual-shuffling-results-generalization.pdf", height = 4.35, width = 6.44, dpi=300, device=cairo_pdf)
-
-
-
-exp1_llama_raw <- bind_rows(
-  unseen %>%
-    pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Held-Out Hypernyms"),
-  seen %>%
-    pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Seen Hypernyms"),
-  leaf %>%
-    pivot_longer(aardvark:zucchini, names_to = "category", values_to = "acc") %>%
-    mutate(experiment = "Leaves")
-) %>%
-  mutate(
-    experiment = factor(experiment, levels = c("Leaves", "Seen Hypernyms", "Held-Out Hypernyms"))
-  ) %>%
-  filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Llama")) %>% 
-  filter(!is.na(acc)) %>%
-  group_by(experiment, lm, seen_hypernyms, ablation_type, category, random) %>%
-  group_by(experiment, lm, seen_hypernyms, ablation_type, random) %>%
-  summarize(
-    n = n(),
-    sd = sd(acc),
-    conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
-    acc = mean(acc)
-  )
-
-exp1_llama <- bind_rows(
-  exp1_llama_raw %>% filter(ablation_type != "Full"),
-  exp1_llama_raw %>% filter(ablation_type == "Full") %>%
-    mutate(ablation_type = "Random"),
-  exp1_llama_raw %>% filter(ablation_type == "Full") %>%
-    mutate(ablation_type = "Systematic")
-) %>%
-  ungroup()
-
-exp1_llama %>%
-  mutate(
-    Rep = case_when(
-      random ~ "Random",
-      TRUE ~ "Pre-trained"
-    ),
-    deprivation = 100-seen_hypernyms,
-    ablation_type = glue::glue("{ablation_type} Ablation"),
-  ) %>%
-  # filter(experiment == "Unseen") %>%
-  ggplot(aes(group = interaction(lm, Rep))) +
-  geom_point(aes(deprivation, acc, color = lm, shape = lm, fill = lm), size = 2)+
-  geom_line(aes(deprivation, acc, color = lm, linetype = Rep)) +
-  geom_ribbon(aes(deprivation, acc, ymin = acc-conf, ymax=acc+conf, fill = lm), color = NA, alpha = 0.2) +
-  # geom_hline(yintercept = 0.5, linetype = "dashed", linewidth = 0.5) +
-  # facet_wrap(~ablation_type) +
-  facet_grid(ablation_type ~ experiment) +
-  scale_x_continuous(limits = c(0,100)) +
-  scale_y_continuous(limits = c(0.4,1), breaks = c(0.4,0.5,0.6,0.7,0.8,0.9, 1), labels = scales::percent_format(suffix = "")) +
-  scale_shape_manual(values = c(21,23)) +
-  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
-  scale_linetype_manual(values = c("solid", "dotted")) +
-  geom_line(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", linetype = "dashed") +
-  geom_point(data=exp1_chance, aes(x = deprivation, y = acc, group = 1), color = "black", fill = "black", size = 1) +
-  geom_ribbon(data=exp1_chance, aes(x = deprivation, y = acc, ymin = acc-conf, ymax=acc+conf, group = 1), color = NA, fill = "black", alpha = 0.2) +
-  # guides(
-  #   color = guide_legend(nrow = 2),
-  #   fill = guide_legend(nrow = 2),
-  #   # shape = guide_legend("Premise", override.aes = list(alpha = 1), nrow = 1)
-  # ) +
-  theme_bw(base_size = 18, base_family = "Times") +
-  theme(
-    panel.grid = element_blank(),
-    # legend.position = "top",
-    axis.text = element_text(color = "black")
-  ) +
-  labs(
-    x = "% of Image-Hypernym pairs ablated from training",
-    y = "F1 on unseen images",
-    color = "LM Backbone",
-    fill = "LM Backbone",
-    shape = "LM Backbone",
-    linetype = "Representations"
-    # color = "Image Encoder"
-  )
+ggsave("plots/counterfactual-shuffling-results-generalization-llama.pdf", height = 4.35, width = 6.44, dpi=300, device=cairo_pdf)
 
 
 
@@ -831,4 +593,3 @@ larger %>%
     conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
     acc = mean(acc)
   )
-  

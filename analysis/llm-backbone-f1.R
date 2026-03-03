@@ -28,6 +28,8 @@ final_stimuli <- stimuli %>%
   select(-score) %>%
   ungroup()
 
+final_stimuli %>% filter(q_type=="positive") %>% View()
+
 item_hyps <- final_stimuli %>%
   filter(q_type == "positive") %>%
   distinct(item, hyponym, pos_hypernym = hypernym)
