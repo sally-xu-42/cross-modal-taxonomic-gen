@@ -388,8 +388,10 @@ all_models_depthwise %>%
   ) +
   labs(
     x = "Depth", y = "Macro F1 on\nunseen images",
-    color = "LM", fill = "LM"
+    color = "LM backbone", fill = "LM backbone"
   )
+
+ggsave("plots/depthwise.pdf", height = 3.07, width = 6.01, dpi=300, device=cairo_pdf)
 
 unseen %>%
   pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%
