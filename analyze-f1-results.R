@@ -516,22 +516,25 @@ depth_wise %>%
   ) %>%
   ungroup() %>%
   filter(random == FALSE) %>%
-  ggplot(aes(depth, acc, color = lm, fill = lm)) + 
-  geom_col(position = position_dodge(0.9)) +
-  geom_linerange(aes(ymin = acc-conf, ymax=acc+conf), position = position_dodge(0.9), color = "black") +
-  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
-  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1), ) +
-  # theme_bw(base_size = 18, base_family = "Times") +
-  theme_classic(base_size = 18, base_family = "Times") +
-  theme(
-    panel.grid = element_blank(),
-    legend.position = "top",
-    axis.text = element_text(color = "black")
-  ) +
-  labs(
-    x = "Depth", y = "Macro F1 per category",
-    color = "LM", fill = "LM"
-  )
+  write_csv("results/main-results/macro-f1s/qwen3-depthwise.csv")
+  
+
+# ggplot(aes(depth, acc, color = lm, fill = lm)) + 
+#   geom_col(position = position_dodge(0.9)) +
+#   geom_linerange(aes(ymin = acc-conf, ymax=acc+conf), position = position_dodge(0.9), color = "black") +
+#   scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
+#   scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1), ) +
+#   # theme_bw(base_size = 18, base_family = "Times") +
+#   theme_classic(base_size = 18, base_family = "Times") +
+#   theme(
+#     panel.grid = element_blank(),
+#     legend.position = "top",
+#     axis.text = element_text(color = "black")
+#   ) +
+#   labs(
+#     x = "Depth", y = "Macro F1 on\nunseen images",
+#     color = "LM", fill = "LM"
+#   )
 
 unseen %>%
   pivot_longer(animal:weapon, names_to = "category", values_to = "acc") %>%

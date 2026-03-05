@@ -346,39 +346,48 @@ depth_wise <- unseen %>%
 
 depth_wise %>%
   filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Qwen")) %>% 
+  filter(str_detect(lm, "Llama")) %>% 
   filter(!is.na(acc)) %>%
   filter(random == FALSE) %>%
   ggplot(aes(factor(depth), acc, color = lm, group = lm)) +
   geom_quasirandom(dodge.width = 0.4)
 
-depth_wise %>%
-  filter(vision_encoder %in% c("DINOv2")) %>%
-  filter(str_detect(lm, "Qwen")) %>% 
-  filter(!is.na(acc)) %>%
-  group_by(experiment, lm, depth, ablation_type, random) %>%
-  summarize(
-    n = n(),
-    sd = sd(acc),
-    conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
-    acc = mean(acc)
-  ) %>%
-  ungroup() %>%
-  filter(random == FALSE) %>%
+qwen_depthwise <- read_csv("results/main-results/macro-f1s/qwen3-depthwise.csv")
+
+all_models_depthwise <- bind_rows(
+  qwen_depthwise,
+  depth_wise %>%
+    filter(vision_encoder %in% c("DINOv2")) %>%
+    filter(str_detect(lm, "Llama")) %>% 
+    filter(!is.na(acc)) %>%
+    group_by(experiment, lm, depth, ablation_type, random) %>%
+    summarize(
+      n = n(),
+      sd = sd(acc),
+      conf = qt(0.05/2, n - 1, lower.tail = FALSE) * sd/sqrt(n),
+      acc = mean(acc)
+    ) %>%
+    ungroup() %>%
+    filter(random == FALSE) 
+)
+
+
+
+all_models_depthwise %>%
   ggplot(aes(depth, acc, color = lm, fill = lm)) + 
-  geom_col(position = position_dodge(0.9)) +
+  geom_col(position = position_dodge(0.9), width = 0.8) +
   geom_linerange(aes(ymin = acc-conf, ymax=acc+conf), position = position_dodge(0.9), color = "black") +
-  scale_color_manual(values = c("steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
-  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1), ) +
+  scale_color_manual(values = c("#DC267F", "#66a61e","steelblue", "#e6ab02"), aesthetics=c("fill", "color")) +
+  scale_y_continuous(labels = scales::percent_format(suffix = ""), limits = c(0,1), expand = c(0.01,0)) +
   # theme_bw(base_size = 18, base_family = "Times") +
   theme_classic(base_size = 18, base_family = "Times") +
   theme(
     panel.grid = element_blank(),
-    legend.position = "top",
+    # legend.position = "top",
     axis.text = element_text(color = "black")
   ) +
   labs(
-    x = "Depth", y = "Macro F1 per category",
+    x = "Depth", y = "Macro F1 on\nunseen images",
     color = "LM", fill = "LM"
   )
 
